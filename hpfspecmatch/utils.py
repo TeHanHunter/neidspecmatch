@@ -9,8 +9,8 @@ import pandas as pd
 import radvel
 from astroquery.simbad import Simbad
 import wget, zipfile, shutil
-from . import config
-norm_mean     = lambda x: x/np.nanmean(x)
+import config
+norm_mean = lambda x: x/np.nanmean(x)
 
 def pickle_dump(filename,obj):
     """

@@ -15,9 +15,9 @@ from hpfspec import rotbroad_help
 from hpfspec import utils
 import matplotlib.pyplot as plt
 import astropy.modeling
-from .priors import PriorSet, UP, NP, JP
-from .likelihood import ll_normal_es_py, ll_normal_ev_py
-from . import config
+from priors import PriorSet, UP, NP, JP
+from likelihood import ll_normal_es_py, ll_normal_ev_py
+import config
 from matplotlib.gridspec import GridSpec
 from matplotlib import rcParams
 rcParams["savefig.dpi"] = 100
@@ -775,9 +775,9 @@ def summarize_values_from_orders(files_pkl,targetname):
     
     df_med = pd.DataFrame(list(zip(params,medians,stds)),columns=['parameters','median','std'])
     
-    df.to_csv(savefolder+os.sep+target+'_overview.csv',index=False)
-    df_med.to_csv(savefolder+os.sep+target+'_med.csv',index=False)
-    
+    df.to_csv(os.sep+savefolder+os.sep+target+'_overview.csv',index=False)
+    df_med.to_csv(os.sep+savefolder+os.sep+target+'_med.csv',index=False)
+
     print('Saved to {}'.format(savefolder+os.sep+target+'_overview.csv'))
     print('Saved to {}'.format(savefolder+os.sep+target+'_med.csv'))
     return df, df_med
