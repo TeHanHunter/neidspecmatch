@@ -8,7 +8,7 @@ import hpfspec
 import hpfspecmatch, utils, config
 from tqdm import trange
 
-def run_hpfspecmatch(targetname='TIC_39699837', orders=['4','5','6','14','15','16','17']):
+def run_hpfsm(targetname='TIC_39699837', orders=['4','5','6','14','15','16','17']):
     filename = f'/home/tehan/Documents/hpf/spectra/Template_{targetname}_Fudge1.fits'
     utils.get_library()
     # List of stellar library fits files
@@ -33,7 +33,7 @@ if __name__ == '__main__':
     for i in trange(len(filenames)):
         target = 'TIC_' + os.path.basename(filenames[i]).split('_')[2]
         try:
-            run_hpfspecmatch(targetname=target,
+            run_hpfsm(targetname=target,
                              orders=['3', '4', '5', '6', '14', '15', '16', '17', '18', '19', '26'])
         except:
             continue
