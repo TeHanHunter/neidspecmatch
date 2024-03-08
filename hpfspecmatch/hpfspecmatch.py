@@ -15,9 +15,9 @@ from hpfspec import rotbroad_help
 from hpfspec import utils
 import matplotlib.pyplot as plt
 import astropy.modeling
-from priors import PriorSet, UP, NP, JP
-from likelihood import ll_normal_es_py, ll_normal_ev_py
-import config
+from hpfspecmatch.priors import PriorSet, UP, NP, JP
+from hpfspecmatch.likelihood import ll_normal_es_py, ll_normal_ev_py
+import hpfspecmatch.config as config
 from matplotlib.gridspec import GridSpec
 from matplotlib import rcParams
 rcParams["savefig.dpi"] = 100

@@ -116,6 +116,7 @@ def plot_lc_each_sector(local_directory=None):
             plt.legend()
             plt.savefig(f'{local_directory}plots/TIC_{hdul[0].header["TICID"]}.png', dpi=300)
 
+
 def plot_lc(local_directory=None, catalog=None):
     targets = ascii.read(catalog, format='csv')
     os.makedirs(f'{local_directory}plots/', exist_ok=True)
@@ -126,14 +127,21 @@ def plot_lc(local_directory=None, catalog=None):
         else:
             fig = plt.figure(figsize=(13, 5))
             for j in range(len(files)):
+                not_plotted_num = 0
                 with fits.open(files[j], mode='denywrite') as hdul:
-                    q = list(hdul[1].data['TESS_flags'] == 0) and list(hdul[1].data['TGLC_flags'] == 0)
-                    period = targets['period'][np.where(targets['TIC'] == int(hdul[0].header['TICID']))]
-                    plt.plot(hdul[1].data['time'] % period, hdul[1].data['cal_aper_flux'], '.', c='silver', ms=1)
-                    plt.plot(hdul[1].data['time'][q] % period, hdul[1].data['cal_aper_flux'][q], '.', c="C0", ms=1)
-                    title = f'TIC_{hdul[0].header["TICID"]} with {len(files)} sector(s) of data'
-            if targets['TIC'][i] == 236785891:
-                plt.ylim(0.6, 1.4)
+                    q = [a and b for a, b in
+                         zip(list(hdul[1].data['TESS_flags'] == 0), list(hdul[1].data['TGLC_flags'] == 0))]
+                    period = targets['Prot (Rae)'][np.where(targets['TIC'] == int(hdul[0].header['TICID']))]
+                    if len(hdul[1].data['cal_aper_flux']) == len(hdul[1].data['time']):
+                        plt.plot(hdul[1].data['time'] % period, hdul[1].data['cal_aper_flux'], '.', c='silver', ms=.8)
+                        plt.plot(hdul[1].data['time'][q] % period, hdul[1].data['cal_aper_flux'][q], '.', c=f"C{j}",
+                                 ms=.8, label=f'Sector {hdul[0].header["sector"]}')
+                    else:
+                        not_plotted_num += 1
+                    title = f'TIC_{hdul[0].header["TICID"]} with {len(files) - not_plotted_num} sector(s) of data'
+            # if targets['TIC'][i] == 60922830:
+            plt.ylim(0.95, 1.05)
+            plt.legend()
             plt.title(title)
             plt.xlabel('Phase (days)')
             plt.ylabel('Normalized flux')
@@ -142,8 +150,6 @@ def plot_lc(local_directory=None, catalog=None):
             plt.close(fig)
 
 
-
-
 if __name__ == '__main__':
-    plot_lc(local_directory = '/home/tehan/Documents/GEMS/lc/',
-            catalog = '/home/tehan/Documents/GEMS/GEMS.csv')
+    plot_lc(local_directory='/home/tehan/Documents/SURFSUP/lc/',
+            catalog='/home/tehan/Documents/SURFSUP/SURFSUP.csv')

@@ -9,7 +9,7 @@ import pandas as pd
 import radvel
 from astroquery.simbad import Simbad
 import wget, zipfile, shutil
-import config
+import hpfspecmatch.config as config
 norm_mean = lambda x: x/np.nanmean(x)
 
 def pickle_dump(filename,obj):
