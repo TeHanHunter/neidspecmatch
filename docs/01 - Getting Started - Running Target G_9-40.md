@@ -3,7 +3,6 @@
 
 ## Import packages
 
-
 ```python
 from importlib import reload
 import os
@@ -12,7 +11,7 @@ import pandas as pd
 import numpy as np
 import sys
 import hpfspec
-import hpfspecmatch
+import neidspecmatch
 ```
 
 ## Read in Library data
@@ -70,7 +69,7 @@ hpfspecmatch.BOUNDS
 
 
 ```python
-# Running full hpfspecmatch for all orders above
+# Running full neidspecmatch for all orders above
 # Results and plots will be saved to output directory
 outputdir = '../output/G_9-40'
 orders=['4', '5', '6', '14', '15', '16', '17']

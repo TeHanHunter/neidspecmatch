@@ -1,5 +1,5 @@
-import hpfspec
-import hpfspecmatch
+import neidspec
+import neidspecmatch
 import argparse
 
 if __name__=='__main__':
@@ -15,23 +15,23 @@ if __name__=='__main__':
     args = parser.parse_args()
 
     # Make sure library is availabe, if not, download it
-    hpfspecmatch.get_library()
+    neidspecmatch.get_library()
 
     filename = args.filename
     targetname = args.object
     outputdir = args.savefolder
     orders = [str(i) for i in args.orders]
-    path_df_lib = hpfspecmatch.config.PATH_LIBRARY_DB
+    path_df_lib = neidspecmatch.config.PATH_LIBRARY_DB
     maxvsini = args.vsinimax
     calibrate_feh = args.calibrate_feh
     scaleres = args.scaleres
 
     # Run specmatch for orders
-    hpfspecmatch.run_specmatch_for_orders(targetfile=filename,
-                                          targetname=targetname,
-                                          outputdirectory=outputdir,
-                                          path_df_lib=path_df_lib,
-                                          orders=orders,
-                                          maxvsini=maxvsini,
-                                          calibrate_feh=calibrate_feh,
-                                          scaleres=scaleres)
+    neidspecmatch.run_specmatch_for_orders(targetfile=filename,
+                                           targetname=targetname,
+                                           outputdirectory=outputdir,
+                                           path_df_lib=path_df_lib,
+                                           orders=orders,
+                                           maxvsini=maxvsini,
+                                           calibrate_feh=calibrate_feh,
+                                           scaleres=scaleres)

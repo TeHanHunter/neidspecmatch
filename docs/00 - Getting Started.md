@@ -8,13 +8,13 @@ import sys
 #sys.path.pop(0)
 ```
 
-# Import our package 
-
+# Import our package
 
 ```python
 import hpfspec
-import hpfspecmatch
-hpfspecmatch
+import neidspecmatch
+
+neidspecmatch
 ```
 
 

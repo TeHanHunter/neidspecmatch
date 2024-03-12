@@ -2,7 +2,6 @@
 
 ## Import packages
 
-
 ```python
 from importlib import reload
 import os
@@ -13,7 +12,7 @@ import sys
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 import hpfspec
-import hpfspecmatch
+import neidspecmatch
 ```
 
 

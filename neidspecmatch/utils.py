@@ -9,7 +9,7 @@ import pandas as pd
 import radvel
 from astroquery.simbad import Simbad
 import wget, zipfile, shutil
-import config
+import neidspecmatch.config as config
 norm_mean = lambda x: x/np.nanmean(x)
 
 def pickle_dump(filename,obj):
@@ -535,7 +535,7 @@ def get_library(overwrite=False):
         saves downloaded zip file to outputdir folder
         
     EXAMPLE:
-        hpfspecmatch.utils.get_library()
+        neidspecmatch.utils.get_library()
     """
 
     if ((os.path.isdir(config.PATH_LIBRARY) is False) and (overwrite is False)) or (overwrite is True):

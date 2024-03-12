@@ -1,23 +1,13 @@
 # hpfspecmatch (in progress)
-HPF SpecMatch: Spectral matching of HPF data
-
-<img src='docs/img/hpf_specmatch_logov1.png' width='300px'/>
-
-# Installation
-
-```
-git clone git@github.com:gummiks/hpfspecmatch.git
-cd hpfspecmatch
-python setup.py install
-```
+NEIDSpecMatch: Spectral matching of NEID data
 
 # Dependencies 
 
 - pyde, either (pip install pyde) or install from here: https://github.com/hpparvi/PyDE This package needs numba (try 'conda install numba' if problems).
 - emcee (pip install emcee)
-- crosscorr (git clone git@github.com:gummiks/crosscorr.git)
-- hpfspec (git clone git@github.com:gummiks/hpfspec.git)
 - astroquery (pip install astroquery)
+- crosscorr (git clone https://github.com/TeHanHunter/crosscorr.git) pip3 install .
+- hpfspec (git clone https://github.com/TeHanHunter/neidspec.git) pip3 install .
 - lmfit (pip install lmfit)
 - barycorrpy (pip install barycorrpy)
 

@@ -2,18 +2,18 @@
 
 ## Import packages
 
-
 ```python
 from importlib import reload
 import os
 import glob2
 import pandas as pd
+
 pd.set_option('display.max_columns', 50)
 pd.set_option('display.max_rows', 500)
 import numpy as np
 import sys
 import hpfspec
-import hpfspecmatch
+import neidspecmatch
 ```
 
 ## Read in Library

@@ -5,10 +5,10 @@ import pandas as pd
 import numpy as np
 import sys
 import hpfspec
-import hpfspecmatch, utils, config
+import neidspecmatch, utils, config
 from tqdm import trange
 
-def run_hpfsm(targetname='TIC_39699837', orders=['4','5','6','14','15','16','17']):
+def run_hpfsm(targetname='TIC_39699837', orders=['55','101', '102', '103',]):
     filename = f'/home/tehan/Documents/hpf/spectra/Template_{targetname}_Fudge1.fits'
     utils.get_library()
     # List of stellar library fits files
@@ -19,10 +19,10 @@ def run_hpfsm(targetname='TIC_39699837', orders=['4','5','6','14','15','16','17'
 
     outputdir = f'/home/tehan/Documents/hpf/{targetname}/'
     os.mkdir(outputdir)
-    hpfspecmatch.run_specmatch_for_orders(filename, targetname, outputdir, HLS=HLS, orders=orders)
+    neidspecmatch.run_specmatch_for_orders(filename, targetname, outputdir, HLS=HLS, orders=orders)
 
     files = sorted(glob2.glob(f'{outputdir}*/*.pkl'))
-    df_orders, df_orders_summary = hpfspecmatch.summarize_values_from_orders(files,targetname)
+    df_orders, df_orders_summary = neidspecmatch.summarize_values_from_orders(files, targetname)
 
     return df_orders, df_orders_summary
 

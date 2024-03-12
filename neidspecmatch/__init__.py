@@ -1,4 +1,4 @@
-from .hpfspecmatch import *
+from .neidspecmatch import *
 from .likelihood import *
 from .priors import *
 from .utils import *

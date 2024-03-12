@@ -4,7 +4,6 @@
 
 ### Import necessary packages
 
-
 ```python
 from importlib import reload
 import os
@@ -13,7 +12,7 @@ import pandas as pd
 import numpy as np
 import sys
 import hpfspec
-import hpfspecmatch
+import neidspecmatch
 ```
 
 ### Read in library
