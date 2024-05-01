@@ -30,7 +30,7 @@ rcParams['xtick.direction'] = 'in'
 rcParams['ytick.direction'] = 'in'
 
 
-def get_data_ready(H1, Hrefs, w, v, polyvals=None, vsinis=None, plot=False):
+def get_data_ready(H1, Hrefs, w, v, polyvals=None, vsinis=None, order=101, plot=False):
     """
     Get data ready for MCMC
     
@@ -55,9 +55,12 @@ def get_data_ready(H1, Hrefs, w, v, polyvals=None, vsinis=None, plot=False):
         summarize_values_from_orders(files,'AD_Leo')
     """
     H1.deblaze()
+    # plt.show()
+    # plt.plot(H1.w[91], H1.f_debl[91])
+    # plt.savefig('/home/tehan/Downloads/target.png')
     _, rabs = H1.rvabs_for_orders(v, orders=[55], plot=plot)
     H1.redshift(rv=np.median(rabs))
-    f1, e1 = H1.resample_order(w)
+    f1, e1 = H1.resample_order(w, plot=True, order=order)
     print("Target={}, rv={:0.3f}km/s, rvmed={:0.3f}km/s".format(H1.target.name, H1.rv, np.median(rabs)))
 
     ffrefs = []
@@ -67,12 +70,15 @@ def get_data_ready(H1, Hrefs, w, v, polyvals=None, vsinis=None, plot=False):
         _, rabs = H.rvabs_for_orders(v, orders=[55], plot=plot)
         H.redshift(rv=np.median(rabs))
         if polyvals is None and vsinis is None:
-            _f, _e = H.resample_order(w)
+            _f, _e = H.resample_order(w, order=order)
         else:
-            _f, _e = H.resample_order(w, p=polyvals[i], vsini=vsinis[i])
+            _f, _e = H.resample_order(w, p=polyvals[i], vsini=vsinis[i], order=order)
         ffrefs.append(_f)
         eerefs.append(_e)
         print("Target={}, rv={:0.3f}km/s, rvmed={:0.3f}km/s".format(H1.target.name, H1.rv, np.median(rabs)))
+    # plt.show()
+    # plt.plot(w, f1)
+    # plt.savefig('/home/tehan/Downloads/target.png')
     return f1, e1, ffrefs, eerefs
 
 
@@ -148,6 +154,8 @@ class FitLinCombSpec(object):
         else:
             self.teff = np.nan
         if self.fehs != []:
+            print(self.fehs)
+            print(weights)
             self.feh = weighted_value(self.fehs, weights)
             if self.calibrate_feh:
                 print('Calibrating feh: {:0.3f} -> {:0.3f}'.format(self.feh, detrend_feh(self.feh)))
@@ -285,13 +293,13 @@ class FitLinCombSpec(object):
     #    self.fig = mcFunc.plot_corner(self.sampler.chain,labels=labels,burn=burn,thin=thin,title_fmt=title_fmt,**kwargs)
 
 
-def sample(df_chain, N=500):
-    spectra = []
-    for i in range(N):
-        c = df_chain.iloc[np.random.randint(len(df_chain))].values[0:4]
-        spectra.append(self.lpf.data_target['f'] - LCS.lpf.compute_model(c))
-    std = np.std(spectra, axis=0)  # np.std(spectra,axis=0)
-    return std
+# def sample(df_chain, N=500):
+#     spectra = []
+#     for i in range(N):
+#         c = df_chain.iloc[np.random.randint(len(df_chain))].values[0:4]
+#         spectra.append(self.lpf.data_target['f'] - LCS.lpf.compute_model(c))
+#     std = np.std(spectra, axis=0)  # np.std(spectra,axis=0)
+#     return std
 
 
 class Chi2FunctionVsiniPolynomial(object):
@@ -416,7 +424,7 @@ class FitTargetRefStarVsiniPolynomial(object):
             print("Finished MCMC")
 
 
-def chi2spectraPolyVsini(ww, H1, H2, rv1=None, rv2=None, plot=False, verbose=False, maxvsini=30.):
+def chi2spectraPolyVsini(ww, H1, H2, rv1=None, rv2=None, plot=False, verbose=False, maxvsini=30., order=101):
     """
     INPUT:
         ww - wavelength grid to interpolate on (array)
@@ -442,8 +450,8 @@ def chi2spectraPolyVsini(ww, H1, H2, rv1=None, rv2=None, plot=False, verbose=Fal
         chi2spectraPolyVsini(ww,H1,H2,rv1=14.51,plot=True)
         
     """
-    ff1, ee1 = H1.resample_order(ww)
-    ff2, ee2 = H2.resample_order(ww)
+    ff1, ee1 = H1.resample_order(ww, order=order)
+    ff2, ee2 = H2.resample_order(ww, order=order)
 
     C = Chi2FunctionVsiniPolynomial(ww, ff1, ee1, ff2, ee2, maxvsini)
     FTRSVP = FitTargetRefStarVsiniPolynomial(C)
@@ -458,7 +466,7 @@ def chi2spectraPolyVsini(ww, H1, H2, rv1=None, rv2=None, plot=False, verbose=Fal
     return chi2, vsini, coeffs
 
 
-def chi2spectraPolyLoop(ww, H1, Hrefs, plot_all=False, plot_chi=True, verbose=True, maxvsini=30.):
+def chi2spectraPolyLoop(ww, H1, Hrefs, plot_all=False, plot_chi=True, verbose=True, maxvsini=30., order=101):
     """
     Calculate chi square - target and list of reference spectra
     
@@ -486,7 +494,7 @@ def chi2spectraPolyLoop(ww, H1, Hrefs, plot_all=False, plot_chi=True, verbose=Tr
             print('First step: Matching target star to all library stars')
             print("##################")
 
-        chi, vsini, p = chi2spectraPolyVsini(ww, H1, H2, plot=plot_all, maxvsini=maxvsini)
+        chi, vsini, p = chi2spectraPolyVsini(ww, H1, H2, plot=plot_all, maxvsini=maxvsini, order=order)
         if verbose:
             print(
                 '{:3d}/{:2d}, Target = {:18s} Library Star = {:18s} chi2 = {:6.3f}'.format(i + 1, len(Hrefs), H1.object,
@@ -527,7 +535,7 @@ def weighted_value(values, weights):
 
 
 def run_specmatch(Htarget, Hrefs, ww, v, df_library, df_target=None, plot=True, savefolder='out/',
-                  maxvsini=30., calibrate_feh=True, scaleres=1.):
+                  maxvsini=30., calibrate_feh=True, scaleres=1., order=101):
     """
     Second chi2 loop, creates composite spectrum 
     
@@ -562,7 +570,7 @@ def run_specmatch(Htarget, Hrefs, ww, v, df_library, df_target=None, plot=True, 
     ##############################
     # STEP 1: Chi2 Loop
     df_chi, df_chi_best, Hbest = chi2spectraPolyLoop(ww, Htarget, Hrefs, plot_all=False, verbose=True,
-                                                     maxvsini=maxvsini)
+                                                     maxvsini=maxvsini, order=order)
     ##############################
     # Combine best data
     # print(df_chi_best['OBJECT_ID'])
@@ -607,7 +615,7 @@ def run_specmatch(Htarget, Hrefs, ww, v, df_library, df_target=None, plot=True, 
     # STEP 2 LINEAR COMBINATION
     ##############################
     f1, e1, ffrefs, eerefs = get_data_ready(Htarget, Hbest, ww, v, polyvals=df_chi_best.poly_params.values,
-                                            vsinis=df_chi_best.vsini.values)
+                                            vsinis=df_chi_best.vsini.values, order=order)
     L = LPFunctionLinComb(ww, f1, e1, ffrefs, eerefs)
     LCS = FitLinCombSpec(L, df_chi_best_total.Teff.values,
                          df_chi_best_total['[Fe/H]'].values,
@@ -711,7 +719,7 @@ def plot_chi_teff_feh_logg_panel(chis, teff, feh, logg, savename='chi2panel.pdf'
 
 def plot_teff_feh_logg_corr_panel(teff, feh, logg, chis, e_teff=None, e_feh=None, e_logg=None, fig=None, ax=None,
                                   bx=None,
-                                  savename='corr_panel.pdf', scale_factor_for_points=200.):
+                                  savename='corr_panel.pdf', scale_factor_for_points=1500.):
     """
     Plot of teff vs feh, logg for 5 best fit stars among all library stars
     
@@ -881,7 +889,8 @@ def run_specmatch_for_orders(targetfile, targetname, outputdirectory='specmatch_
                                                               savefolder=savefolder,
                                                               maxvsini=maxvsini,
                                                               calibrate_feh=calibrate_feh,
-                                                              scaleres=scaleres)
+                                                              scaleres=scaleres,
+                                                              order=int(o))
 
 
 def plot_crossvalidation_results_1d(order, df_crossval, savefolder):
@@ -916,7 +925,7 @@ def plot_crossvalidation_results_1d(order, df_crossval, savefolder):
     bx.set_ylabel('$\Delta$Fe/H [K]', fontsize=12, labelpad=-2)
     cx.set_ylabel('$\Delta$logg [K]', fontsize=12, labelpad=-2)
     cx.set_xlabel('Library spectrum #', fontsize=12)
-    ax.set_title('Library Performance (HPF Order {})'.format(order))
+    ax.set_title('Library Performance (NEID Order {})'.format(order))
     plt.savefig('{}/crossvalidation_o{}_plot1D.png'.format(savefolder, order))
 
 
@@ -1056,7 +1065,7 @@ def run_crossvalidation_for_orders(order, df_lib=config.PATH_LIBRARY_DB, HLS=Non
         _res = run_specmatch(Htarget, Hrefs, ww, v, df_lib, df_target, plot=True,
                              savefolder='{}/plots/'.format(outputdir),
                              calibrate_feh=calibrate_feh,
-                             scaleres=scaleres)
+                             scaleres=scaleres, order=int(order))
         res.append(_res)
         obj_names.append(Htarget.object)
 
@@ -1145,7 +1154,7 @@ def plot_crossvalidation_results_main(order, df_crossval, savefolder):
     bx.set_ylim(*ax.get_ylim())
     fig.subplots_adjust(wspace=0.05)
     bx.legend(loc='upper right')
-    fig.suptitle('Library Performance (HPF Order {})'.format(order), y=0.98)
+    fig.suptitle('Library Performance (NEID Order {})'.format(order), y=0.98)
     plot_crossval_feh_delta_feh(df_crossval.feh_true.values, df_crossval.d_feh.values, ax=cx)
     fig.savefig('{}/crossvalidation_o{}_main.png'.format(savefolder, order))
 

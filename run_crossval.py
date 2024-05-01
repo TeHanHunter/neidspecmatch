@@ -20,9 +20,10 @@ if __name__ == '__main__':
     #         neidspecmatch.config.PATH_LIBRARY_CROSSVAL, True, True, 1.]
     #
     # args = parser.parse_args(argv[1:])
+    #
     # Make sure library is available, if not, download it
     neidspecmatch.get_library()
-    order = '101'
+    order = '102'
     df_lib = pd.read_csv(neidspecmatch.config.PATH_LIBRARY_DB)
     HLS = neidspec.NEIDSpecList(filelist=neidspecmatch.config.LIBRARY_FITSFILES)
     outputdir = neidspecmatch.config.PATH_LIBRARY_CROSSVAL
