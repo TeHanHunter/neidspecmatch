@@ -13,8 +13,8 @@ NEIDSpecMatch: Spectral matching of NEID data
 
 # Installation
 create a new conda env with
-conda create -n neidspecmatch python==3.10
-conda activate neidspecmatch
+`conda create -n neidspecmatch python==3.10`
+`conda activate neidspecmatch`
 ```
 conda install numba
 git clone https://github.com/hpparvi/PyDE.git
