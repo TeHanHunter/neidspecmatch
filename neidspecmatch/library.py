@@ -1,13 +1,13 @@
 import os
-import sigfig
 import numpy as np
 from astropy.io import ascii, fits
 from astropy import units as u
 from astropy import constants
 from astroquery.simbad import Simbad
-
+from astropy.table import Table, Column
+from astropy.coordinates import SkyCoord
+from tqdm import trange
 DIRNAME = os.path.dirname(os.path.dirname(__file__))
-
 
 def load_Mann(file='asu.fit'):
     Mann = fits.open(f'{DIRNAME}/library/{file}')
@@ -29,27 +29,57 @@ def calclogg(mass, masserr, radius, raderr):
         ((mass ** (-2.) * masserr ** 2. + 4. * raderr ** 2. * radius ** (-2.)) * np.log(10.) ** (-2.)).value)
     return val, valerr
 
-def find_star(name='HD 100623'):
+def combine_Mann_Yee():
     Mann = load_Mann()
     Yee = load_Yee()
-    Mann_names = []
+    print(Mann[-20])
+    combined = Yee
+    combined.add_column(Column(name='Source', data=['Yee'] * len(Yee)))
     for i in range(len(Mann)):
-        Mann_names.append(Mann[i][3])
-    Mann_names = np.array(Mann_names)
-    Yee_names = np.array(Yee['Name'])
-    # print(Mann_names)
-    # print(Yee_names[0])
-    Mann_row = np.where(Mann_names == name)
-    Yee_row = np.where(Yee_names == name)
-    return Mann[Mann_row], Yee[Yee_row]
+        logg, e_logg = calclogg(Mann[i][51], Mann[i][52], Mann[i][49], Mann[i][50])
+        combined.add_row({'Name': f'{Mann[i][3]}', 'Teff': f'{Mann[i][47]}', 'e_Teff': f'{Mann[i][48]}',
+                                        'R*': f'{Mann[i][49]:.3f}', 'e_R*': f'{Mann[i][50]:.3f}', 'log(g)': f'{logg:.3f}',
+                                        'e_log(g)': f'{e_logg:.3f}', '[Fe/H]': f'{Mann[i][14]:.3f}', 'e_[Fe/H]': f'{Mann[i][15]:.3f}',
+                                        'M*': f'{Mann[i][51]:.3f}', 'e_M*': f'{Mann[i][52]:.3f}',
+                                        'logA': f'{Mann[i][53]:.3f}', 'e_logA': f'{Mann[i][54]:.3f}', 'plx': 0.,
+                                        'Vmag': f'{Mann[i][19]:.3f}', 'Notes': 'N/A', 'Source': 'Mann'})
+    ra = []
+    dec = []
+    for j in trange(len(combined)):
+        try:
+            result_table = Simbad.query_object(combined['Name'][j])
+            ra_deg = result_table['RA']
+            dec_deg = result_table['DEC']
+            coord = SkyCoord(ra=ra_deg[0], dec=dec_deg[0], unit=(u.hourangle, u.deg))
+            ra.append(coord.ra.deg)
+            dec.append(coord.dec.deg)
+        except TypeError:
+            print(j, combined[j]['Name'])
+            ra.append(-100.)
+            dec.append(-100.)
+    combined.add_column(Column(name='RA', data=ra))
+    combined.add_column(Column(name='Dec', data=dec))
+    return combined
+
+def find_star(name, combined=None):
+    custom_simbad = Simbad()
+    custom_simbad.add_votable_fields('rvz_radvel')
+    result_table = custom_simbad.query_object(name)
+    radial_velocity = result_table['RVZ_RADVEL'][0]
+    print(f"Radial Velocity of {name}: {radial_velocity} km/s")
+    ra_deg = result_table['RA']
+    dec_deg = result_table['DEC']
+    coord = SkyCoord(ra=ra_deg[0], dec=dec_deg[0], unit=(u.hourangle, u.deg))
+    idx = np.argmin((combined['RA']-coord.ra.deg)**2 + (combined['Dec']-coord.dec.deg)**2)
+    print(np.sqrt((combined['RA']-coord.ra.deg)**2 + (combined['Dec']-coord.dec.deg)**2)[idx])
+    print(combined[idx])
 
 if __name__ == '__main__':
-    name = 'HIP 23512'
-    Mann_star, Yee_star = find_star(name=name)
-    print(Mann_star)
-    print(calclogg(0.44,0.044,0.443,0.017))
-    Yee_star.pprint_all()
-
+    name = 'HD 143761'
+    # combined = combine_Mann_Yee()
+    # combined.write(f'{DIRNAME}/library/combined.csv', format='csv',)
+    combined = Table.read(f'{DIRNAME}/library/combined.csv', format='csv',)
+    find_star(name, combined=combined)
     # All simbad IDs
     simbadres = Simbad.query_objectids(name)
     # simbadres.pprint_all()

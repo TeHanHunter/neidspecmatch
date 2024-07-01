@@ -17,10 +17,10 @@ if __name__=='__main__':
     # Make sure library is availabe, if not, download it
     neidspecmatch.get_library()
 
-    filename = '/home/tehan/Downloads/neidL2_20230706T110904.fits'
-    targetname = 'TOI 2145'
+    filename = '/home/tehan/PycharmProjects/neidspecmatch/library/20240301_specmatch_nir/FITS/neidL2_20220307T035212.fits'
+    targetname = 'HD 28343'
     outputdir = '/home/tehan/Downloads/specmatch_results'
-    orders = ['55', '101', '102']
+    orders = ['101']
     path_df_lib = neidspecmatch.config.PATH_LIBRARY_DB
     maxvsini = 100
     calibrate_feh = False
