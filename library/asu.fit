@@ -1,0 +1,940 @@
+SIMPLE  =                    T / Standard FITS Format                           BITPIX  =                    8 / Character data                                 NAXIS   =                    0 / No Image --- just extension(s)                 EXTEND  =                    T / There are standard extensions                  ORIGIN  = 'xml2fits_v1.95'     / Converted from XML-Astrores to FITS                                     e-mail: question@simbad.u-strasbg.fr                   COMMENT  ARG='-rm'                                                              LONGSTRN= 'OGIP 1.0'           / Long string convention (&/CONTINUE) may be usedDATE    = '2024-04-30'         / Written on 2024-04-30:19:44:53 (GMT)                                        by: www-data@vizier.astro.unistra.fr                        **********************************************************                          EXCERPT from catalogues stored in VizieR (CDS)                                             with the following conditions:                                   **********************************************************                                                                                                      VizieR Astronomical Server vizier.cds.unistra.fr                                Date: 2024-04-30T19:44:53 [V7.33.3]                                             Explanations and Statistics of UCDs: See LINK below                             In case of problem, please report to: cds-question@unistra.fr                                                                                          INFO    = 'service_protocol=ASU' / IVOID of the protocol through which the data                                  was retrieved #                                INFO    = 'request_date=2024-04-30T19:44:53' / Query execution date #           INFO    = 'request=https://vizier.cds.unistra.fr/viz-bin/asu-binfits?-oc.form=&'CONTINUE  'dec&-out.max=200&#out.form=FITS (binary) Table&-out.all=2&-order=I&&'CONTINUE  '-c.eq=J2000&-c.r=  2&-c.u=arcmin&-c.geom=r&-out.src=J/ApJ/804/64/st&'CONTINUE  'ars&-source=J/ApJ/804/64/stars&-out=ori&-out=Name&-out=CNS3&-out=RA&'CONTINUE  'J2000&-out=DEJ2000&-out=Fbol&-out=e_Fbol&-out=Teff&-out=e_Teff&-out&'CONTINUE  '=R&-out=e_R&-out=M&-out=e_M&-out=[Fe/H]&-out=e_[Fe/H]&-out=SpT&-out&'CONTINUE  '=Bmag&-out=e_Bmag&-out=Vmag&-out=e_Vmag&-out=Rmag&-out=e_Rmag&-out=&'CONTINUE  'Imag&-out=e_Imag&-out=gmag&-out=e_gmag&-out=rmag&-out=e_rmag&-out=i&'CONTINUE  'mag&-out=e_imag&-out=zmag&-out=e_zmag&-out=Jmag&-out=e_Jmag&-out=Hm&'CONTINUE  'ag&-out=e_Hmag&-out=Ksmag&-out=e_Ksmag&-out=Gmag&-out=e_Gmag&-out=B&'CONTINUE  'Pmag&-out=e_BPmag&-out=RPmag&-out=e_RPmag&-out=Fbol0&-out=e_Fbol0&-&'CONTINUE  'out=Teff0&-out=e_Teff0&-out=R0&-out=e_R0&-out=M0&-out=e_M0&-out=Age&'CONTINUE  '0&-out=e_Age0&-out=chi2&-out=SimbadName&' / Full request URL (POST) #INFO    = 'contact=cds-question@unistra.fr' / Email or URL to contact publisher                                  #                                              INFO    = 'server_software=7.33.3' / Software version #                         INFO    = 'publisher=CDS'      / Data centre that produced the VOTable #        INFO    = 'ivoid=ivo://cds.vizier/j/apj/804/64' / IVOID of underlying data                                       collection #                                                                                                                   INFO    = 'creator=Mann A.W.'  / First author or institution #                                                                                                  INFO    = 'cites=bibcode:2015ApJ...804...64M' / Article or Data origin sources #                                                                                INFO    = 'editor=Astrophysical Journal (AAS)' / Editor name (article) #                                                                                        INFO    = 'original_date=2015' / Year of the article publication #                                                                                              INFO    = 'reference_url=https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/804/6&'CONTINUE  '4       '           / Dataset landing page #                                                                                                         INFO    = 'citation=doi:10.26093/cds/vizier.18040064' / Dataset identifier that                                  can be used for citation #                                                                                                     INFO    = 'publication_date=2018-03-01' / Date of first publication in the data                                  centre #                                                                                                                       INFO    = 'rights_uri=https://cds.unistra.fr/vizier-org/licences_vizier.html' /                                  Licence URI #                                                                                                                                                                                                  END                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             XTENSION= 'BINTABLE'           / Binary Table Extension                         BITPIX  =                    8 / binary data                                    NAXIS   =                    2 / Simple 2-D matrix                              NAXIS1  =                  266 / Number of bytes per record                     NAXIS2  =                  183 / Number of records                              PCOUNT  =                    0 / Get rid of random parameters                   GCOUNT  =                    1 / Only one group (isn't it obvious?)             TFIELDS =                   57 / Number of data fields (columns)                CDS-CAT = 'J/ApJ/804/64'       / Catalogue designation in CDS nomenclature               Empirical and model parameters of 183 M dwarfs (Mann+, 2015)           EXTNAME = 'J_ApJ_804_64_stars' / Identification of the table                    CDS-NAME= 'J/ApJ/804/64/stars' / Table name in METAtab                                   Data on all 183 stars (tables 5-7 of the paper)                        UCD__1  = 'meta.record'        / ................................byte#0         TDISP1  = 'I8      '           / Display Fortran Format                         TFORM1  = 'J       '           / 32-bit integer                                 TTYPE1  = 'recno   '           / Record number assigned by the VizieR team.                                      Should Not be used for identification. (link)  UCD__2  = 'meta.ref;pos.frame' / ................................byte#4         TDISP2  = 'I3      '           / Display Fortran Format                         TFORM2  = 'I       '           / 16-bit (short) integer                         TTYPE2  = 'ori     '           / details from the three catalogs used           TNULL2  =               -32768 / NULL definition                                UCD__3  = 'meta.id;meta.main'  / ................................byte#6         TDISP3  = 'A16     '           / Display Fortran Format                         TFORM3  = '16A     '           / Ascii string                                   TTYPE3  = 'Name    '           / LG11, CONCH-Shell, or LSPM Name (1) (link)     UCD__4  = 'meta.id '           / ................................byte#22        TDISP4  = 'A10     '           / Display Fortran Format                         TFORM4  = '10A     '           / Ascii string                                   TTYPE4  = 'CNS3    '           / ? Gliese or GJ name                            UCD__5  = 'pos.eq.ra;meta.main' / ...............................byte#32        TDISP5  = 'F9.5    '           / Display Fortran Format                         TFORM5  = 'D       '           / 64-bit floating-point (double precision)       TTYPE5  = 'RAJ2000 '           / Right Ascension in decimal degrees (J2000)     TUNIT5  = 'deg     '           / degree                                         UCD__6  = 'pos.eq.dec;meta.main' / ..............................byte#40        TDISP6  = 'F9.5    '           / Display Fortran Format                         TFORM6  = 'D       '           / 64-bit floating-point (double precision)       TTYPE6  = 'DEJ2000 '           / Declination in decimal degrees (J2000)         TUNIT6  = 'deg     '           / degree                                         UCD__7  = 'phot.flux.bol'      / ................................byte#48        TDISP7  = 'F8.5    '           / Display Fortran Format                         TFORM7  = 'D       '           / 64-bit floating-point (double precision)       TTYPE7  = 'Fbol    '           / [0.02/23] Bolometric Flux (10^-8^erg/cm^2^/s)  TUNIT7  = '10pW.m**-2'         / 10 pico(10-12)Watt times metre power-2         UCD__8  = 'stat.error'         / ................................byte#56        TDISP8  = 'F8.5    '           / Display Fortran Format                         TFORM8  = 'E       '           / 32-bit floating-point (simple precision)       TTYPE8  = 'e_Fbol  '           / [0.0002/0.2] Error on Fbol                     TUNIT8  = '10pW.m**-2'         / 10 pico(10-12)Watt times metre power-2         UCD__9  = 'phys.temperature.effective' / ........................byte#60        TDISP9  = 'I4      '           / Display Fortran Format                         TFORM9  = 'I       '           / 16-bit (short) integer                         TTYPE9  = 'Teff    '           / [2700/4131] Stellar effective temperature      TUNIT9  = 'K       '           / Kelvin                                         UCD__10 = 'stat.error;phys.temperature.effective' / .............byte#62        TDISP10 = 'I2      '           / Display Fortran Format                         TFORM10 = 'I       '           / 16-bit (short) integer                         TTYPE10 = 'e_Teff  '           / [60/86] Error on Teff                          TUNIT10 = 'K       '           / Kelvin                                         UCD__11 = 'phys.size.radius'   / ................................byte#64        TDISP11 = 'F7.4    '           / Display Fortran Format                         TFORM11 = 'E       '           / 32-bit floating-point (simple precision)       TTYPE11 = 'R       '           / [0.1/0.7] Stellar Radius                       TUNIT11 = 'solRad  '           / solar radius                                   UCD__12 = 'stat.error'         / ................................byte#68        TDISP12 = 'F7.4    '           / Display Fortran Format                         TFORM12 = 'E       '           / 32-bit floating-point (simple precision)       TTYPE12 = 'e_R     '           / [0.005/0.04] Error on R                        TUNIT12 = 'solRad  '           / solar radius                                   UCD__13 = 'phys.mass'          / ................................byte#72        TDISP13 = 'F7.4    '           / Display Fortran Format                         TFORM13 = 'E       '           / 32-bit floating-point (simple precision)       TTYPE13 = 'M       '           / [0.08/0.75] Stellar Mass                       TUNIT13 = 'solMass '           / solar mass                                     UCD__14 = 'stat.error'         / ................................byte#76        TDISP14 = 'F7.4    '           / Display Fortran Format                         TFORM14 = 'E       '           / 32-bit floating-point (simple precision)       TTYPE14 = 'e_M     '           / [0.008/0.08] Error on M                        TUNIT14 = 'solMass '           / solar mass                                     UCD__15 = 'phys.abund.Z'       / ................................byte#80        TDISP15 = 'F5.2    '           / Display Fortran Format                         TFORM15 = 'E       '           / 32-bit floating-point (simple precision)       TTYPE15 = '__Fe_H_ '           / [-0.61/0.53] Metallicity                       TUNIT15 = 'log(Sun)'           / <?log><?Sun)>                                  UCD__16 = 'stat.error;phys.abund.Fe' / ..........................byte#84        TDISP16 = 'F5.2    '           / Display Fortran Format                         TFORM16 = 'E       '           / 32-bit floating-point (simple precision)       TTYPE16 = 'e__Fe_H_'           / [0.03/0.08] Error on [Fe/H]                    TUNIT16 = 'log(Sun)'           / <?log><?Sun)>                                  UCD__17 = 'src.spType'         / ................................byte#88        TDISP17 = 'A6      '           / Display Fortran Format                         TFORM17 = '6A      '           / Ascii string                                   TTYPE17 = 'SpT     '           / MK spectral Type                               UCD__18 = 'phot.mag;em.opt.B'  / ................................byte#94        TDISP18 = 'F6.3    '           / Display Fortran Format                         TFORM18 = 'E       '           / 32-bit floating-point (simple precision)       TTYPE18 = 'Bmag    '           / [7.4/18.7] Synthetic Johnson B magnitude       TUNIT18 = 'mag     '           / magnitude                                      UCD__19 = 'stat.error;phot.mag;em.opt.B' / ......................byte#98        TDISP19 = 'F6.3    '           / Display Fortran Format                         TFORM19 = 'E       '           / 32-bit floating-point (simple precision)       TTYPE19 = 'e_Bmag  '           / [0.02/0.04] Error on Bmag                      TUNIT19 = 'mag     '           / magnitude                                      UCD__20 = 'phot.mag;em.opt.V'  / ................................byte#102       TDISP20 = 'F6.3    '           / Display Fortran Format                         TFORM20 = 'E       '           / 32-bit floating-point (simple precision)       TTYPE20 = 'Vmag    '           / Synthetic Johnson V magnitude                  TUNIT20 = 'mag     '           / magnitude                                      UCD__21 = 'stat.error;phot.mag;em.opt.V' / ......................byte#106       TDISP21 = 'F6.3    '           / Display Fortran Format                         TFORM21 = 'E       '           / 32-bit floating-point (simple precision)       TTYPE21 = 'e_Vmag  '           / Error on Vmag                                  TUNIT21 = 'mag     '           / magnitude                                      UCD__22 = 'phot.mag;em.opt.R'  / ................................byte#110       TDISP22 = 'F6.3    '           / Display Fortran Format                         TFORM22 = 'E       '           / 32-bit floating-point (simple precision)       TTYPE22 = 'Rmag    '           / Synthetic Cousins R magnitude                  TUNIT22 = 'mag     '           / magnitude                                      UCD__23 = 'stat.error;phot.mag;em.opt.R' / ......................byte#114       TDISP23 = 'F6.3    '           / Display Fortran Format                         TFORM23 = 'E       '           / 32-bit floating-point (simple precision)       TTYPE23 = 'e_Rmag  '           / Error on Rmag                                  TUNIT23 = 'mag     '           / magnitude                                      UCD__24 = 'phot.mag;em.opt.I'  / ................................byte#118       TDISP24 = 'F6.3    '           / Display Fortran Format                         TFORM24 = 'E       '           / 32-bit floating-point (simple precision)       TTYPE24 = 'Imag    '           / Synthetic Cousins I magnitude                  TUNIT24 = 'mag     '           / magnitude                                      UCD__25 = 'stat.error;phot.mag;em.opt.I' / ......................byte#122       TDISP25 = 'F6.3    '           / Display Fortran Format                         TFORM25 = 'E       '           / 32-bit floating-point (simple precision)       TTYPE25 = 'e_Imag  '           / Error on Imag                                  TUNIT25 = 'mag     '           / magnitude                                      UCD__26 = 'phot.mag;em.opt.B'  / ................................byte#126       TDISP26 = 'F6.3    '           / Display Fortran Format                         TFORM26 = 'E       '           / 32-bit floating-point (simple precision)       TTYPE26 = 'gmag    '           / Synthetic SDSS g magnitude                     TUNIT26 = 'mag     '           / magnitude                                      UCD__27 = 'stat.error;phot.mag;em.opt.B' / ......................byte#130       TDISP27 = 'F6.3    '           / Display Fortran Format                         TFORM27 = 'E       '           / 32-bit floating-point (simple precision)       TTYPE27 = 'e_gmag  '           / Error on gmag                                  TUNIT27 = 'mag     '           / magnitude                                      UCD__28 = 'phot.mag;em.opt.R'  / ................................byte#134       TDISP28 = 'F6.3    '           / Display Fortran Format                         TFORM28 = 'E       '           / 32-bit floating-point (simple precision)       TTYPE28 = 'rmag_lc '           / Synthetic SDSS r magnitude                     TUNIT28 = 'mag     '           / magnitude                                      UCD__29 = 'stat.error;phot.mag;em.opt.R' / ......................byte#138       TDISP29 = 'F6.3    '           / Display Fortran Format                         TFORM29 = 'E       '           / 32-bit floating-point (simple precision)       TTYPE29 = 'e_rmag  '           / Error on rmag                                  TUNIT29 = 'mag     '           / magnitude                                      UCD__30 = 'phot.mag;em.opt.I'  / ................................byte#142       TDISP30 = 'F6.3    '           / Display Fortran Format                         TFORM30 = 'E       '           / 32-bit floating-point (simple precision)       TTYPE30 = 'imag    '           / Synthetic SDSS i magnitude                     TUNIT30 = 'mag     '           / magnitude                                      UCD__31 = 'stat.error;phot.mag;em.opt.I' / ......................byte#146       TDISP31 = 'F6.3    '           / Display Fortran Format                         TFORM31 = 'E       '           / 32-bit floating-point (simple precision)       TTYPE31 = 'e_imag  '           / Error on imag                                  TUNIT31 = 'mag     '           / magnitude                                      UCD__32 = 'phot.mag;em.opt.I'  / ................................byte#150       TDISP32 = 'F6.3    '           / Display Fortran Format                         TFORM32 = 'E       '           / 32-bit floating-point (simple precision)       TTYPE32 = 'zmag    '           / Synthetic SDSS z magnitude                     TUNIT32 = 'mag     '           / magnitude                                      UCD__33 = 'stat.error;phot.mag;em.opt.I' / ......................byte#154       TDISP33 = 'F6.3    '           / Display Fortran Format                         TFORM33 = 'E       '           / 32-bit floating-point (simple precision)       TTYPE33 = 'e_zmag  '           / Error on zmag                                  TUNIT33 = 'mag     '           / magnitude                                      UCD__34 = 'phot.mag;em.IR.J'   / ................................byte#158       TDISP34 = 'F6.3    '           / Display Fortran Format                         TFORM34 = 'E       '           / 32-bit floating-point (simple precision)       TTYPE34 = 'Jmag    '           / Synthetic 2MASS J magnitude                    TUNIT34 = 'mag     '           / magnitude                                      UCD__35 = 'stat.error;phot.mag;em.IR.J' / .......................byte#162       TDISP35 = 'F6.3    '           / Display Fortran Format                         TFORM35 = 'E       '           / 32-bit floating-point (simple precision)       TTYPE35 = 'e_Jmag  '           / Error on Jmag                                  TUNIT35 = 'mag     '           / magnitude                                      UCD__36 = 'phot.mag;em.IR.H'   / ................................byte#166       TDISP36 = 'F6.3    '           / Display Fortran Format                         TFORM36 = 'E       '           / 32-bit floating-point (simple precision)       TTYPE36 = 'Hmag    '           / Synthetic 2MASS H magnitude                    TUNIT36 = 'mag     '           / magnitude                                      UCD__37 = 'stat.error;phot.mag;em.IR.H' / .......................byte#170       TDISP37 = 'F6.3    '           / Display Fortran Format                         TFORM37 = 'E       '           / 32-bit floating-point (simple precision)       TTYPE37 = 'e_Hmag  '           / Error on Hmag                                  TUNIT37 = 'mag     '           / magnitude                                      UCD__38 = 'phot.mag;em.IR.K'   / ................................byte#174       TDISP38 = 'F6.3    '           / Display Fortran Format                         TFORM38 = 'E       '           / 32-bit floating-point (simple precision)       TTYPE38 = 'Ksmag   '           / Synthetic 2MASS Ks magnitude                   TUNIT38 = 'mag     '           / magnitude                                      UCD__39 = 'stat.error;phot.mag;em.IR.K' / .......................byte#178       TDISP39 = 'F6.3    '           / Display Fortran Format                         TFORM39 = 'E       '           / 32-bit floating-point (simple precision)       TTYPE39 = 'e_Ksmag '           / Error on Ksmag                                 TUNIT39 = 'mag     '           / magnitude                                      UCD__40 = 'phot.mag;em.opt.V'  / ................................byte#182       TDISP40 = 'F6.3    '           / Display Fortran Format                         TFORM40 = 'E       '           / 32-bit floating-point (simple precision)       TTYPE40 = 'Gmag    '           / Synthetic Gaia G magnitude                     TUNIT40 = 'mag     '           / magnitude                                      UCD__41 = 'stat.error;phot.mag;em.opt.B' / ......................byte#186       TDISP41 = 'F6.3    '           / Display Fortran Format                         TFORM41 = 'E       '           / 32-bit floating-point (simple precision)       TTYPE41 = 'e_Gmag  '           / Error on Gaia                                  TUNIT41 = 'mag     '           / magnitude                                      UCD__42 = 'phot.mag;em.opt.V'  / ................................byte#190       TDISP42 = 'F6.3    '           / Display Fortran Format                         TFORM42 = 'E       '           / 32-bit floating-point (simple precision)       TTYPE42 = 'BPmag   '           / Synthetic Gaia Gbp magnitude                   TUNIT42 = 'mag     '           / magnitude                                      UCD__43 = 'stat.error;phot.mag' / ...............................byte#194       TDISP43 = 'F6.3    '           / Display Fortran Format                         TFORM43 = 'E       '           / 32-bit floating-point (simple precision)       TTYPE43 = 'e_BPmag '           / Error on BP                                    TUNIT43 = 'mag     '           / magnitude                                      UCD__44 = 'phot.mag;em.opt.I'  / ................................byte#198       TDISP44 = 'F6.3    '           / Display Fortran Format                         TFORM44 = 'E       '           / 32-bit floating-point (simple precision)       TTYPE44 = 'RPmag   '           / Synthetic Gaia Grp magnitude                   TUNIT44 = 'mag     '           / magnitude                                      UCD__45 = 'stat.error;phot.mag' / ...............................byte#202       TDISP45 = 'F6.3    '           / Display Fortran Format                         TFORM45 = 'E       '           / 32-bit floating-point (simple precision)       TTYPE45 = 'e_RPmag '           / Error on RP                                    TUNIT45 = 'mag     '           / magnitude                                      UCD__46 = 'phot.flux.bol;meta.modelled' / .......................byte#206       TDISP46 = 'F8.5    '           / Display Fortran Format                         TFORM46 = 'D       '           / 64-bit floating-point (double precision)       TTYPE46 = 'Fbol0   '           / [0.02/23]? Model inferred Bolometric Flux      TUNIT46 = '10pW.m**-2'         / 10 pico(10-12)Watt times metre power-2         UCD__47 = 'stat.error'         / ................................byte#214       TDISP47 = 'F8.5    '           / Display Fortran Format                         TFORM47 = 'E       '           / 32-bit floating-point (simple precision)       TTYPE47 = 'e_Fbol0 '           / [0.0004/0.3]? Error on ModFbol                 TUNIT47 = '10pW.m**-2'         / 10 pico(10-12)Watt times metre power-2         UCD__48 = 'phys.temperature.effective;meta.modelled' / ..........byte#218       TDISP48 = 'I4      '           / Display Fortran Format                         TFORM48 = 'I       '           / 16-bit (short) integer                         TTYPE48 = 'Teff0   '           / [2808/4197]? Model inferred effective                                           temperature                                    TUNIT48 = 'K       '           / Kelvin                                         TNULL48 =               -32768 / NULL definition                                UCD__49 = 'stat.error'         / ................................byte#220       TDISP49 = 'I2      '           / Display Fortran Format                         TFORM49 = 'I       '           / 16-bit (short) integer                         TTYPE49 = 'e_Teff0 '           / [7/72]? Error on ModTeff                       TUNIT49 = 'K       '           / Kelvin                                         TNULL49 =               -32768 / NULL definition                                UCD__50 = 'phys.size.radius;meta.modelled' / ....................byte#222       TDISP50 = 'F7.4    '           / Display Fortran Format                         TFORM50 = 'E       '           / 32-bit floating-point (simple precision)       TTYPE50 = 'R0      '           / [0.13/0.661]? Model inferred Stellar Radius    TUNIT50 = 'solRad  '           / solar radius                                   UCD__51 = 'stat.error'         / ................................byte#226       TDISP51 = 'F7.4    '           / Display Fortran Format                         TFORM51 = 'E       '           / 32-bit floating-point (simple precision)       TTYPE51 = 'e_R0    '           / [0.002/0.03]? Error on ModR                    TUNIT51 = 'solRad  '           / solar radius                                   UCD__52 = 'phys.mass'          / ................................byte#230       TDISP52 = 'F7.4    '           / Display Fortran Format                         TFORM52 = 'E       '           / 32-bit floating-point (simple precision)       TTYPE52 = 'M0      '           / [0.1/0.72]? Model inferred Stellar Mass        TUNIT52 = 'solMass '           / solar mass                                     UCD__53 = 'stat.error'         / ................................byte#234       TDISP53 = 'F7.4    '           / Display Fortran Format                         TFORM53 = 'E       '           / 32-bit floating-point (simple precision)       TTYPE53 = 'e_M0    '           / [0.002/0.03]? Error on ModM                    TUNIT53 = 'solMass '           / solar mass                                     UCD__54 = 'time.age;meta.modelled' / ............................byte#238       TDISP54 = 'F5.2    '           / Display Fortran Format                         TFORM54 = 'E       '           / 32-bit floating-point (simple precision)       TTYPE54 = 'Age0    '           / [9.33/9.55]? Model inferred Age                TUNIT54 = 'log(yr) '           / <?log><?yr)>                                   UCD__55 = 'stat.error'         / ................................byte#242       TDISP55 = 'F5.2    '           / Display Fortran Format                         TFORM55 = 'E       '           / 32-bit floating-point (simple precision)       TTYPE55 = 'e_Age0  '           / [0.48/0.63]? Error on ModAge                   TUNIT55 = 'log(yr) '           / <?log><?yr)>                                   UCD__56 = 'stat.fit.chi2'      / ................................byte#246       TDISP56 = 'F6.3    '           / Display Fortran Format                         TFORM56 = 'E       '           / 32-bit floating-point (simple precision)       TTYPE56 = 'chi2    '           / [0/29]? {chi}^2^ for model comparison          UCD__57 = 'meta.id '           / ................................byte#250       TDISP57 = 'A16     '           / Display Fortran Format                         TFORM57 = '16A     '           / Ascii string                                   TTYPE57 = 'SimbadName'         / Simbad column added by the CDS                 END                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  PM I00115+5908            @k„}È9@Mí|·õê?•é!ñRΩ<:nç0 <>]Ã;«‚Ç=ÃÃÕ<#◊
+æä=q=£◊
+M6.1  AäÃÕ=#◊
+Ay∆®=#◊
+A^–Â<Dõ¶A<·H<£◊
+AÇôö<ƒõ¶Ao?}<49XAK?}<T˝ÙA9Å<e`BAOﬂ<ìtºAz·<ãCñA33<£◊
+A];d<e`BAÄ&È<e`BAAhs<e`B?•é!ñRΩ<:∑Ä4i  >∏;Dõ¶=€"—<tºA\)?
+=?˜ÆPM J00115+5908       PM I00118+2259            @ƒõ•„S˜@6¸«éüj?¿∫«À)_:ﬁ“â >>†ƒú<u¬è>ñá+<Ìëh>∏=£◊
+M3.5  Ai
+=<¨1AOS¯<ÉoA<z·<T˝ÙA$J<£◊
+A]X<¨1AE ¡<49XA0(ˆ<T˝ÙA$5?<T˝ÙA∆®<ãCñAE¢<ãCñA Aâ<£◊
+A@bN<e`BAVnò<e`BA(j<e`B?¿∫«À)_;0Ú|0 #>û5?<Dõ¶>üæw<ÉoA·H?ôö>I∫^LSPM J0011+2259      PM I00183+4401  Gl 15A    @aµ«Õâã@FÍt}Ä^@≠Vì=8QÏ <>∆ß<T˝Ù>À∆®=#◊
+æôôö=£◊
+M1.4  Aóç<£◊
+AÁm<Éo@„∂F<Dõ¶@ø∂F<£◊
+Aëh<£◊
+@(ˆ<49X@‘j<Dõ¶@ƒºj<T˝Ù@ú¨<ãCñ@â≤-<ãCñ@Å?}<£◊
+@ºj<e`BAÉ<e`B@«33<e`B@≠Vì=è\)*  >√ïÅ;Â`B>œﬂ;<tºAÆ?\)>∞£◊Gl 15A               PM I00184+4401  Gl 15B    @n`ÄsWÊ@F‡äÔ≤?ÏÉnóçP<#◊
+í <>DÍK<YK>"–Â<Éoæôôö=£◊
+M4.1  AMp§<¨1A0¨<ÉoAëh<Dõ¶AJ<£◊
+A?„T<¨1A%;d<49XAìu<T˝ÙA$›<T˝Ù@◊◊
+<ãCñ@∆¿É<ãCñ@æ{<£◊
+A?}<e`BA7Oﬂ<e`BAüæ<e`B?ÏÉnóçP<u¬è≤  >?|Ó;£◊
+>-V;ƒõ¶A
+=?
+=?1&ÈGl 15B               PM I00219-3124  GJ 1009   @Ôüæv»¿?gÚ<»ﬁ*?⁄∏QÎÖ∏;e`B <?+<Â`B?V=aGÆ>ä=q=£◊
+M2.1  AIÁm<¨1A2ÃÕ<ÉoA"E¢<T˝ÙAè\<£◊
+A?K«<¨1A);d<49XAS¯<T˝ÙAìu<T˝Ù@ˆ–Â<ãCñ@‡ÃÕ<ãCñ@ÿì<£◊
+A(  <e`BA9&È<e`BAá+<e`B?⁄∏QÎÖ∏;™d√I -? ¡<õ•„?	∫^<õ•„A\)?∏?“∞!GJ 1009              PM I01056+2829  GJ 1029   @0h$≥=Øç@<~˜<?±Œ_o“:nç• =>E°À<49X>çP<u¬è>\)=£◊
+M5.3  AÖ+<ºjAm∏<ìtºAT¿É<T˝ÙA5∆®<£◊
+A{◊
+<ºjAbr∞<49XAD(ˆ<T˝ÙA2nò<T˝ÙA°À<ãCñA¨<ãCñA	hs<£◊
+AT˘€<e`BAtff<e`BA9Ám<e`B?±Œ_o“:∑Ä4 !>6E¢;Â`B>¨<tºAGÆ?∏R@û¿ÉGJ 1029              PM I01076+2257E Gl 53.1B  @0È&A≥(@6Ù≠ˇÇ+æ?±GÆz·H:ùIR† <>ù≤-<T˝Ù>çOﬂ<Â`B>Ä  <ı¬èM4.0  Azb<¨1A`›/<ÉoALQÏ<Dõ¶A1Ö<£◊
+AnbN<¨1AW<49XA>v…<T˝ÙA0õ¶<T˝ÙAõ¶<ãCñAı√<ãCñA
+óç<£◊
+AN˝Ù<e`BAg∫^<e`BA5Ôû<e`B?±GÆz·H:˘	lÔ >ïÅ<o>íÒ™<Dõ¶A∏R?(ˆ@OÔûGl 53.1B             PM I01125-1659  Gl 54.1   @2 £/Dë)¿0ˇ¬ejΩ„?‡®¡T…Ö<YK <>,1<Cñ>∏<T˝ÙæÖ∏=£◊
+M4.9  A^1<¨1AAOﬂ<ÉoA*óç<Dõ¶A€#<£◊
+APV<¨1A6bN<49XA\)<T˝ÙAüæ<T˝Ù@È∏<ãCñ@ÿ1<ãCñ@Œ¨<£◊
+A,z·<e`BAHnò<e`BAz·<e`B?‡¨1&Èy<Dõ¶< >"–Â;ƒõ¶>Cñ;£◊
+Aff?∏R@4I∫PM J01125-1659     	  PM I01186-0052S Gl 56.3 B @3™·GÆzøÎ˙mÔ«£ó?÷Á’fœAÚ;â†'_ @?üæ<‘˝Ù?%∏=Éo<#◊
+=£◊
+K7.7  AA
+=<¨1A+/<ÉoAÃÕ<T˝ÙAo<£◊
+A7GÆ<¨1A!¬è<49XA(ˆ<T˝ÙAè\<T˝ÙA É<ãCñ@ÏQÏ<ãCñ@‰˝Ù<£◊
+A$V<e`BA17L<e`BA<e`B?÷Á’fœAÚ;‘˝Ù¨ 3?9X<u¬è?j<ìtºAz·?Æ@%Û∂Gl 56.3 B          
+  PM I01324-2154  GJ 3098   @7¯vû¬Õ¿5ÁÆz·G?’w1è≈Å;ê-‡9 <>ÎÖ<¥9X>Ìëh=<jæLÃÕ=£◊
+M1.3  AJ~˙<£◊
+A333<ÉoA#∏<Dõ¶AÂ`<£◊
+A@(ˆ<£◊
+A)Ö<49XAGÆ<T˝ÙA\)<T˝Ù@˛<ãCñ@Î•„<ãCñ@ÂOﬂ<£◊
+A)x’<e`BA9ïÅ<e`BA¨<e`B?’w1è≈Å;‘˝Ù| #>·GÆ<Éo>Ôù≤<ãCñAè\?ôö@5?GJ 3098              PM I01402+3147  GJ 3105   @9¨ö˛ß@? ∂Æ}Vl?≤….3:^“â≈ ?>è\)<Éo>Ñì<‘˝Ù=u¬è=£◊
+M4.1  Ax9X<ƒõ¶A_Cñ<ãCñAK•„<T˝ÙA0›/<£◊
+Ak33<ºjAVE¢<49XA= ¡<T˝ÙA/∂F<T˝ÙAá<ãCñA<ãCñAºj<£◊
+AN$›<e`BAf^5<e`BA57L<e`B?≤ WßÜ¬':™d√ $>à¥9<T˝Ù>Ñì<ÉoAÖ?ôö?‡ÉGJ 3105              PM I01432+2750  GJ 3108   @9—-å*D@;◊îÖ]¢r?·∑X‚e;ßÁ <? Aâ=o?'+=Ö∏>Ä  =£◊
+M0.5  A=?}<£◊
+A&nò<ÉoAëh<T˝ÙAM”<£◊
+A3o<£◊
+AÈy<49XAŒŸ<Dõ¶AïÅ<T˝Ù@Ô∆®<ãCñ@Ÿôö<ãCñ@‘ì<£◊
+Aƒú<e`BA,¨<e`BAïÅ<e`B?·∑X‚e;Ô4◊_ :?çP<ìtº? ƒú<õ•„A\)?   @J·HGJ 3108              PM I01433+0419  Gl 70     @9’ä2ÙI@I{t§“?·Y≥–|Ñ∂;∑Ä4Ç <>”˜œ<ãCñ>ÕOﬂ=#◊
+æ∏=£◊
+M2.5  AG/<¨1A.Â`<ÉoA„T<T˝ÙA	†<£◊
+A<1<¨1A%dZ<49XAJ<Dõ¶A33<T˝Ù@Ïìu<ãCñ@Ÿôö<ãCñ@—/<£◊
+A#\)<e`BA5ôö<e`BAX<e`B?·Y≥–|Ñ∂<	†'˙ >≈∏<49X>—hs<T˝ÙA\)?
+=@⁄^5Gl 70                PM I01510-0607  GJ 3119   @;ƒR?gÙ€¿x“^›(?≤s-ı–˙:VıE√ =>1A ;ˇó$>+<T˝Ùºı¬è=£◊
+M5.1  AÇhs<ÌëhAg†<£◊
+AO∆®<T˝ÙA1∆®<£◊
+Avè\<Â`BA\á+<Dõ¶A?©¸<T˝ÙA/ŒŸ<T˝ÙAá+<ãCñA≤-<ãCñAŸ<£◊
+AP–Â<e`BAnóç<e`BA6M”<e`B?≤u%F
+¶L:™d√ >'Ôû;Éo>Oﬂ;ÉoAôö?
+=@G|ÓGJ 3119              PM I01528-2226  Gl 79     @<4k&øái¿6oR¸&V´@ Ôù≤-V<£◊
+< <?∏R<¨1?'lã=Ö∏>\)=£◊
+M0.2  A%GÆ<£◊
+A›/<Éo@ˇ;d<Dõ¶@‡z·<£◊
+A&È<£◊
+Aá<49X@ÛçP<T˝Ù@Ê˘€<T˝Ù@¡¬è<ãCñ@≠GÆ<ãCñ@¶v…<£◊
+A–Â<e`BAÂ`<e`B@Á
+=<e`B@ Ôù≤-V<ı¬èì '?ŒŸ<Dõ¶?!%<u¬èA◊
+?   @yôöGl 79                PM I02002+1303  Gl 83.1   @>‘A5Tu@*öÄIfz?€\(ı¬è\;ÿD– <>?|Ó<#◊
+>tº<e`Bæ#◊
+=£◊
+M4.9  Aa?}<¨1ADè\<ÉoA-∂F<Dõ¶Aá<£◊
+AS•„<¨1A9Å<49XAè\<T˝ÙA◊
+<T˝Ù@ÔÁm<ãCñ@ﬁ^5<ãCñ@÷<£◊
+A/©¸<e`BAKïÅ<e`BA≤-<e`B?€\(ı¬è\< ê.] >2-;Â`B>•„<tºAp§?∏R@b¨Gl 83.1              PM I02123+0334  Gl 87     @@ã9¿ÎÌ˙@õf˘3]$?Ì2a|⁄Q;Ú{≥6 >>‚–Â<ãCñ>·GÆ=49Xæ∏QÏ=£◊
+M1.5  A7ŒŸ<£◊
+A ˝Ù<ÉoA\)<Dõ¶@˛5?<£◊
+A-ëh<£◊
+A∂F<49XA	â7<T˝ÙAp§<T˝Ù@€tº<ãCñ@…˚Á<ãCñ@√˜œ<£◊
+AçP<e`BA'`B<e`BA›/<e`B?Ì/üæv…<Dõ¶â #>◊çP<49X>Â`B<Dõ¶A
+=?ÎÖ@^ßGl 87                PM I02129+0000W GJ 3142   @@ù;:h?s]9ñ˙Ç?ª"–Â`Aâ:∑Ä4π <>ç“Ú<e`B>ÄÉ<ÃÃÕ=∏QÏ=£◊
+M4.1  AsÖ<¥9XAXè\<ãCñACCñ<T˝ÙA(nò<£◊
+Af·H<¥9XAN ≈<49XA5Cñ<T˝ÙA(  <T˝ÙA›/<ãCñA“Ú<ãCñA£◊<£◊
+AF(ˆ<e`BA_|Ó<e`BA-%<e`B?ª"–Â`Aâ;o˘ !>à1'<49X>Éo<T˝ÙAff?ôö?Ë¥9GJ 3142              PM I02164+1335  GJ 3146   @AÏÚ˘á@+,wökP∞?ß4.€µù‹:é… <>,=<+=“Ò™<#◊
+ºı¬è=£◊
+M6.1  AçÌë<ÃÃÕA| ≈<ìtºA`1<T˝ÙA=dZ<£◊
+AÖﬂ;<ƒõ¶Aq&È<49XAL˘€<T˝ÙA8Ò™<T˝ÙA∫^<ãCñAV<ãCñAŒŸ<£◊
+A]„T<e`BAÅÒ™<e`BAAçP<e`B?ß4.€µù‹:q,(S 0>
+=q;ƒõ¶=ﬂ;d;ƒõ¶Aè\?z·@á+GJ 3146              PM I02171+3526  GJ 3147   @A%XdE#ˆ@A∏ûÏø±[?•Ckèõ:%&ñ@ <>Œ;€ã¨=Álã<49X>.{=£◊
+M5.8  Açôö=#◊
+A}ôö=#◊
+AcGÆ<T˝ÙAA•„<£◊
+AÑ7L<ÃÃÕAsGÆ=#◊
+AQ<T˝ÙA<˘€<e`BAïÅ<ãCñA°À<ãCñA¨<£◊
+Aa\)<e`BAÅr∞<e`BAEÅ<e`B?•Ckèõ:Å¬„g >z·;Dõ¶=Ôù≤;oA=q?(ˆ?pbNGJ 3147              PM I02190+2352  GJ 3150   @Aa>’'Â!@7·≈ÇU∞5?´œ‘ø	ï´:\3rê <>ã∆®<u¬è>p£◊<ºjΩè\)=£◊
+M4.4  A~Ò™<ºjAb1<ãCñALı√<T˝ÙA3á<£◊
+Ar1'<ºjAW<49XA?â7<T˝ÙA3S¯<T˝ÙAƒú<ãCñAÅ<ãCñAV<£◊
+APá+<e`BAi∏<e`BA7æw<e`B?´Õ5®Xy>:ùIR !>ÄÉ<Dõ¶>u¬è<u¬èAÎÖ?∏R@⁄5?GJ 3150              PM I02222+4752  Gl 96     @A«Õ›n¿@G§~œÈ∑?˜◊
+=p£◊<Éo… >?X<¨1?/=y€#>\)=£◊
+M0.7  A-ëh<¨1Aõ¶<ÉoA"—<T˝Ù@Ì©¸<£◊
+A#"—<¨1AÂ`<49XA ìu<T˝Ù@ÛçP<T˝Ù@ÃãD<ãCñ@∑ù≤<ãCñ@≤<£◊
+AJ<e`BA‘˛<e`B@Ùz·<e`B?˜◊
+=p£◊<ºj4 &?Â`<Dõ¶?ôö<T˝ÙAÆ?
+=q@≠/Gl 96                PM I02336+2455  Gl 102    @C3‘k&øá@8Ì[[’?∆Æ}VlÙ;o >>PÂ`<Dõ¶>2-<ãCñ    =£◊
+M4.4  Alß<¥9XAPºj<ãCñA;?}<T˝ÙA {<£◊
+A_Û∂<ºjAFì<49XA-o<T˝ÙA|Ó<T˝ÙA„T<ãCñ@¸Â`<ãCñ@ÛdZ<£◊
+A>  <e`BAWﬂ;<e`BA$∞!<e`B?∆Æ}VlÙ;>Ìä $>M“Ú<tº>:^5<#◊
+A∏R?
+==∂E¢Gl 102               PM I02358+2013  Gl 104    @C|må?@48K]ÃcÒ?‰îFsÅ◊‹;∫«÷ >?o<¥9X?J=PÂ`=ı¬è=£◊
+M2.1  ABz·<£◊
+A*z·<ÉoAb<T˝ÙAóç<£◊
+A7•„<¨1A Ò™<49XACñ<T˝ÙA¨<e`B@ÁŒŸ<ãCñ@“»¥<ãCñ@ÀS¯<£◊
+AÛ∂<e`BA1V<e`BA
+á+<e`B?‰îFsÅ◊‹<är? '>ı¬è<u¬è?–Â<u¬èA\)?\)@¢$›Gl 104               PM I02362+0652  Gl 105 B  @Cà#c≤Vˇ@|ó{û?‡ìtºj;Œp;‘ <>éV<#◊
+>{Ám<ÃÃÕΩı¬è<ı¬èM4.0  AUá<¨1A:∏R<ÉoA'o<Dõ¶A\)<£◊
+AHºj<¨1A1∏<49XAÁm<T˝ÙA›/<T˝Ù@ÎdZ<ãCñ@ŸÛ∂<ãCñ@—˚Á<£◊
+A*M”<e`BAAﬂ;<e`BA∂F<e`B?‡ìtºj<IR> >Ö∏;o>Çè\;£◊
+A¬è?(ˆ@ø
+=Gl 105 B             PM I02441+4913W           @DÖx‘˝Û∂@Hù®ñgµ?Ò$›/†<ºje <>˛˘€<ãCñ?`B=T˝Ù=u¬è<ı¬èM1.7  A7æw<£◊
+A ¡<ÉoAôö<Dõ¶@˙{<£◊
+A-/<£◊
+Aì<49XA|Ó<T˝Ù@˛¿É<T˝Ù@÷–Â<ãCñ@√\)<ãCñ@ªlã<£◊
+A€#<e`BA&QÏ<e`BA Ÿ<e`B?Ò$›/†=\)à >˙^5;Â`B?`B<oA{?
+=?)x’LSPM J0244+4913W     PM I02442+2531  Gl 109    @DàA5Tu¢@9Ö˛2†f<?Ì˘rGE9<oM <>∫^5<e`B>Øù≤=CñΩÃÃÕ=£◊
+M3.0  ABZ<£◊
+A)ïÅ<ÉoA∂F<Dõ¶AdZ<£◊
+A6Ÿ<¨1A“Ú<49XAÈy<T˝ÙA~˙<T˝Ù@Ÿ∏<ãCñ@∆E¢<ãCñ@æ·H<£◊
+Aá+<e`BA0Aâ<e`BA°À<e`B?ÌVìu<Dõ¶Æ >Ø†<tº>∑K«<49XAÎÖ?z·@õGl 109               PM I02530+1652            @E†xÈˆ©>@0·ú‡uˆ˝?≈/üæv…;>Ì
+ <=Ò©¸;™d√=∑¥¢<tºæû∏R=£◊
+M7.0  Aà=æwAr ≈<¥9XAP›/<T˝ÙA*ff<£◊
+AÄJ=+Agëh<Dõ¶A;K«<T˝ÙA$¨<T˝ÙAãD<ãCñ@¸1'<ãCñ@  <£◊
+AKëh<e`BAy˚Á<u¬èA.<e`Bˇˇˇˇˇˇˇˇˇˇˇˇ    ˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇPM J02530+1652       PM I02534+1724            @E≠Ì|oΩ&@1h¥·º©?√S&¡æ:™d√1 <>¥9X<õ•„>≠V=Cñæ#◊
+=£◊
+M3.3  Af9X<¨1AK†<ÉoA8‘˛<T˝ÙA!˜œ<£◊
+AY∫^<¨1AA+<49XA-Æ<T˝ÙA"Ÿ<T˝ÙAÔû<ãCñA°À<ãCñ@˚lã<£◊
+A=ëh<e`BAR=q<e`BA&E¢<e`B?√S&¡æ:˘	l£ >¶ff<Éo>≠ëh<õ•„Az·?z·@≤$›LSPM J0253+1724      PM I02555+2652  Gl 118.2 C@EÛeËí$@:ﬂR¸&V´?±}ke©®:IŸ”õ <>±©¸<u¬è>û5?<˝Û∂>è\)<ı¬èM3.8  Avß<¨1A];d<ÉoAIù≤<Dõ¶A0<£◊
+AjÃÕ<¨1ASïÅ<49XA<ãD<Dõ¶A/∆®<T˝ÙA¿É<ãCñACñ<ãCñA
+õ¶<£◊
+ALÌë<e`BAd1'<e`BA4v…<e`B?±|⁄QŒ:ùIR >•`B<o>¶ff<Dõ¶A  ?ÎÖ@ÕOﬂGl 118.2 C           PM I03047+6144  GJ 3195   @G,Qó¢H@Nﬁ/≠lµ4?¿Â`Aâ7L:ﬁ“â¨ =>Ÿá<Éo>‘z·=,1Ωı¬è=£◊
+M3.0  A`Ò™<¨1AI%<ÉoA7Ôû<Dõ¶A"<£◊
+AV{<¨1A?ÎÖ<49XA-hs<T˝ÙA#X<T˝ÙAV<ãCñA\)<ãCñAtº<£◊
+A<»¥<e`BAO∆®<e`BA&9X<e`B?¿Â`Aâ7L;#◊
+ >ÃI∫<tº>Ÿôö<49XA\)?ôö@¶v…GJ 3195               PM I03181+3815  Gl 134    @H√˙mÔ«£@C FsÅ◊€?ËÚ{≤˛≈m;ÿD–t =? ƒú<˝Û∂?#ïÅ=Éo?Æ=£◊
+M1.5  A<Aâ<¨1A$ãD<ÉoAá+<Dõ¶A¨<£◊
+A1ôö<¨1A»¥<49XAÈy<T˝ÙAOﬂ<T˝Ù@‚è\<ãCñ@Ã£◊<ãCñ@ƒ˝Ù<£◊
+A%<e`BA*Ìë<e`BAff<e`B?Ëı¬è\(ˆ<Dõ¶” ??¬è<ı¬è?5?<¥9XA(ˆ>˙·H@¥z·Gl 134             !  PM I03361+3118            @K£É'gL@?Où
+gb?∑X‚e,:ê-‡ <>nóç<Dõ¶>Aâ7<õ•„=è\)=£◊
+M4.7  AzAâ<¨1A_ÎÖ<ÉoAJ5?<T˝ÙA-ù≤<£◊
+Am“Ú<¥9XAU◊
+<49XA;&È<T˝ÙA,1'<e`BA†<ãCñA	≤-<ãCñAÂ`<£◊
+AKÔû<e`BAfŸ<e`BA2 ≈<e`B?∑X‚e,:—∑é !>["—<o>Fß<tºA=q?(ˆ@ËAâLSPM J0336+3118    "  PM I03526+1701  GJ 3253   @MEı≠ñ¶@1ë—N;Õ?ºë—N;Õ6:ƒõ¶ <>Q4<ªô>)˚Á<ãCñ<#◊
+=£◊
+M4.7  AyCñ<¨1A\ff<ÉoAF ≈<Dõ¶A)â7<£◊
+Akâ7<¨1AQ˜œ<49XA7
+=<T˝ÙA(QÏ<T˝ÙAlã<ãCñA˜œ<ãCñA ›/<õ•„AH{<e`BAc∆®<e`BA.(ˆ<e`B?ºë—N;Õ6;-‡c >Dõ¶;£◊
+>/†;ƒõ¶A
+=?ôö@à¨GJ 3253            #  LSPM J0355+5214           @Ms≠lµ5 @JÊ1¯†è?ïÅ$›/9àPúk =>åI∫<49X>Çè\<ÃÃÕæ≥33=LÃÕM2.8  AÅïÅ<¨1Ah ≈<ÉoAV∞!<T˝ÙAAôö<£◊
+Avı√<¨1A^(ˆ<49XAL‘˛<T˝ÙAC+<e`BA.ff<ãCñA%lã<ãCñA!ù≤<£◊
+A\5?<e`BAoCñ<e`BAE¬è<e`B?ïÅ$›/9‹3rä >â7L;Â`B>â7L<49XAè\?(ˆ?9XLSPM J0355+5214    $                  Gl 166 C  @OÎó$tSé¿ûâ"S?Î˜ŒŸá+<Dõ¶_ <>åI∫<49X>cS¯<¥9XæW
+==£◊
+M4.7  AMK«<¨1A3Æ<ÉoA&È<Dõ¶Aâ7<£◊
+AA?}<¨1A*5?<49XA¨<T˝ÙAõ¶<T˝Ù@÷ß<ãCñ@«<ãCñ@ø33<£◊
+A!dZ<e`BA:¿É<e`BAì<e`B?Î˜ŒŸá+<õ•„" >wŒŸ;Éo>nóç;£◊
+A
+=?ôöAõOﬂGl 166 C           %  PM I04290+2155  Gl 169    @P–∑™%ÿ@5Ï(ı¬è[@9XbM”=o >?/ﬂ;<ºj?>v…=óçP>«Æ=£◊
+K7.7  A·H<£◊
+A\)<Éo@Ó»¥<T˝Ù@‘1'<£◊
+A∏<£◊
+@¯bN<49X@Â˚Á<Dõ¶@€ﬂ;<T˝Ù@∂V<ãCñ@°hs<ãCñ@õK«<£◊
+@˝„T<e`BA`B<e`B@Ÿ˚Á<e`B@9XbM”=ix’e (?)7L<49X?6<e`BA\)>˙·H@9â7Gl 169             &  PM I04376+5253  Gl 172    @QZÈ$Ú'–@Jrd2ãm@◊
+=p£◊<¨1Y <?•„<£◊
+?&ß=Ö∏Ω·GÆ=£◊
+K7.7  A r∞<£◊
+A
+1<Éo@˜\)<Dõ¶@‹1'<£◊
+AQÏ<£◊
+A óç<49X@Ó5?<Dõ¶@„ŒŸ<T˝Ù@ΩV<ãCñ@¶Ÿ<ãCñ@†˝Ù<£◊
+AOﬂ<e`BA(ˆ<e`B@‚¨<e`B@◊
+=p£◊=Cñ÷ &?-<49X?¨<ÉoA33?è\@ˇ∆®Gl 172             '  PM I04376-1102  Gl 173    @Q[*Æ)sñ¿&‰%ÆÊ1?Íªò«‚ÇA<oW =>„S¯<ãCñ>Ò©¸=@ÉΩ#◊
+=£◊
+M2.0  A=X<£◊
+A%â7<ÉoA†<Dõ¶A∂F<£◊
+A2Z<¨1AÛ∂<49XAbN<Dõ¶A¬è<T˝Ù@ﬁ^5<ãCñ@À
+=<ãCñ@√<£◊
+A<e`BA,1<e`BAù≤<e`B?Í∏QÎÖ∏<Dõ¶T !>„S¯<Dõ¶>Ú-<T˝ÙAÖ?
+=<#◊
+Gl 173             (  PM I04429+1857  Gl 176    @QÆﬁ*√"(@2ıUh∆í?ÙbM“Ò™<49X` <>Álã<õ•„>˚Ám=H¥9>\)=£◊
+M2.2  A7Ôû<£◊
+A„T<ÉoA/<Dõ¶@ˆ^5<£◊
+A-<£◊
+AAâ<49XA{<T˝Ù@˘/<T˝Ù@œÖ<ãCñ@ºÉ<ãCñ@≥K«<£◊
+A‘˛<e`BA&r∞<e`B@˛¨<e`B?ÙbM“Ò™<ãCñ/ (>Ìëh<e`B>˝Û∂<u¬èA¬è?z·?ìoGl 176             )  PM I04538-1746  Gl 180    @R]R¸&V´¿1≈¯Ùs?‡“àŒp:˚;öu≤ <>◊çP<õ•„>”tº='Ôûæu¬è=£◊
+M2.1  AGX<¨1A.è\<ÉoA“Ú<Dõ¶A	˚Á<£◊
+A;˜œ<¨1A$ƒú<49XA‘˛<T˝ÙA•„<T˝Ù@Ì°À<ãCñ@⁄Ò™<ãCñ@”†<£◊
+A#ù≤<e`BA533<e`BA„T<e`B?‡“àŒp:˚;ÎÌ˙# >»¥9<T˝Ù>’Å<u¬èA
+=?ÃÕ@æVGl 180             *  PM I05019-0656  GJ 3323   @RﬂSP	,œ¿»À—$Ja?Ÿè≈Åo ;ñªôG <>MOﬂ<o >$›/<ÉoΩu¬è=£◊
+M4.5  A^¨<ºjAB(ˆ<ÉoA,õ¶<T˝ÙAOﬂ<£◊
+APÈy<¥9XA7|Ó<49XA^5<T˝ÙA·H<T˝Ù@Û<ãCñ@·á<ãCñ@ŸV<£◊
+A/X<e`BAI\)<e`BA  <e`B?Ÿè≈Åo ;ËßÑ >Dõ¶;Éo>1&È;ÉoA{?ôö@ÉGJ 3323            +  PM I05033-1722  GJ 3325   @Rı[´!ÅY¿1_úb°µ«?÷êˇó$tT;ÜYK% <>ëhs<T˝Ù>Ü$›<‘˝ÙΩı¬è=£◊
+M3.2  AV1<¨1A<5?<ÉoA)†<T˝ÙAlã<£◊
+AJ{<¨1A1€#<49XAhs<T˝ÙA1<T˝Ù@˘7L<ãCñ@Á˜œ<ãCñ@ﬂ"—<£◊
+A-x’<e`BABÒ™<e`BAŒŸ<e`B?÷êˇó$tT;æÌR >çOﬂ<tº>åI∫<T˝ÙA33?(ˆ?ÄÂ`GJ 3325            ,  PM I05314-0340  Gl 205    @T∑Nè∞À¿jÚQ¡ì≥@\(ı¬è\=]/Ÿ <?ºj<õ•„?"J=Å%>˙·H=£◊
+M1.5  AÈy<£◊
+@˝“Ú<Éo@‡Aâ<T˝Ù@Ω ¡<£◊
+AE¢<£◊
+@Ï1<49X@“¨<Dõ¶@√o<T˝Ù@ôx’<ãCñ@ÉÔû<ãCñ@v»¥<õ•„@ÌOﬂ<e`BA©¸<e`B@≈&È<e`B@\(ı¬è\>∏› ?9X<tº?Ìë<#◊
+Aè\>ı¬è?'ÆGl 205             -  PM I05365+1119  Gl 208    @UC‘k&ø@&ßﬁìû≠’@ QÎÖ∏R<£◊
+~ <?€#<£◊
+?%`B=Ö∏=LÃÕ=£◊
+K7.9  A$9X<£◊
+A◊
+<Éo@˛»¥<Dõ¶@‚»¥<£◊
+A¨<¨1Aj<49X@Ù˝Ù<Dõ¶@È„T<T˝Ù@√K«<ãCñ@≠â7<ãCñ@©∏<£◊
+A·H<e`BA˜œ<e`B@ËÃÕ<e`B@ QÎÖ∏R<Ìëh¥ )?¬è<Dõ¶?∏R<u¬èA·H?∏?ƒõ¶Gl 208             .  PM I05415+5329  Gl 212    @UX1ŒØ%@Jæ¥f•P?ÛGÆz·H<ãCñµ <?hs<¥9X?ŒŸ=q©¸>Bè\<ı¬èM1.0  A2^5<£◊
+A“Ú<ÉoAb<Dõ¶@ıX<£◊
+A(1'<¨1A$›<49XA»¥<T˝Ù@˙á+<T˝Ù@”|Ó<ãCñ@øÖ<ãCñ@∏(ˆ<£◊
+Aõ¶<e`BA!˚Á<e`B@¸ìu<e`B?ÛGÆz·H<ÃÃÕÎ "?ÃÕ<49X?Å<49XAff?ÎÖ?¿£◊Gl 212             /  PM I05421+1229  Gl 213    @Ubsˇ¨)@(˙ßõ∫‹	?„4÷°a‰˜<tº≤ <>á+<49X>j~˙<ºjæaGÆ=£◊
+M4.0  ARŸ<¨1A9GÆ<ÉoA$9X<Dõ¶A	Ôû<£◊
+AG
+=<¨1A.∞!<49XAõ¶<T˝ÙA	Æ<T˝Ù@Â&È<ãCñ@”ù≤<ãCñ@À\)<£◊
+A'\)<e`BA?Ám<e`BAv…<e`B?„333333<T˝Ù* >x‘˛;Â`B>où≤<tºAè\?∏R@Ê»¥Gl 213             0  PM I05557-2651            @V;ÖH©º¸¿:€CïÅ$?ÂA [¿7;ÎÌ˙D <?ff<ƒõ¶?Oﬂ=aGÆ>û∏R=£◊
+M2.7  AD^5<¨1A,∏R<ÉoAÆ<Dõ¶Aõ¶<£◊
+A9\)<¨1A#X<49XA∫^<T˝ÙAì<e`B@Â€#<ãCñ@–ìu<ãCñ@…GÆ<£◊
+A ·H<e`BA3GÆ<e`BA
+¨<e`B?Â?|Ìëhs<49XW )?›/<Éo?ÃÕ<ãCñAÖ?\)>E°ÀLP 837-53          1  PM I06000+0242  GJ 3379   @VÄÓ‡ÛÀ>@ß,≠Å?Ë›/üæw<Dõ¶é <>Üß<#◊
+>glã<ºj=è\)=£◊
+M4.2  AOçP<¨1A4~˙<ÉoA M”<Dõ¶A-<£◊
+AB˝Ù<¨1A*^5<49XAÌë<T˝ÙA“Ú<T˝Ù@‹É<ãCñ@…©¸<ãCñ@¡©¸<£◊
+A#x’<e`BA;ôö<e`BA
+¥9<e`B?Ë›/üæw<õ•„· >~˘€;ƒõ¶>r∞!;Â`BAÎÖ?(ˆ@pƒúGJ 3379            2  PM I06011+5935  GJ 3378   @VíÛMj@MÃn¡~∫?›ÖoiDg<Cñ <>â∫^<49X>z·H<ƒõ¶Ω∏QÏ=£◊
+M3.7  ATAâ<¨1A:∞!<ÉoA'á<Dõ¶A„T<£◊
+AH<¨1A0»¥<49XAI∫<T˝ÙA€#<T˝Ù@Óß<ãCñ@›ôö<ãCñ@’7L<£◊
+A*£◊<e`BAAâ7<e`BAV<e`B?›Å$›/<T˝Ù5 >Ö°À;Â`B>Çè\<#◊
+Aè\?(ˆ?rnòGJ 3378            3  PM I06024+4951  GJ 3380   @Vß»!laQ@HÓÃ¢€a∫?≥éÛMj:ùIR∏ <>'lã<o>J<T˝Ù<#◊
+=£◊
+M5.1  AÅÒ™<ºjAhß<ãCñAPƒú<T˝ÙA2V<£◊
+Au˚Á<¥9XA^(ˆ<49XA@Z<T˝ÙA/€#<T˝ÙA°À<ãCñAŒŸ<ãCñA&È<£◊
+AQhs<e`BAo≤-<e`BA6¥9<e`B?≥éÛMj:ÎÌ˙‰  > ƒú;£◊
+>$›;£◊
+A=q?ôö?ú1GJ 3380            4  PM I06077-2544            @V˚™O BÆ¿9æ≠-Àe?“§®¡T…Ü;Éo <>§Z<u¬è>ñá+<Ìëhæôö=£◊
+M3.2  AW˜œ<¨1A>-<ÉoA+◊
+<T˝ÙAÈy<£◊
+ALff<¨1A41'<49XA üæ<T˝ÙAﬂ;<T˝ÙA  ≈<ìtº@Ó¨<ãCñ@Ê-<£◊
+A0É<e`BAEá<e`BACñ<e`B?“§®¡T…Ü;«‚Ç >ôôö<49X>ù/<u¬èA\)?∏R@îbNLP 838-16          5  PM I06140+5140  GJ 3388   @W`°!B@I’ûÉ‰%Æ?¿bM“Ò©¸:ﬁ“â˛ <>ëhs<T˝Ù>ÄÉ<ÃÃÕΩ£◊
+=£◊
+M3.4  AgŒŸ<¨1ALƒú<ÉoA:^5<T˝ÙA"Ò™<£◊
+AZÒ™<¨1AB˝Ù<49XA.–Â<T˝ÙA#∂F<T˝ÙAM”<ãCñAlã<ãCñA©¸<£◊
+A>–Â<e`BAS˜œ<e`BA'S¯<e`B?¿bM“Ò©¸;*d√B >ä¿É<#◊
+>â7L<T˝ÙAff?(ˆ@+GJ 3388            6  PM I06246+2325  Gl 232    @Xﬁ —∂@7n‹]càe?¬Ω<64;o] <>Gyß<IR>≤-<u¬èæ8QÏ=£◊
+M4.5  Am
+=<¥9XAQïÅ<ÉoA<ı√<T˝ÙA"ì<£◊
+A_“Ú<¥9XAGÖ<49XA/á<T˝ÙA!X<e`BA
+É<ãCñA·H<ãCñ@˝∫^<£◊
+A?æw<e`BAXÃÕ<e`BA&üæ<e`B?¬Ω<64;Q∑ê >?|Ó;Â`B>+<oAè\?ôö?¡%Gl 232             7  PM I06371+1733  Gl 239    @X“‚ó9m@1êîÇ≈?Ú(ı¬è\)<e`BŸ <>ÿìu<u¬è>Ò&È=@ÉæÆ{=£◊
+M0.2  A1/<£◊
+A∆®<ÉoA<Dõ¶@˜◊
+<£◊
+A&è\<£◊
+AQÏ<49XAlã<Dõ¶@˛<T˝Ù@÷^5<ãCñ@¬~˙<ãCñ@∫{<£◊
+AAâ<e`BA (ˆ<e`B@˛=q<e`B?Ú(ı¬è\)<¥9XÆ %>ﬁ5?<49X>Ï1<Dõ¶A=q?ÎÖ?åãDGl 239             8  PM I06461+3233  GJ 3408 B @Ya˝6˜„—@@FÔ
+Â6P?¿Œp:˚~ë;*d√H >>÷á+<õ•„>›/=0 ≈æÖ∏<ı¬èM0.9  A\V<¨1ABff<ÉoA2=q<T˝ÙA!?}<£◊
+APı√<¨1A8(ˆ<49XA+GÆ<T˝ÙA#Ám<T˝ÙA◊
+<ìtºA„T<ãCñA∏R<£◊
+A9?}<e`BAIo<e`BA$ÃÕ<e`B?¿Œp:˚~ë;ÉoZ >”˜œ<T˝Ù>·GÆ<T˝ÙA∏R?ôö>=p§GJ 3409 B          9  PM I06490+3706  GJ 1092   @Yët§“≤@BéôÑ†‰?±T…Öoi:iN‰á =>M“Ú<49X>&Èy<Éoøè\=£◊
+M4.3  AvŸ<¥9XA\á+<ãCñAH∏R<T˝ÙA.~˙<£◊
+Aiâ7<¥9XAR˘€<49XA;33<T˝ÙA.j<T˝ÙA^5<ãCñAƒú<ãCñA^5<£◊
+AK ¡<e`BAc•„<e`BA3∏<e`B?±T…Öoi:˘	l‚ )>@É<tº>-V<tºA=q?z·@ëhsGJ 1092            :  PM I06523-0511  Gl 250 B  @YƒœÈ∑ø¿¬úwökP?Ú·GÆz·<£◊
+ô <>ÎÖ<ãCñ>„S¯=49X>\)<ı¬èM2.3  A8›/<£◊
+A ∏R<ÉoA1'<Dõ¶@¯ºj<£◊
+A.b<¨1A∏<49XA?}<T˝Ù@¸r∞<T˝Ù@–˝Ù<ãCñ@æ{<ãCñ@∂¿É<õ•„A˜œ<e`BA'S¯<e`BA bN<e`B?Ú·GÆz·=oÒ >ﬂ;d;ƒõ¶>Óóç<oAè\?ôö@Ü^5Gl 250 B           ;  PM I06548+3316  Gl 251    @YÌ#c≤V@@¢U\RÁ-?˙∞ ƒõ•„<u¬èx <>∑K«<T˝Ù>¥9X=\)º£◊
+=£◊
+M3.2  A9`B<£◊
+A!á<ÉoA∏R<Dõ¶@ÓŸ<£◊
+A.  <£◊
+A\)<49XA7L<Dõ¶@Ô∂F<T˝Ù@√çP<ãCñ@∞ºj<ãCñ@®õ¶<£◊
+A%<e`BA'∂F<e`B@˜;d<e`B?˙∞ ƒõ•„<¥9Xü >≤∞!<o>∫·H<tºA{?z·?aGÆGl 251             <  PM I07232+4605  Gl 272    @[≥˘rGE8@G1;‚.]?‚Ìëhr∞!;∫«w >?<ÃÃÕ?bN=e`B=LÃÕ=£◊
+M1.2  A@{<¨1A(¥9<ÉoAı√<T˝ÙA©¸<£◊
+A5çP<¨1Ao<49XA∂F<T˝ÙA
+M”<T˝Ù@Î∂F<ãCñ@÷~˙<ãCñ@œ◊
+<£◊
+Aù≤<e`BA/á<e`BAGÆ<e`B?‚Ìëhr∞!<¸π  .?õ¶<Éo?ÃÕ<ìtºA∏R?Æ@:M”Gl 272             =  PM I07274+0513  Gl 273    @[ˆá+I@Áª/ÏV’@(ı¬è\)<¨1ı <>°GÆ<Dõ¶>êÂ`<Â`BΩ·GÆ=£◊
+M3.8  A6¨<¨1AE¢<ÉoA
+Ìë<Dõ¶@„"—<£◊
+A+
+=<¨1Aƒú<49X@¸  <T˝Ù@‚Ÿ<T˝Ù@µ€#<ãCñ@£Ôû<ãCñ@úãD<£◊
+AI∫<e`BA%<e`B@Î˜œ<e`B@(ı¬è\)<ı¬èn >ñ;£◊
+>òìu<tºA
+=?ôö@˘/Gl 273             >  PM I07287-0317  GJ 1097   @\’˘ú8¿
+bh	‘ï?‹⁄QŒ<Áx <>ŒŸ<õ•„>ÀCñ=#◊
+º#◊
+=£◊
+M3.1  AOOﬂ<¨1A6è\<ÉoA$£◊<Dõ¶AÁm<£◊
+AC°À<¨1A-%<49XAÖ<T˝ÙAÒ™<T˝Ù@Ú~˙<ãCñ@ﬂù≤<ãCñ@÷Ÿ<£◊
+A)GÆ<e`BA=X<e`BA9X<e`B?‹ìtºj<T˝Ù  &>√o<u¬è>œ\)<ãCñA33?ôö@PbGJ 1097            ?  PM I07344+6256  Gl 277.1  @\gS&¡Ω@OxÉ∫4C”?„ˆîFsÇ<Áa <>≈∏<Éo>ÀCñ=#◊
+æΩp§=£◊
+M0.8  A@1<£◊
+A&Z<ÉoA·H<T˝ÙAM”<£◊
+A4ºj<¨1Aõ¶<49XA=q<T˝ÙA	á<T˝Ù@ÎdZ<ãCñ@Ÿëh<ãCñ@“{<£◊
+AÁm<e`BA-/<e`BA	ŒŸ<e`B?„
+=p£◊
+<e`BS %>≈°À<T˝Ù>“nò<u¬èA∏R?ÎÖ=Ö∏Gl 277.1           @  PM I07386-2113  GJ 3459   @\™ÍÚQ¡ì¿59y|√ü˝?‘µ‹∆?;∞Ú| <>°GÆ<Éo>îz·<Ìëhæ8QÏ=£◊
+M3.1  AWV<¨1A<ì<ÉoA)ﬂ;<Dõ¶Ao<£◊
+AJ¨<¨1A25?<49XA∏R<T˝ÙA{<T˝Ù@¸ÃÕ<ãCñ@ÍV<ãCñ@‚5?<£◊
+A.£◊<e`BACGÆ<e`BAhs<e`B?‘µ‹∆?<¸π| >ó
+=<T˝Ù>ôôö<ãCñA
+=?ôö@ÄQÏGJ 3459            A  PM I07393+0211  Gl 281    @\∂%1¬@x7¥¢3õ?Ò.±ƒ2 X<uª <? Aâ<ÃÃÕ?"J=Å%=ı¬è=£◊
+M0.3  A0ºj<£◊
+A5?<ÉoA|Ó<Dõ¶@˘p§<£◊
+A&üæ<£◊
+A∏R<49XA1<T˝Ù@ˇ˜œ<T˝Ù@Ÿ?}<ãCñ@√Ö<ãCñ@Ω&È<£◊
+A»¥<e`BA ff<e`B@ˇ∂F<e`B?Ò/üæv…<e`BR .?Ò™<T˝Ù?•„<ÉoAÆ?   A/33Gl 281             B  PM I07482+2022  Gl 289    @]D[Täõ@4^FÒV?—Lò_ˆî;IR¯ <>µ?}<ìtº>≤-=\)æÊff=£◊
+M1.7  AP1<¨1A7GÆ<ÉoA'X<Dõ¶A·H<£◊
+ADÂ`<¨1A-¬è<49XA\)<T˝ÙAá<T˝ÙAÉ<ãCñ@ÛS¯<ãCñ@Ï›/<£◊
+A-ù≤<e`BA>  <e`BAß<e`B?—Lò_ˆî;Éo !>∞£◊<u¬è>∫^5<õ•„A∏R?ÎÖ?/ﬂ;Gl 289             C  PM I08105-1348  Gl 297.2 B@^©#$»6d¿+†ÁˇX:S?œæv»¥9X;IRÿ >?„T<õ•„?S¯=PÂ`    =£◊
+M2.5  AUëh<¥9XA<É<ÉoA*˘€<T˝ÙA¨<£◊
+AIù≤<¥9XA2~˙<49XA!33<T˝ÙA∆®<T˝ÙAbN<ãCñ@ıÅ<ãCñ@Ì7L<£◊
+A0r∞<e`BAC%<e`BA9X<e`B?œæv»¥9X;r{≥t '>ı?}<49X?è\<Dõ¶AÆ?ÃÕA@(ˆGl 297.2 B         D  PM I08161+0118  GJ 2066   @_!¿D(M?Ù◊I'ë>Å?Òù≤-V<Dõ¶¨ <>Ï1<ãCñ>Álã=8QÏΩı¬è=£◊
+M2.2  A:É<£◊
+A"<ÉoAK«<Dõ¶@˚†<£◊
+A/?}<¨1AAâ<49XAZ<T˝Ù@˛˘€<T˝Ù@‘j<ãCñ@¿9X<ãCñ@∏ºj<£◊
+A"—<e`BA(óç<e`BAÅ<e`B?Òù≤-V<ìtº< >ÿìu<tº>ÊÈy<Dõ¶A  ?z·A*1'GJ 2066            E  PM I08298+2646  GJ 1111   @_›)
+ªD‰@:∆™é¥cI?…Œ_o“ ;-‡
+ <=˚µ;∑Ä4=øÂ…<uæôö=£◊
+M6.7  AÅ–Â<¥9XAmX<õ•„AOïÅ<T˝ÙA)∆®<£◊
+AxÈy<ÃÃÕAdJ<Dõ¶A:»¥<T˝ÙA"ß<T˝ÙAÖ<ãCñ@Ûæw<ãCñ@ÁïÅ<£◊
+AJI∫<e`BAs∫^<e`BA,ı√<e`Bˇˇˇˇˇˇˇˇˇˇˇˇ    ˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇGJ 1111            F  PM I08526+2818  Gl 324B   @`•rSÕ›@<P˚®Çj®?≈Vìu;o^ =>ã∆®<T˝Ù>s∂F<ƒõ¶>û∏R<ı¬èM4.1  AlÌë<ºjARr∞<ãCñA>J<Dõ¶A#|Ó<£◊
+A_•„<ºjAH¥9<49XA0I∫<T˝ÙA"v…<T˝ÙA	∏<ãCñ@¸ƒú<ãCñ@Ùr∞<£◊
+A@ÃÕ<e`BAYÖ<e`BA'∆®<e`B?≈Vìu;Dõ¶• >Ñõ¶<o>x‘˛<#◊
+Aè\?(ˆ@$ìGl 324B            G  PM I09143+5241  Gl 338A   @aS
+=p£÷@JW€†•&ï@Yá+=ix’P <?ÃÕ<‘˝Ù?dZ=y€#º#◊
+=£◊
+K7.8  A›/<£◊
+@Ù£◊<Éo@ÿ1'<Dõ¶@º¨<£◊
+A¥9<£◊
+@‚¨<49X@Œ∏R<T˝Ù@ƒ(ˆ<T˝Ù@ù≤-<ãCñ@àì<ãCñ@Å%<£◊
+@ÁK«<e`BA è\<e`B@¬ß<e`B@Yá+=Æ{Z 4?I∫<ìtº?z·<õ•„Aè\?ÃÕ>∏RGl 338A            H  PM I09319+3619  Gl 353    @aﬂÉ'gM@B(ˇó$tS?ÁΩ•ú‡v;ﬁ“âl <?õ¶<¨1?1'=YáæLÃÕ=£◊
+M0.6  A;<£◊
+A#â7<ÉoA<Dõ¶A ¡<£◊
+A0z·<£◊
+A∂F<49XAôö<Dõ¶AbN<T˝Ù@‰1'<ãCñ@œŒŸ<ãCñ@…∏<£◊
+A˝Ù<e`BA)◊
+<e`BAá<e`B?ÁΩ•ú‡v<"3úﬁ %>˜K«<T˝Ù?è\<u¬èA∏R?
+=q@ÃÃÕGl 353             I  PM I09411+1312  Gl 361    @b)bbÀß2@*kOag#$?Èú‡uˆ˝";Â`B¨ <>¯QÏ<õ•„>£◊=@ÉΩLÃÕ=£◊
+M1.9  A=˜œ<£◊
+A&z·<ÉoA5?<Dõ¶AÒ™<£◊
+A3;d<¨1Aı√<49XAôö<Dõ¶A–Â<T˝Ù@ﬂ˜œ<ãCñ@ÀÆ<ãCñ@ƒI∫<£◊
+Aì<e`BA,Ò™<e`BA»¥<e`B?Èôôôôôö<49X@ %>‚M”<Dõ¶>Ú-<e`BA◊
+?
+=A4-Gl 361             J  PM I09437-1747            @b>-°"˙÷¿1…éuy(?±[ˇW}ï:OÊ A>B√ <YK>¨<u¬èø(ˆ=£◊
+sdM2.9Ap  <¥9XARìu<ÉoA@ß<T˝ÙA,∏R<£◊
+Ac∏<¥9XAGX<49XA7∂F<T˝ÙA.^5<T˝ÙAÖ<ãCñAçP<ãCñAr∞<£◊
+AF›/<e`BAYëh<e`BA0∞!<e`Bˇˇˇˇˇˇˇˇˇˇˇˇ    ˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇLP 788-27          K  PM I09447-1812  GJ 1129   @bFN¯ãóx¿26≠’ê¿¨?œÉ{J#9¡;ìtº´ <>óçP<e`B>Ü$›<‘˝Ù=ÃÃÕ=£◊
+M3.8  AaÆ<ºjAH  <ãCñA3tº<T˝ÙA\)<£◊
+AU∆®<¥9XA=∂F<49XA%Ôû<T˝ÙA;d<e`BAá+<ãCñ@Ò“Ú<ãCñ@È/<£◊
+A6∏R<e`BAOCñ<e`BAÎÖ<e`B?œÉ{J#9¡;€ã¨ !>ç“Ú<#◊
+>ãCñ<T˝ÙA¬è?∏R@à1'GJ 1129            L  PM I09553-2715            @bõ.á“«∏¿;B„>ˇO?“àŒp:˚;y	l <>§Z<Éo>ôá<ı¬è<#◊
+=£◊
+M3.5  AZ˝Ù<¨1A@ß<ÉoA-∂F<T˝ÙA1<£◊
+ANı√<¨1A6ãD<49XA!Ám<T˝ÙA»¥<T˝ÙA 5?<ãCñ@Ïz·<ãCñ@‰ÃÕ<£◊
+A2ì<e`BAGôö<e`BAr∞<e`B?“àŒp:˚;æÌT #>ú(ˆ<e`B>ü;d<õ•„Aff?(ˆ@\)LP 847-48          M  PM I10113+4927  Gl 380    @cˆr2L@H∫&‘Ät@-Êfffff=ı¬è# <?&ß<õ•„?4˝Ù=ëhs>u¬è=£◊
+K7.6  @˛J<£◊
+@—7L<u¬è@µ„T<Dõ¶@úAâ<£◊
+@Íff<£◊
+@ø33<49X@≠Û∂<T˝Ù@£Ôû<T˝Ù@~»¥<ãCñ@TÃÕ<ãCñ@K˜œ<£◊
+@≈X<e`B@›“Ú<e`B@°„T<e`B@-Êfffff>.{B !?$Z<#◊
+?/ﬂ;<T˝ÙA·H>˙·H?!â7Gl 380             N  PM I10122-0344  Gl 382    @c"[BEı≠¿˜‹áTÚ@|Ìëhr∞<ìtº' <?°À<õ•„?ff=Yá>∏=£◊
+M1.9  A,<£◊
+A~˙<ÉoA9X<Dõ¶@·€#<£◊
+A!lã<£◊
+A%<49X@˜†<Dõ¶@ÊM”<T˝Ù@ºÌë<ãCñ@®£◊<ãCñ@¢üæ<£◊
+A
+(ˆ<e`BA<e`B@È¬è<e`B@|Ìëhr∞<›/p $?   <Dõ¶?1'<Dõ¶AÆ?\)@6»¥Gl 382             O  PM I10196+1952  Gl 388    @c\÷bwƒ\@3ﬁπ°v›¨@Ö∏QÎÖ=\)* <>ﬁ∏R<ãCñ>œﬂ;='Ôû>ôö=£◊
+M3.4  A.∞!<£◊
+Aìu<ÉoAìu<Dõ¶@⁄∞!<£◊
+A#ïÅ<£◊
+A%<49X@Únò<T˝Ù@‹QÏ<T˝Ù@∞b<ãCñ@úz·<ãCñ@ï?}<£◊
+AÒ™<e`BA7L<e`B@„tº<e`B@Ö∏QÎÖ=aGÆ§ !>Õ“Ú<#◊
+>⁄üæ<49XA\)?ÎÖA∏Gl 388             P  PM I10251-1013  Gl 390    @câr≈z$¿$uz$âL?ÏÌ(åÁ;Ô4◊t <>˛v…<£◊
+?∏=T˝Ùº£◊
+=£◊
+M1.5  A:ì<£◊
+A"ãD<ÉoA£◊<Dõ¶A ∏R<£◊
+A/â7<£◊
+AÂ`<49XA
+˘€<T˝ÙA†<T˝Ù@›¬è<ãCñ@»Â`<ãCñ@¬¿É<£◊
+AV<e`BA(Ò™<e`BAff<e`B?ÏbM“Ò™<49Xü )>¯QÏ<e`B?ì<ÉoA\)?\)?n{Gl 390             Q  PM I10289+0050  Gl 393    @cßh€ã¨p?ÍÍJåLó?˘ ¿Énò<T˝Ù‹ <>◊
+=<Éo>⁄¨=0 ≈æ8QÏ=£◊
+M2.2  A2è\<£◊
+A£◊<ÉoA	Ôû<Dõ¶@ÏZ<£◊
+A'æw<£◊
+AV<49XA Ÿ<T˝Ù@r∞<T˝Ù@∆á+<ãCñ@¥9X<ãCñ@´S¯<£◊
+A¬è<e`BA!7L<e`B@ÙQÏ<e`B?˘ ¿Énò<õ•„% >Õ“Ú<tº>€"—<#◊
+A33?ÎÖ@5°ÀGl 393             R  PM I10430-0912            @dd2ãm¿"l=Óx??¨·≈ÇU∞6:A¸èá <>J¿É<#◊
+>•„<u¬èæLÃÕ=£◊
+M5.5  Aà/<ÃÃÕAq"—<ìtºAXbN<T˝ÙA8˘€<£◊
+AÄJ<ƒõ¶Afóç<Dõ¶AGtº<T˝ÙA5©¸<e`BAÉ<ãCñA7L<ãCñA≤-<£◊
+AXff<e`BAxŸ<e`BA=+<e`B?¨‡uˆ˝!ˇ:ê-‡X >/†;ƒõ¶>ìu;Â`BAè\?
+=AöK«FBS L 10-72        S  PM I10508+0648  Gl 402    @dVÒ˝ﬁΩè@;®Çj®Í?‡’œ™ÕûÑ;¥9X¶ <>çOﬂ<Dõ¶>{Ám<ÃÃÕ>#◊
+=£◊
+M3.9  ATÌë<¨1A;†<ÉoA'"—<Dõ¶AGÆ<£◊
+AHÃÕ<¨1A133<49XAÎÖ<T˝ÙAÂ`<T˝Ù@Íá+<ãCñ@÷^5<ãCñ@Õ≤-<£◊
+A*Z<e`BAB1<e`BA∫^<e`B?‡’œ™ÕûÑ<	†'›  >áÆ<o>ÇJ<#◊
+Aff?(ˆ?ŸáGl 402             T  PM I10520+1359  Gl 403    @d`êW—x,@+˛¿//òs?ƒæﬂ§?Ê;IR‚ >>ó
+=<Éo>áÆ<›/æ∏=£◊
+M3.6  Adõ¶<¨1AK33<ÉoA8z·<T˝ÙA üæ<£◊
+AXÈy<¨1AA`B<49XA,õ¶<T˝ÙA!
+=<T˝ÙA
+·H<ãCñAGÆ<ãCñ@˙J<£◊
+A<üæ<e`BAR1<e`BA$Ò™<e`B?ƒæﬂ§?Ê;e`BN >åI∫<Dõ¶>ä¿É<ÉoA33?ôö@ôÎÖGl 403             U  PM I10522+0555  GJ 3631   @daÊFÒV@≠tíyÁ?©C¨ƒÔâ:"áﬂ <>(åÁ;˘	l>o<T˝Ù=ÃÃÕ=£◊
+M5.4  AÑbN<ºjAlŸ<ãCñAU„T<T˝ÙA7ÎÖ<£◊
+A|-<ºjAb^5<49XAEÎÖ<T˝ÙA61'<T˝ÙAV<ãCñAI∫<ãCñA•„<£◊
+AW<e`BAt ≈<e`BA<üæ<e`B?©C¨ƒÔâ:ÄsXÁ >&Èy;£◊
+>Cñ;ÉoA·H?
+==ìtºGJ 3631            V  PM I10564+0700  Gl 406    @dÉ⁄{9@¬zcr?‚ç∏∫«À;‚e <>
+	;æÌ=Ã/É<#◊
+>Ä  =£◊
+M5.9  AxI∫<¨1AXQÏ<ãCñA9 ¡<Dõ¶A€#<£◊
+AiOﬂ<¥9XALbN<49XA&<T˝ÙA°À<T˝Ù@‚^5<ãCñ@Œ»¥<ãCñ@ƒ¥9<£◊
+A6QÏ<e`BA_„T<e`BAK«<e`B?‚è\(ı¬è<Dõ¶
+¯ >
+=q;Dõ¶=◊
+=<oA33?Æ?%Gl 406             W  PM I11033+3558  Gl 411    @d∫≤ÍÚ@A¸:ßõ∫€@%§Z¨1=ƒõ¶Î <>«+<T˝Ù>≈°À=æwæ¬è\=£◊
+M1.9  AM”<£◊
+@ÔÔû<Éo@œ33<T˝Ù@®ÃÕ<£◊
+AS¯<£◊
+@‹ºj<49X@æ<T˝Ù@≠hs<T˝Ù@ÖX<ãCñ@fv…<ãCñ@W†<£◊
+@€S¯<e`B@˝/<e`B@∞¥9<e`B@%£◊
+=p§>#◊
+5  >æv…;Â`B> ¿É<oA£◊?ÃÕ@K˜œGl 411             X  PM I11054+4331  Gl 412A   @dÀ÷bwƒ\@E√iDg8@≤-V=,1# <>ƒì<T˝Ù>«Æ=æwæΩp§=£◊
+M1.1  A$õ¶<£◊
+Ar∞<Éo@˜;d<Dõ¶@”ŒŸ<£◊
+A€#<£◊
+A“Ú<49X@Ë9X<Dõ¶@Ÿhs<T˝Ù@±©¸<ãCñ@üo<ãCñ@ó•„<£◊
+AbN<e`BA£◊<e`B@€Cñ<e`B@≤-V=ãCñA  >¿É<o>ÃÃÕ<tºAÖ?
+=?&ÈGl 412A            Y  PM I11055+4331  Gl 412B   @dÃÕJ°@E¬≈z$â?¿«‚Ç@∑Ä:ƒõ¶/ <>:ì;∞Ú|=¬¯8<•„æ£◊
+=£◊
+M6.6  AÉz·<‘˝ÙAgçP<ìtºAKŒŸ<Dõ¶A)K«<£◊
+Axv…<ÃÃÕA\$›<49XA8ƒú<T˝ÙA&ff<T˝ÙA∫^<ãCñA^5<ãCñ@˙{<£◊
+AJ5?<e`BAo&È<e`BA.-<e`Bˇˇˇˇˇˇˇˇˇˇˇˇ    ˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇGl 412B            Z  PM I11311-1457  GJ 3668   @eô>’'‰¿-ÈDg8}?≥–|Ñµ‹∆:ê-‡% >>B©ì<Cñ>≤-<u¬èΩè\)=£◊
+M4.5  A;d<Â`BAbºj<õ•„AK“Ú<T˝ÙA/S¯<£◊
+Ar˘€<‘˝ÙAWÔû<49XA<∞!<T˝ÙA.J<e`BA¬è<ìtºAƒú<ãCñAæw<£◊
+AM„T<e`BAj{<e`BA3ﬂ;<e`B?≥–|Ñµ‹∆:ﬁ“âb >:^5;£◊
+>$›/;£◊
+A
+=?(ˆ?ˇæwGJ 3668            [  PM I11417+4245  GJ 1148   @eÌÙ^N@E`@·qü?Ÿ:í£S&;öuË =>¿É<ìtº>¨1=Cñ=è\)=£◊
+M3.8  AV^5<¨1A=°À<ÉoA*j<T˝ÙA†<£◊
+AJ»¥<¥9XA4E¢<49XAÅ<T˝ÙAÒ™<T˝Ù@Ù9X<ãCñ@· ¡<ãCñ@€ïÅ<£◊
+A-ŒŸ<e`BADÉ<e`BAÖ<e`B?Ÿ:í£S&;Ô4◊i ">∞ ≈<e`B>∂»¥<ãCñAz·?
+=@˙$›GJ 1148            \  PM I11421+2642  Gl 436    @eÒy¶µ@:¥Ë˚ ºΩ?Í|Ñµ‹∆?<_ó <>Â„T<õ•„>„◊
+=49X<#◊
+=£◊
+M2.8  AB9X<£◊
+A+V<ÉoA˘€<Dõ¶Aìu<£◊
+A7x’<¨1A!Cñ<49XAb<T˝ÙA ¡<T˝Ù@›&È<ãCñ@…°À<ãCñ@¡?}<£◊
+Aæw<e`BA1\)<e`BAÂ`<e`B?Í~˘€"–Â<u¬è  '>◊
+=<e`B>‰›/<u¬èAÖ?ÎÖ@∂v…Gl 436             ]  PM I11477+0048  Gl 447    @fÍ»`VÅ?È¿Y!Ö∆?r∞ ƒõ¶<e`Bx <>Ik∫;¸PH>,1<ãCñº£◊
+=£◊
+M4.3  AM ¡<¨1A2^5<ÉoA7L<Dõ¶Ab<£◊
+A@¥9<¨1A((ˆ<49XA<T˝ÙA+<T˝Ù@“-<ãCñ@¿  <ãCñ@µ“Ú<õ•„A€#<e`BA9çP<e`BAãD<e`B?r∞ ƒõ¶<£◊
+Å >GÆ;Éo>49X;ÉoA33?ôö=•„TGl 447             ^  PM I11509+4822  GJ 1151   @f7≤ÄÒ,'@H0NP≈Î0?≈ÑM:í£;	†'. <>Bﬁ<+>≤-<u¬è<ı¬è=£◊
+M4.5  ApV<¨1ASæw<ÉoA=ïÅ<Dõ¶A!hs<£◊
+Abr∞<¨1AI?}<49XA.∏R<T˝ÙA É<T˝ÙA^5<ãCñ@˛ff<ãCñ@Ùı√<£◊
+A?ŒŸ<e`BAZ˝Ù<e`BA&{<e`B?≈ÑM:í£;XD–P >=p§;ƒõ¶>&Èy;Â`BAff?ôö?>5?GJ 1151            _  PM I12100-1504  GJ 3707   @f–ø	ï™˜¿.$\ª¬πL?÷d¬¯7¥¢;kÌ˙9 <>«Æ<ìtº>∆$›=æw>Ö∏=£◊
+M3.8  AZj<¨1AA`B<ÉoA-Å<Dõ¶AÎÖ<£◊
+ANè\<¨1A7Ö<49XA ~˙<T˝ÙA©¸<T˝Ù@˘hs<ãCñ@‰›/<ãCñ@€◊
+<£◊
+A0ÃÕ<e`BAH¨<e`BAM”<e`B?÷d¬¯7¥¢;∑Ä4\ !>¬è\<e`B>ÀCñ<ãCñA
+=?
+=?+GJ 3707            `  PM I12151+4843  Gl 458.2  @f˘.HËß@H]∆—·√?ﬁ’œ™ÕûÑ;ê-‡< =?+Cñ=•„?3tº=è\)>\)=£◊
+M0.4  A?&È<£◊
+A(ºj<ÉoA◊
+<Dõ¶A
+–Â<£◊
+A5†<¨1A&È<49XA1'<T˝ÙAÔû<T˝Ù@Ùƒú<ãCñ@ﬂS¯<ãCñ@ÿ ≈<£◊
+A!V<e`BA.Ÿ<e`BA˜œ<e`B?ﬁ’œ™ÕûÑ;ÿD–≈ H?·H<¨1?$õ¶<ºjA33?∏AÃÕGl 458.2           a  PM I12194+2822  Gl 459.3  @g7!’<›@<a·∞â†&?ﬁ¨1&È;ê-‡ô <?$õ¶=çP?3˜œ=è\)>ÎÖ=£◊
+M0.6  AAOﬂ<£◊
+A*I∫<ÉoA·H<Dõ¶A
+ÃÕ<£◊
+A6˝Ù<¨1A á+<49XAìu<T˝ÙAÆ<T˝Ù@ı∏<ãCñ@‡(ˆ<ãCñ@Ÿ/<£◊
+A!ﬂ;<e`BA0z·<e`BA-<e`B?ﬁ¨1&È;ÎÌ˙ª E?!GÆ<Éo?,1<ìtºA\)>ı¬è?2-Gl 459.3           b  PM I12312+0848  Gl 471    @gz;:h@!ürÔ
+Â?ØOÑM<—Né =?K«<¥9X?^5=u¬èΩ#◊
+=£◊
+M0.3  A2z·<£◊
+ACñ<ÉoAV<Dõ¶@˙^5<£◊
+A($›<£◊
+AÆ<49XA¨<Dõ¶A bN<T˝Ù@⁄E¢<ãCñ@≈%<ãCñ@º˝Ù<£◊
+Aù≤<e`BA!ôö<e`BA ff<e`B?∞ ƒõ•„<e`B8 *?
+~˙<e`B?nò<ÉoA\)?∏AU◊
+Gl 471             c  PM I12388+1141  Gl 480    @g∂ˇX:S∏@'dtSéÛM?€Ùá¸π#£;åÁá <>Óóç<ÃÃÕ>Ô†=@É>Ö∏=£◊
+M3.4  AO ¡<£◊
+A9+<ÉoA'<Dõ¶A7L<£◊
+AEV<¨1A/Û∂<49XA33<T˝ÙA°À<T˝Ù@Úüæ<ãCñ@›€#<ãCñ@’∫^<£◊
+A*˘€<e`BA?ïÅ<e`BAâ7<e`B?€Ùá¸π#£;‚e… )>‚–Â<£◊
+>Ò&È<¨1A33?
+=@ßGl 480             d  PM I12507-0046  Gl 488    @hœ ß≈øËîÇ∆@ƒõ•„S¯<¨1ï <?%`B<£◊
+?2∞!=è\)>u¬è=£◊
+K7.9  Aóç<£◊
+AÁm<Éo@Û•„<Dõ¶@Ÿ∏<£◊
+Anò<£◊
+@˝á<49X@Î†<T˝Ù@‡z·<T˝Ù@πx’<ãCñ@§(ˆ<ãCñ@ùV<£◊
+AÅ<e`BAì<e`B@ﬁ·H<e`B@ƒõ•„S¯<˝Û∂„ $?;d<49X?)∫^<T˝ÙA∏R?è\@Hr∞Gl 488             e  PM I13168+1700  Gl 505 B  @hÊﬂ;dZ@1BÑﬂŒ1?Ù∞ ƒõ•„<¥9X} <?	˚Á<õ•„?
+~˙=]/Ωı¬è<ı¬èM0.7  A.ì<£◊
+AZ<ÉoA	&È<Dõ¶@Ò∫^<£◊
+A$$›<¨1A–Â<49XA¥9<T˝Ù@˜ù≤<T˝Ù@—x’<ãCñ@æff<ãCñ@∑Ôû<£◊
+AÔû<e`BAI∫<e`B@¯¨<e`B?Ù∞ ƒõ•„=+  ? É;ƒõ¶?Ôû<oAÆ?ÃÕA ≈Gl 505 B           f  PM I13196+3320  Gl 507.1  @h˝Z≥Rß@@¨[¿6‚?‰C˛\ë—N;ßÁB <?á<ÃÃÕ?‘˛=u¬è>ÃÃÕ=£◊
+M1.8  AAÆ<£◊
+A)ﬂ;<ÉoA ¡<T˝ÙAV<£◊
+A6Â`<¨1A ff<49XAÖ<Dõ¶A	"—<T˝Ù@ËI∫<ãCñ@“v…<ãCñ@Õ&È<£◊
+AÎÖ<e`BA0nò<e`BA
+Ÿ<e`B?‰C˛\ë—N;ˇó$® $?\)<T˝Ù?K«<T˝ÙA  ?   @¶$›Gl 507.1           g  PM I13283-0221WwGl 512A   @iBœVÍ»_¿·ª˙Î√?ﬁzêñªô;‚e™ <>Ï1<ƒõ¶>Ï1=<j=£◊
+=£◊
+M3.1  ALÂ`<¨1A4M”<ÉoA#<T˝ÙAè\<£◊
+AA`B<¨1A+Cñ<49XAì<T˝ÙA©¸<T˝Ù@ì<ãCñ@‹É<ãCñ@‘r∞<£◊
+A'Æ<e`BA;;d<e`BAŸ<e`B?ﬁv»¥9X<49X˝ +>ﬁ∏R<õ•„>ÌV<£◊
+A◊
+?z·@Q%Gl 512A            h  PM I13299+1022  Gl 514    @iO˜e˝ä⁄@$¡.∆ºËR@•„S˜ŒŸ<ìtºè =>˜K«<Éo?Èy=YáΩ∏QÏ=£◊
+M1.1  A(¿É<£◊
+A£◊<u¬èAôö<Dõ¶@·∏<£◊
+AI∫<£◊
+Alã<49X@ıX<Dõ¶@Ê=q<T˝Ù@Ω¬è<ãCñ@©€#<ãCñ@†ãD<£◊
+AE¢<e`BA\)<e`B@ËZ<e`B@•„S˜ŒŸ<Â`B´ >Û∂F<tº?GÆ<Dõ¶A33?ÃÕ? ÉGl 514             i  PM I13450+1747  Gl 525    @i»¨ŸË>A@1…"˙÷ÀS?ÎÖ∏QÎÖ<49XÙ <>¸Ìë<ãCñ?ß=Yáø
+=q=£◊
+K7.7  A3†<£◊
+Aı√<ÉoAnò<Dõ¶A j<£◊
+A)`B<¨1Atº<49XA	•„<T˝ÙAù≤<T˝Ù@‡£◊<ãCñ@Õ°À<ãCñ@∆∞!<£◊
+AÁm<e`BA#%<e`BAS¯<e`B?ÎÖ∏QÎÖ<£◊
+8 %>Û∂F<u¬è?   <e`BA33?Æ@Ä£◊Gl 525             j  PM I13457+1453  Gl 526    @iÕ◊6&,@-»dE#ˆ~@Oﬂ;dZ=YáA <>Ùºj<Éo>Ó{=<jæû∏R=£◊
+M1.4  A–Â<£◊
+AÆ<Éo@Ó–Â<Dõ¶@ ¨<£◊
+Aüæ<£◊
+@˚∂F<49X@ﬂ
+=<T˝Ù@Œ$›<T˝Ù@ßÆ<ãCñ@ñ¿É<ãCñ@í<£◊
+@˚S¯<e`BAÎÖ<e`B@—p§<e`B@Oﬂ;dZ=•„T´  >Êff<tº>Û33<#◊
+A(ˆ?\)@≈≤-Gl 526             k                  Gl 544 B  @j‹«£ò ¿õﬂèG0??úın¨Üh9÷ıEw <>P©<Cñ>1&È<ãCñæ8QÏ<ı¬èM4.3  AÑ∞!<ºjAnz·<ÉoAZ∞!<T˝ÙA@$›<£◊
+A{˚Á<¥9XAe∏<49XAM<T˝ÙA?lã<T˝ÙA'©¸<ãCñAv…<ãCñAù≤<£◊
+A]Å<e`BAu“Ú<e`BADõ¶<e`B?úın¨Üh:'≈¨™ >H¥9;Éo>6E¢;£◊
+A·H?ôö?«ÆGl 544 B           l  PM I14201-0937  Gl 545    @j‡¸e@Ãx¿#=ä⁄πıY?¡ıY≥–|Ö;IR <>çOﬂ<Dõ¶>Éo<‘˝Ùæ.{=£◊
+M3.7  Ah»¥<¨1ANÈy<ÉoA;Ôû<Dõ¶A#Oﬂ<£◊
+A\óç<¨1AECñ<49XA/â7<T˝ÙA#GÆ<T˝ÙAE¢<ãCñAo<ãCñ@˝ôö<£◊
+A?Æ<e`BAUÎÖ<e`BA'ù≤<e`B?¡ıY≥–|Ö;kÌ˙K >áÆ;Â`B>Ü$›<#◊
+Ap§?!GÆ?˙üæGl 545             m  PM I14251+5149  Gl 549 B  @k	ãóxW)@IÍmõ‰Õt?’È·∞â†';∞Ú|ó <>”˜œ<u¬è>œ\)=#◊
+Ω·GÆ=£◊
+M2.6  APV<¨1A7x’<ÉoA&ƒú<T˝ÙA©¸<£◊
+ADß<¨1A.M”<49XA–Â<T˝ÙACñ<T˝Ù@¸  <ãCñ@Ë›/<ãCñ@·/<£◊
+A,<e`BA>nò<e`BA◊
+<e`B?’È·∞â†'<¸π >«+;Â`B>‘z·<tºAè\?
+=@æVGl 549 B           n  PM I14342-1231  Gl 555    @kR>BZÓb¿)
+Ac
+?Èå~($x<oã <>û∏R<T˝Ù>ã∆®<›/>.{=£◊
+M4.0  AO<¨1A5hs<ÉoA!<T˝ÙA£◊<£◊
+ABÈy<¨1A+x’<49XAhs<T˝ÙAÁm<T˝Ù@€çP<ãCñ@«Æ<ãCñ@ø\)<õ•„A#Ôû<e`BA<E¢<e`BA
+=<e`B?Èâ7K∆ß<Dõ¶˙  >íÒ™<tº>êÂ`<Dõ¶A∏R?
+=@ÃQÏGl 555             o  PM I15118+3933            @l~‹áTÛv@C∆zcslﬁ?´W>´6z:Ëhk =>±©¸<u¬è>©x’=+Ω∏QÏ<ı¬èM2.8  As<¨1AY†<ÉoAG∫^<T˝ÙA2I∫<£◊
+Ag7L<¨1AOhs<49XA=çP<T˝ÙA3ëh<T˝ÙAﬂ;<ãCñAß<ãCñA‘˛<£◊
+ALı√<e`BA`{<e`BA6nò<e`B?´W>´6z:y	lß >™~˙<#◊
+>±©¸<Dõ¶A\)?
+=?ˆLSPM J1511+3933    p  PM I15194-0743E Gl 581    @lªï1„ß¿„öø3á?Óø±[W>´;¸PHC <>ü;d<Dõ¶>ïÅ<Ìëhæôö=£◊
+M3.2  ABãD<£◊
+A)K«<ÉoA+<Dõ¶A bN<£◊
+A7<¨1AÖ<49XAb<T˝ÙAS¯<T˝Ù@÷Èy<ãCñ@ƒ9X<ãCñ@º¥9<£◊
+A◊
+<e`BA0 ≈<e`BA¨<e`B?Ó¿Énóç<49XÅ >ôá;Â`B>ú¨<49XA
+=?z·@ÆGl 581             q  PM I15238+1727  Gl 585    @lﬁ—x-8F@1wG0@9´?∏¸PH:™d√\ <>?|Ó<49X>•„<u¬èæÄ  =£◊
+M4.5  Awâ7<¨1A[lã<ÉoAEÎÖ<Dõ¶A*-<£◊
+Ai˜œ<¨1AQ;d<49XA7\)<T˝ÙA(˝Ù<T˝ÙAdZ<ãCñA	|Ó<ãCñA·H<£◊
+AH5?<e`BAb∏R<e`BA.üæ<e`B?∏¸PH;oç $>8QÏ<o>"–Â<#◊
+A33?(ˆ?é5?Gl 585             r  PM I15354+6005            @m;lãCïÄ@N
+Ô≤™‚ñ?∂‚ÎC,•:™d√¥ <>¢–Â<T˝Ù>éŸ<Â`Bº#◊
+=£◊
+M4.1  Anì<¨1AV–Â<ÉoACù≤<Dõ¶A*v…<£◊
+Ac`B<¨1AM<49XA6Ìë<T˝ÙA*óç<T˝ÙAì<ãCñA†<ãCñA–Â<£◊
+AGV<e`BA]"—<e`BA.ı√<e`B?∂‚ÎC,•;	†'> ">ïÅ<o>ïÅ<#◊
+A33?(ˆA"—LSPM J1535+6005E   s  PM I16139+3346  Gl 615.2 C@noÄ«:ºì@@‚˛≈m\˙?∆îFsÅ◊‹;ªô~ ?>ﬂæw<£◊
+>ÿìu=,1Ωu¬è<ı¬èM2.8  A\M”<¨1AD<ÉoA2üæ<T˝ÙA33<£◊
+AQtº<¨1A:Z<49XA(~˙<T˝ÙA£◊<e`BA	lã<ãCñA   <ãCñ@˜∆®<£◊
+A7“Ú<e`BAJß<e`BA!hs<e`B?∆îFsÅ◊‹;r{≥	 >ÃÃÕ<49X>⁄¨<T˝ÙAÖ?z·A
+~˙Gl 615.2 C         t  PM I16254+5418  Gl 625    @nÀGô≈W@K&ÌªY›¡?ÒdZ¨1<Dõ¶ì <>©x’<Dõ¶>°GÆ=oæ≥33=£◊
+M2.1  A;hs<£◊
+A!˜œ<ÉoA˝Ù<T˝Ù@˙E¢<£◊
+A0(ˆ<¨1Aﬂ;<49XA1<T˝Ù@˝Oﬂ<T˝Ù@‘  <ãCñ@¬5?<ãCñ@∫¿É<£◊
+A›/<e`BA(∏R<e`BA%<e`B?ÒdZ¨1<ìtº‘ ">£S¯;Â`B>™~˙<tºA£◊?ôö@°ÀGl 625             u  PM I16303-1239  Gl 628    @nÚhú°ã’¿)S*c«O?˛Z¨1'<ãCñ» <>¶ff<Dõ¶>ñá+<Ìëhºı¬è=£◊
+M3.6  A:r∞<£◊
+A!çP<ÉoAI∫<Dõ¶@Íüæ<£◊
+A.óç<£◊
+AÁm<49XA°À<Dõ¶@Í»¥<T˝Ù@æv…<ãCñ@¨Z<ãCñ@¢è\<£◊
+A„T<e`BA(Z<e`B@Û|Ó<e`B?˛Z¨1'<ÃÃÕS ">ôá;ƒõ¶>õ"—<#◊
+A·H?z·A#;dGl 628             v  PM I16509+2227  GJ 3976   @oóπwÖrö@6söø3á?∑È˘rGE:ÉoÓ <>F?<Ï¿>üæ<u¬èΩı¬è=£◊
+M4.9  A|Ò™<ºjA`nò<ãCñAIOﬂ<T˝ÙA+Û∂<£◊
+AoOﬂ<¥9XAU¬è<49XA9°À<T˝ÙA*è\<T˝ÙA9X<ãCñA	°À<ãCñA∏R<£◊
+AJŸ<e`BAg©¸<e`BA0üæ<e`B?∑È˘rGE:ƒõ¶c >6E¢;ƒõ¶>æw;Â`BA·H?ôö@–1GJ 3976            w  PM I16542+1154  Gl 642    @o±õ=»J@'‘K±Ø:?◊≤˛≈m\˚;XD–˙ =>Û33<‘˝Ù? ƒú=LÃÕæı¬è=£◊
+M0.0  AC"—<¨1A,{<ÉoAX<T˝ÙAìu<£◊
+A8·H<¨1A"£◊<49XA˚Á<T˝ÙA∂F<T˝Ù@˝?}<ãCñ@Ív…<ãCñ@Â%<£◊
+A$∞!<e`BA2ff<e`BAÆ<e`B?◊≤˛≈m\˚;‘˝Ù 5>Ìëh<£◊
+>˘€#<ìtºAff?Æ?g+Gl 642             x  PM I16554-0819  Gl 643    @oª]ˆU\R¿ •*ô0Ω?Ÿ° ¿Éo;£◊
+œ <>nóç<49X>PÂ`<£◊
+æÖ∏=£◊
+M3.2  AW"—<£◊
+A<Z<ÉoA(¿É<Dõ¶AÂ`<£◊
+AKX<¨1A1|Ó<49XAV<T˝ÙAo<T˝Ù@ÛÔû<ãCñ@·°À<ãCñ@Ÿx’<£◊
+A-†<e`BACá<e`BA/<e`B?Ÿ° ¿Éo;Ô4◊ >dZ<o>V<tºAè\?ôö?Û∂FGl 643             y  PM I16555-0823  Gl 644 C  @oº¥¢3ú¿ …˘HU⁄'?®1&Èx‘˛:Éo
+å <=Á†˘;≠´ü=¨<ü<	†'Ωè\)=£◊
+M7.0  AïM”<Â`BAÜb<ãCñAi;d<T˝ÙAB1<£◊
+AçK«<ƒõ¶AÄ&È<49XASdZ<T˝ÙA;
+=<T˝ÙAnò<ãCñA&È<ãCñAOﬂ<õ•„AcCñ<e`BAâ∏R<e`BAEtº<e`Bˇˇˇˇˇˇˇˇˇˇˇˇ    ˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇˇGl 644 C           z  PM I16570-0420  GJ 1207   @o»¬πMî¿e@ÃxÈˆ?“Ov_ÿ≠¨;ñªôù <>Ü$›<49X>ix’<ºjΩ∏QÏ=£◊
+M4.1  A^(ˆ<¨1ADnò<ÉoA0‘˛<Dõ¶A†<£◊
+ARV<¨1A:õ¶<49XA#∫^<T˝ÙAŸ<T˝Ù@ˇdZ<ãCñ@Ì&È<ãCñ@‰  <£◊
+A4{<e`BAKhs<e`BAçP<e`B?“Ov_ÿ≠¨;‚e >y€#;ƒõ¶>nóç;Â`BA¬è?(ˆ@’â7GJ 1207            {  PM I16581+2544  Gl 649    @o—.HËß@9æÖ€v≥ª?Ùƒõ•„S¯<T˝Ùt <? ¡<ìtº?¥9=Yá<ı¬è=£◊
+M1.3  A2bN<£◊
+A¨<ÉoA"—<Dõ¶@ÛCñ<£◊
+A'ù≤<£◊
+A?}<49XA∆®<T˝Ù@¯ãD<T˝Ù@œ◊
+<ãCñ@º  <ãCñ@¥I∫<£◊
+AÆ<e`BA!33<e`B@˙óç<e`B?Ùƒõ•„S¯<£◊
+ù '>˝p§<Dõ¶?Èy<T˝ÙA∏R?ÎÖ?ÄÉGl 649             |  PM I17095+4340  GJ 3991   @p!Í5ì@E◊7…öÈ$?ﬂØ∑È˘r;≠´ü‘ <>ínò<Dõ¶>à1'<›/>LÃÕ=£◊
+M3.9  AUp§<¨1A=Æ<ÉoA)p§<Dõ¶A‘˛<£◊
+AJ5?<¨1A4  <49XA ¡<T˝ÙA<T˝Ù@Ï¥9<ãCñ@ÿI∫<ãCñ@œCñ<£◊
+A,$›<e`BAD=q<e`BACñ<e`B?ﬂØ∑È˘r<o Ì >èﬂ;;Â`B>åI∫<#◊
+Aff?
+=>÷GJ 3991            }  PM I17115+3826  GJ 3992   @pQ$Jb#@C8¨\˝?⁄3úæﬂ§;ñªôh =>ƒõ¶<ãCñ>¿  =çP<ı¬è=£◊
+M3.4  AQçP<¨1A9°À<ÉoA'X<Dõ¶A≤-<£◊
+AF9X<¨1A01'<49XAôö<T˝ÙA5?<T˝Ù@Ùõ¶<ãCñ@·hs<ãCñ@Ÿp§<£◊
+A+|Ó<e`BA@M”<e`BA1<e`B?⁄3úæﬂ§;ÎÌ˙• $>ºj<Dõ¶>∆ß<u¬èAè\?z·?˝≤-GJ 3992            ~  PM I17198+4142  Gl 671    @p?É{J#9@D€bbÀß2?ÿeîØOÑ;Éoi =>√ïÅ<Éo>∫^5=tºæôö=£◊
+M2.7  ANºj<¨1A6¿É<ÉoA%tº<Dõ¶AJ<£◊
+AC◊
+<¨1A-o<49XA`B<T˝ÙA7L<T˝Ù@˜∆®<ãCñ@Â/<ãCñ@›Å<£◊
+A*ìu<e`BA=S¯<e`BA$›<e`B?ÿeîØOÑ;ƒõ¶Œ >∂»¥<#◊
+>¡%<T˝ÙA◊
+?z·@•ôöGl 671               LSPM J1725+0206 Gl 673    @pW˘dn@ ‰0+@ˆj@µ?|Ìëh=8QÏ <?&$›<£◊
+?4ºj=ëhs>Bè\=£◊
+K7.4  A~˙<£◊
+@QÏ<Éo@’¬è<Dõ¶@Ω7L<£◊
+AÂ`<£◊
+@ﬁóç<49X@Œóç<Dõ¶@≈V<T˝Ù@û¿É<ãCñ@ä{<ãCñ@Ö€#<£◊
+@ÂX<e`B@˝%<e`B@¬üæ<e`B@µ?|Ìëh=Å%J $?"–Â<#◊
+?-ëh<e`BA\)>˙·H?ë ¡LSPM J1725+0206    Ä  PM I17303+0532  Gl 678.1A @piÉ‰%ÆÊ@1∑X‚?¯Èx‘˝Û∂<e`B[ <?<õ•„?ãD=aGÆΩ∏QÏ=£◊
+M0.5  A,ãD<£◊
+AX<ÉoA˜œ<T˝Ù@ÏAâ<£◊
+A"5?<¨1AçP<49X@ˇÆ<T˝Ù@Úè\<T˝Ù@…“Ú<ãCñ@∂á+<ãCñ@ØçP<£◊
+A†<e`BAïÅ<e`B@Û
+=<e`B?¯Èx‘˝Û∂<¥9X„ $?%<49X?¥9<e`BA\)?
+=qA◊
+Gl 678.1A          Å  PM I17355+6140  Gl 685    @p~LD|0“@N◊?˙¡“ù?Ì≤-V<49X =?
+~˙<õ•„?E¢=q©¸=ÃÃÕ=£◊
+M0.8  A6ƒú<£◊
+A <ÉoA„T<T˝Ù@¸¥9<£◊
+A,r∞<¨1Ab<49XAá+<T˝ÙA7L<T˝Ù@›V<ãCñ@…`B<ãCñ@¡∫^<£◊
+AÉ<e`BA&(ˆ<e`BAì<e`B?Ì≤-V<Éo &?<Dõ¶?tº<e`BA·H?z·=óçPGl 685             Ç  PM I17364+6820  Gl 687    @pÅ∫}™O @Q∑k;∏<@
+ÁlãCïÅ<Â`Bo <>”˜œ<u¬è>œ\)='Ôû=LÃÕ=£◊
+M3.2  A*Ÿ<£◊
+AÈy<ÉoAëh<Dõ¶@’“Ú<£◊
+A∆®<£◊
+A	ﬂ;<49X@Ì&È<T˝Ù@◊33<T˝Ù@´"—<ãCñ@ô%<ãCñ@ê ≈<£◊
+Ab<e`BA∂F<e`B@ﬁ=q<e`B@
+ÁlãCïÅ=49X¬ ">…∫^<o>÷<#◊
+AÖ?z·@{oGl 687             É  PM I17378+1835  Gl 686    @páç‚¨2"@2óq!´Kr?ˆ∞ ƒõ•„<e`BI <>Ÿá<u¬è>‚M”=49XæÄ  =£◊
+M1.2  A2bN<£◊
+A•„<ÉoA	Ö<Dõ¶@ÔÔû<£◊
+A'lã<£◊
+A•„<49XA-<Dõ¶@ÙÂ`<T˝Ù@Ã9X<ãCñ@∫¨<ãCñ@±ÎÖ<£◊
+A5?<e`BA 1'<e`B@˜"—<e`B?ˆ∞ ƒõ•„<¥9X^ >÷<tº>„◊
+<#◊
+Aè\?ÎÖ>§›/Gl 686             Ñ  PM I17439+4322  Gl 694    @püªÛ°L@E∞y=Ÿb?Ïêˇó$tT<Áà =>·GÆ<ãCñ>‹(ˆ=0 ≈    =£◊
+M2.6  A@1'<£◊
+A(-<ÉoA»¥<Dõ¶Aôö<£◊
+A5†<£◊
+Aff<49XA»¥<Dõ¶A%<T˝Ù@€
+=<ãCñ@∆¿É<ãCñ@ø†<õ•„A1<e`BA.¥9<e`BA∂F<e`B?Ïìtºj~˙<e`BÙ $>“Ò™<#◊
+>·GÆ<49XA\)?\)@æ·HGl 694             Ö  PM I17578+0441N Gl 699    @p◊<!~{@ƒéäqﬁi@
+üæv»¥=ix’ú <>>≈m;Ëß>∏R<u¬èæÃÃÕ=£◊
+M4.2  A3Æ<£◊
+Anò<ÉoA
+=<Dõ¶@◊\)<£◊
+A&Ÿ<£◊
+Aõ¶<49X@Aâ<T˝Ù@◊|Ó<T˝Ù@©x’<ãCñ@ô°À<ãCñ@ëV<£◊
+Aóç<e`BA•„<e`B@‡r∞<e`B@
+üæv»¥=∂E¢≈ >9X;Éo>%„T;ÉoA=q?(ˆ?ÇJGl 699             Ü  PM I17578+4635  GJ 4040   @p◊eæ†∫@GKUÔ›Î?’/üæv…;ñªôé <> ¿É<ìtº>ÃÃÕ=#◊
+=#◊
+=£◊
+M3.2  ATÂ`<¨1A<QÏ<ÉoA* ≈<Dõ¶A"—<£◊
+AIïÅ<¨1A2¨<49XAŸ<Dõ¶A  <T˝Ù@¸bN<ãCñ@Ë˝Ù<ãCñ@ﬂﬂ;<£◊
+A.ß<e`BACo<e`BAp§<e`B?’/üæv…;Ô4◊∫ %>ƒì<T˝Ù>œﬂ;<ÉoA33?
+=?ôáGJ 4040            á  PM I18007+2933            @p„~‰‚m@=ê÷ıDª?ΩÛ∂E° ¡:ﬁ“âµ =>Ìëh<ìtº>Ëı√=<jΩu¬è<ı¬èM2.2  A_Æ<¨1AHõ¶<ÉoA8<T˝ÙA$  <£◊
+AUV<¨1A?∏<49XA.‘˛<T˝ÙA&  <T˝ÙA+<ãCñAX<ãCñA|Ó<£◊
+A=•„<e`BANı√<e`BA(J<e`B?ΩÛ∂E° ¡;*d√@ >€"—<o>Í~˙<tºA  ?\)AƒúLSPM J1800+2933    à  PM I18046+1354            @pÚî§“≤ø@+Œ÷wpyÂ?≥˜ŒŸá+:ê-‡/ =>ã∆®<49X>|Ìë<ÃÃÕæW
+==£◊
+M3.0  AlÈy<¨1AS°À<ÉoAAù≤<Dõ¶A+x’<£◊
+Aa/<¨1AIôö<49XA6˘€<T˝ÙA,üæ<T˝ÙAá<ãCñA5?<ãCñA
+nò<õ•„AFìu<e`BAZZ<e`BA/∂F<e`B?≥˜ŒŸá+:ﬁ“âT >à1';Â`B>Üß<tºA=q?(ˆ?YáLSPM J1804+1354    â  PM I18051-0301  Gl 701    @pÙÄ˚®Çj¿@
+|Zƒq?˚Ö∏QÎÖ<e`B <>Î<Éo>Ò&È=@ÉæaGÆ=£◊
+M1.3  A.1<£◊
+A9X<ÉoAbN<T˝Ù@È€#<£◊
+A#Oﬂ<£◊
+Av…<49X@˛$›<Dõ¶@ÓŸ<T˝Ù@≈¬è<ãCñ@≤–Â<ãCñ@™M”<£◊
+A˝Ù<e`BAüæ<e`B@ÒV<e`B?˚Ö∏QÎÖ<¨1u >ﬂæw<o>Ìëh<tºA(ˆ?
+=q@z~˙Gl 701             ä  PM I18165+4533  Gl 709    @q"£S%@F«fQm∞›?‰u%F
+¶L;Ëß… <?óç<¨1??}=mëhΩè\)=£◊
+M0.6  A;Ö<£◊
+A$ºj<ÉoAp§<T˝ÙAëh<£◊
+A1`B<£◊
+AV<49XA?}<Dõ¶A¨<T˝Ù@ÍE¢<ãCñ@’?}<ãCñ@œo<£◊
+AÉ<e`BA*Èy<e`BAı√<e`B?‰r∞ ƒõ¶<49X) (?+<Dõ¶?Ÿ<u¬èA\)?ÃÕ@õ∂FGl 709             ã  PM I18363+1336S GJ 4065   @qqH@·qü@+6ıDªÛ?ŒîFsÅ◊‹;>Ìó =>î˝Ù<T˝Ù>|Ìë<ÃÃÕ=#◊
+=£◊
+M4.1  Abj<ºjAG°À<ÉoA3
+=<T˝ÙAtº<£◊
+AU„T<¥9XA=∏<49XA%≤-<T˝ÙAÅ<T˝ÙA–Â<ãCñ@Û|Ó<ãCñ@Îﬂ;<£◊
+A6ìu<e`BANãD<e`BA˜œ<e`B?ŒîFsÅ◊‹;ê-‡  >â∫^<o>Ü$›<#◊
+A¬è?
+=@ÿƒúGJ 4065            å  PM I18411+2447S GJ 1230A  @qÑ¶øáiÏ@8…çÕ≥|ô?€ïÅ$›/<e`B† <>æv…<ãCñ>Æóç=Cñ>u¬è=£◊
+M4.3  A`É<¨1ACGÆ<ÉoA-≤-<T˝ÙA€#<£◊
+ARƒú<¨1A9†<49XA"—<T˝ÙAÃÕ<T˝Ù@Z<ãCñ@‹ºj<ãCñ@”çP<£◊
+A01<e`BAJÃÕ<e`BAj<e`B?€ïÅ$›/<£◊
+% >Æóç<T˝Ù>≤-<ÉoAÃÕ?ôöAƒúGJ 1230A           ç  PM I18419+3149  GJ 4070   @qáÔù≤-@?‘ö˛ß∞?›(åÁØ∏;ƒõ¶H =>…∫^<õ•„>ºÌë=çPæ#◊
+=£◊
+M2.8  ARbN<¨1A5∫^<ÉoA"ƒú<Dõ¶AÉ<£◊
+AEæw<¨1A*·H<49XA1<T˝ÙAæw<T˝Ù@›/<ãCñ@ﬁ˘€<ãCñ@◊"—<£◊
+A(<e`BA<·H<e`BAÃÕ<e`B?›(åÁØ∏<tº“ >∑ŒŸ<T˝Ù>¬è\<ÉoA{?
+=A	"—GJ 4070            é  PM I18427+5937N Gl 725A   @qãD˙@M–®¡T…Ö@/üæv…=8QÏq <>≥∂F<T˝Ù>´=+ækÖ=£◊
+M3.0  A&·H<£◊
+AZ<Éo@˙∏R<Dõ¶@œo<£◊
+Aæw<£◊
+A/<49X@Â„T<T˝Ù@—â7<T˝Ù@¶V<ãCñ@îãD<ãCñ@å˝Ù<£◊
+AI∫<e`BA?}<e`B@◊|Ó<e`B@/üæv…=ãCñΩ >´;ƒõ¶>≤∞!<oAÖ?ôö@SS¯Gl 725A            è  PM I18427+5937S Gl 725B   @qã!ˇ.HË@M–4„ @ı¬è\(ˆ=•„ <>ã∆®<49X>}Û∂<ÃÃÕæôôö=£◊
+M3.5  A4j<£◊
+A∫^<ÉoA	©¸<T˝Ù@‰(ˆ<£◊
+A(Ò™<¨1AZ<49X@˚˜œ<Dõ¶@ÂOﬂ<T˝Ù@∑Ôû<ãCñ@¶¿É<ãCñ@ûß<£◊
+A◊
+<e`BA"ìu<e`B@ÏÃÕ<e`B@ı¬è\(ˆ=aGÆ] >Ñõ¶;ƒõ¶>Çè\<oAè\?(ˆ@SÖGl 725B            ê  PM I18453+1851            @qïá~‰‚m@2›¡Áñ|Æ?∂lÙ!-w:ùIRé <>^5?<är><j<ìtºæ∏=£◊
+M4.4  Av¥9<¥9XA[°À<ãCñAFõ¶<T˝ÙA+ŒŸ<£◊
+Ajìu<ºjAQá<49XA8¿É<T˝ÙA+hs<T˝ÙA$›<ãCñA
+»¥<ãCñAß<£◊
+AIÖ<e`BAbè\<e`BA0nò<e`B?∂lÙ!-w:ﬁ“â… >V;Éo>Dõ¶;£◊
+A{?(ˆ?ÈáLSPM J1845+1851    ë  PM I18498-2350  Gl 729    @qßJƒ∞û¿7÷4ÍJ?˜7K∆ßÔû<ãCñ® <>MûÑ;˘	l>.{<ãCñæ8QÏ=£◊
+M4.1  ACV<£◊
+A(r∞<ÉoA©¸<Dõ¶@ÛŒŸ<£◊
+A6ìu<¨1Ax’<49XAv…<T˝Ù@ÛÔû<T˝Ù@«33<ãCñ@µ&È<ãCñ@¨õ¶<£◊
+A"—<e`BA/á<e`B@˝%<e`B?˜7K∆ßÔû<‘˝Ù¥ >K∆®;Dõ¶>9X;ÉoA
+=?ÎÖ>#◊
+Gl 729             í  PM I18580+0554  Gl 740    @q»`,êÅ@¢∆"¶?˚+I∫^<u¬è˙ <?ÎÖ<£◊
+?üæ=u¬è>\)=£◊
+M0.7  A*¨<£◊
+AÛ∂<ÉoA£◊<Dõ¶@È7L<£◊
+A ìu<£◊
+A
+E¢<49X@¸¥9<T˝Ù@ÓŸ<T˝Ù@»9X<ãCñ@≥◊
+<ãCñ@≠Oﬂ<£◊
+Aù≤<e`BA ≈<e`B@Ôﬂ;<e`B?˚+I∫^<¨1  )?Ÿ<T˝Ù?K«<e`BAÆ?ÎÖ?AGÆGl 740             ì  PM I19070+2053  Gl 745A   @qÏ_;dZ@4„ZÖáì›?‚I∫^5?};ÿD–¨ <>û∏R<Dõ¶>óçP<ı¬èæ®ı√=£◊
+M2.1  AE`B<¨1A,z·<ÉoAôö<Dõ¶A˚Á<£◊
+A:$›<¨1A"nò<49XAÃÕ<Dõ¶A	∆®<T˝Ù@ÍE¢<ãCñ@ÿ˝Ù<ãCñ@—©¸<£◊
+A!â7<e`BA3V<e`BAﬂ;<e`B?‚M“Ò©˚Á<49Xº ">ú(ˆ<#◊
+>° ¡<T˝ÙA  ?
+=>Ñõ¶Gl 745A            î  PM I19072+2052  Gl 745B   @qÏ·õêÍû@4‡á°7?‚∞ ƒõ•„<#◊
+¶ >>•`B<e`B>õ"—<ı¬èæ≥33=£◊
+M2.1  AE˜œ<¨1A+∆®<ÉoAff<T˝ÙAÌë<£◊
+A:QÏ<¨1A!?}<49XA°À<T˝ÙAı√<T˝Ù@ÈOﬂ<ãCñ@ÿ£◊<ãCñ@“J<£◊
+A è\<e`BA2ff<e`BA
+‘˛<e`B?‚∞ ƒõ•„<ÉoÃ ">†ƒú<49X>ßlã<e`BA£◊?(ˆ?uÅGl 745B            ï  PM I19169+0510  Gl 752A   @rØd9’@≠%Ì–Rì@"–Â`Aâ<ºjÊ <>Ú∞!<Éo>Û33=@É=ÃÃÕ=£◊
+M2.6  A)Ôû<£◊
+AAâ<ÉoA;d<Dõ¶@◊ŒŸ<£◊
+A
+=<£◊
+AŸ<49X@Óá+<T˝Ù@⁄<T˝Ù@±`B<ãCñ@ùX<ãCñ@ñE¢<£◊
+AM”<e`BA–Â<e`B@ﬂ˜œ<e`B@"–Â`Aâ=tº# ">È˚Á<#◊
+>˘€#<49XA33?\)@ÃÕGl 752A            ñ  PM I19220+0702  GJ 1236   @r("€aª@*Á’fœA?«iDg8~;IR =>oiD<_>RÒ™<¨1æîz·=£◊
+M3.3  Aa7L<¨1AF5?<ÉoA3ëh<Dõ¶A£◊<£◊
+AT»¥<¨1A;ŒŸ<49XA(nò<T˝ÙAôö<T˝ÙA$›<ãCñ@˛∏R<ãCñ@ˆóç<£◊
+A8QÏ<e`BAM∏<e`BA ˝Ù<e`B?«iDg8~;r{≥% >j~˙;ƒõ¶>^5?;ƒõ¶A33?
+=?r∞GJ 1236            ó  PM I19321-1119            @rPägbË¿&™GÏ˛õ{?∞÷ıDªÙ:{®Çã <>Ñì<#◊
+>cS¯<¥9X=LÃÕ<ı¬èM4.1  Avnò<¨1A^M”<ÉoAJóç<Dõ¶A0ìu<£◊
+AjÈy<¨1ATóç<49XA=Oﬂ<T˝ÙA0ìu<e`BA?}<ãCñAÎÖ<ãCñAÖ<£◊
+AM∫^<e`BAdÂ`<e`BA5Cñ<e`B?∞ÿD–©*:ƒõ¶„ >y€#;Éo>kÖ;ƒõ¶Aff?(ˆ@Ñ¨PM J19321-1119     ò  PM I19539+4424E GJ 1245B  @rß≠#Nπ°@F5!Whú°?…kπå~($;Q∑+ <>nò;‚e=“Ò™<#◊
+ΩLÃÕ=£◊
+M5.9  A}o<¥9XA_Oﬂ<ÉoAD^5<Dõ¶A"Ÿ<£◊
+AnV<¥9XATff<49XA1Ôû<T˝ÙA˝Ù<e`BA(ˆ<ãCñ@˜o<ãCñ@Ïı√<£◊
+AC%<e`BAf∏R<e`BA'†<e`B?…kπå~($;≠´üg ">Cñ;Éo=·GÆ;ÉoA◊
+?ôö?˛{GJ 1245B           ô  PM I20034+2951  Gl 777B   @rÕ≈° ¿Ç@=›‘A5Tu?ØÀí:)«z:∑Ä4H <>Ufœ<Ï¿>49X<ìtº=u¬è=£◊
+M4.4  AÄ\)<ÃÃÕAfz·<ìtºAQOﬂ<T˝ÙA4¨<£◊
+Ashs<ºjA]Oﬂ<49XAB9X<T˝ÙA2∏R<T˝ÙAX<ãCñA5?<ãCñA&È<£◊
+ARŸ<e`BAmÁm<e`BA8˝Ù<e`B?ØÀí:)«z;	†'v >NŸ;Â`B>:^5;Â`BA=q?ôö?ã"—Gl 777B            ö  PM I20112+1611  Gl 783.2B @rÏ‚CVñÂ@0/Ä4m≈÷?Æ˜<»Û:Å¬„ë =>ÄÉ<Éo>Yá<¨1æôö<ı¬èM4.0  Axb<¨1A_€#<ÉoAL(ˆ<T˝ÙA21<£◊
+Alìu<¨1AVr∞<49XA>∏R<T˝ÙA1lã<T˝ÙAE¢<ìtºA˜œ<ãCñA∂F<£◊
+AOo<e`BAfß<e`BA6bN<e`B?Æ˘€"–Â`:ƒõ¶ >j~˙<Dõ¶>\(ˆ<u¬èA¬è?(ˆ@µ“ÚGl 783.2B          õ  PM I20167+5017            @sÓC™yª@I$≈óNeæ?µº£n.≤:ê-‡Á <>’Å<Éo>◊çP=,1>\)=£◊
+M2.7  Af¨<£◊
+AO`B<ÉoA>~˙<Dõ¶A)?}<£◊
+A\-<¨1AF¨<49XA4z·<Dõ¶A*Ò™<e`BAãD<ãCñA
+=<ãCñA	Cñ<£◊
+AC•„<e`BAUÎÖ<e`BA-|Ó<e`B?µº£n.≤:ÎÌ˙’ $>÷á+<Dõ¶>‰›/<T˝ÙA¬è?
+=>nòLSPM J2016+5017    ú  PM I20260+5834  GJ 1253   @s(Z<!~@MIU≈.rŸ?∫=p£◊
+=:˘	lÂ <>;~ë<Ï¿>ôö<u¬è>\)=£◊
+M4.7  A}hs<¥9XAb¨<ãCñAL  <T˝ÙA.õ¶<£◊
+Ap=q<¥9XAXüæ<49XA<^5<T˝ÙA,bN<T˝ÙA˘€<ãCñA◊
+<ãCñA/<õ•„AM;d<e`BAi ¡<e`BA2Ò™<e`B?∫=p£◊
+=;>Ì !>5?};Â`B>•„<oAè\?(ˆ?Ix’GJ 1253            ù  PM I20450+4429  Gl 806    @stE° ¿Ç@F?‡7‹á?‚ªò«‚ÇA;Ëß÷ =>‚–Â<ìtº>›/=0 ≈æôö=£◊
+M2.0  ADz·<¨1A+â7<ÉoA–Â<Dõ¶AïÅ<£◊
+A9|Ó<¨1A!çP<49XA-<T˝ÙA	©¸<T˝Ù@Í$›<ãCñ@◊S¯<ãCñ@–˝Ù<£◊
+A Èy<e`BA21'<e`BAtº<e`B?‚∏QÎÖ∏<49X8 >‘˝Ù<49X>„S¯<T˝ÙAÖ?
+=@óÁmGl 806             û  PM I20525-1658            @sí3ªÉœ,¿0˘àèÜ`?Âá+J<T˝ÙÖ <>à1'<Dõ¶>e`B<¥9Xº£◊
+=£◊
+M4.0  AP∏R<¨1A7dZ<ÉoA#∏<Dõ¶A‘˛<£◊
+ADz·<¨1A-hs<49XAù≤<T˝ÙAff<T˝Ù@·€#<ãCñ@œdZ<ãCñ@»Aâ<£◊
+A&¨<e`BA>1'<e`BAX<e`B?Âá+J<õ•„ı  >{Ám<o>où≤<tºAè\?∏R@‘Â`LP 816-60          ü  PM I20533+6209  Gl 809    @sïQ¡ì≥¶@O∆ßÔù±@
+»¥9Xb=tºœ <?lã<ãCñ?ºj=mëhΩu¬è=£◊
+M1.0  A!%<£◊
+A	V<Éo@ÙZ<Dõ¶@‘  <£◊
+Ar∞<£◊
+@ˇ•„<49X@ÁçP<Dõ¶@Ÿhs<T˝Ù@ØçP<ãCñ@öá+<ãCñ@ív…<£◊
+A†<e`BAæw<e`B@⁄∞!<e`B@
+»¥9Xb=e`B %?◊
+<#◊
+?∆®<T˝ÙA=q?
+=q?’∏Gl 809             †  PM I20567-1026  Gl 811.1  @s£\|ÿò¿$Âé!ñRº?◊ŒŸá+;y	lë =>Èx’<Â`B>Álã=8QÏ>#◊
+=£◊
+M2.8  AP˘€<¨1A7◊
+<ÉoA&v…<T˝ÙA‘˛<£◊
+AEÅ<¨1A.I∫<49XA(ˆ<T˝ÙAb<e`B@˘ëh<ãCñ@‰ìu<ãCñ@‹ºj<£◊
+A+ëh<e`BA>¿É<e`BA˘€<e`B?◊ŒŸá+;¡T Ÿ .>‹¨<¥9X>ÎÖ<ÃÃÕA∏R?ÎÖ@•„Gl 811.1           °  LSPM J2106+3844SGl 820B   @sÀÆúÀ}A@C^˙ÇË},@6@     >Bè\µ J?¨<ºj?$ì=ÉoæaGÆ=£◊
+K7.3  @Ó=q<£◊
+@¬¨<Éo@ß<Dõ¶@ç„T<£◊
+@⁄·H<£◊
+@∞Aâ<49X@üdZ<Dõ¶@ñJ<T˝Ù@b¨<ãCñ@<ì<ãCñ@1∫^<£◊
+@∂è\<e`B@Œß<e`B@ìtº<e`B@6@     >ôôö $?Ò™<#◊
+?ôö<e`BA·H?∏@s◊
+LSPM J2106+3844S   ¢  PM I21092-1318  Gl 821    @s’) >Í ¿*öΩ„˚Ωz?⁄»¥9Xb;ßÁŸ <>ºÌë<Éo>∂E¢=tºæÊff=£◊
+M1.4  AFZ<¨1A.j<ÉoA(ˆ<T˝ÙA=q<£◊
+A;≤-<¨1A$ff<49XA~˙<T˝ÙA‘˛<T˝Ù@ˆè\<ãCñ@ÊJ<ãCñ@›Û∂<£◊
+A$¥9<e`BA4»¥<e`BA˜œ<e`B?⁄»¥9Xb<Cñ$ !>¥9X<49X>æv…<e`BA·H?z·@7æwGl 821             £  PM I21518+4220E Gl 838.3 B@tó∑AJL@E,bM“Ò? ‘,<ûÏ¿;ó$ª =?óç<ºj?9X=mëhΩè\)=£◊
+M0.5  AO33<£◊
+A7∂F<ÉoA(z·<T˝ÙAı√<£◊
+AD»¥<¨1A-˜œ<49XA"á+<T˝ÙA5?<T˝ÙAüæ<ãCñ@¸ ≈<ãCñ@ı¬è<£◊
+A/∂F<e`BA>J<e`BAE¢<e`B? ‘,<ûÏ¿;¡T  +?ff<e`B?V<ãCñAè\?ÎÖ@ú(ˆGl 838.3 B         §  PM I22021+0124  Gl 846    @t®Ø¢Zp?ˆgÅÉ˘d?¸ßÔù≤-<u¬è <?∆®<õ•„?
+==q©¸<£◊
+=£◊
+M0.6  A)˜œ<£◊
+A›/<ÉoAù≤<Dõ¶@Áù≤<£◊
+A∂F<£◊
+A	7L<49X@˙Èy<Dõ¶@Ì˚Á<T˝Ù@∆üæ<ãCñ@∞ı√<ãCñ@´†<£◊
+A
+ºj<e`BA+<e`B@Ó^5<e`B?¸ßÔù≤-<¥9X# (?	∫^<Dõ¶?-<u¬èA·H?
+=q>„S¯Gl 846             •  PM I22096-0438  Gl 849    @t∆∞OãX¿êÜnC™?ÛnóçOﬂ<#◊
+  <>£◊<ìtº>ˆ»¥=Dõ¶>Ωp§=£◊
+M3.1  A>E¢<£◊
+A&ãD<ÉoAìu<Dõ¶@˚"—<£◊
+A3+<¨1A7L<49XA	?}<T˝Ù@¸ãD<T˝Ù@œÔû<ãCñ@ª|Ó<ãCñ@≥ïÅ<£◊
+A˘€<e`BA-+<e`BAŒŸ<e`B?ÛnóçOﬂ<Éo—  >Ô†<49X>˝p§<49XAff?z·=LÃÕGl 849             ¶  PM I22160+5439  GJ 4269   @t‡,2"ë˙@KUP⁄„Êƒ?¨«éüjìÛ:vjUö ?>ì˜œ<Dõ¶>{Ám<ÃÃÕΩ#◊
+=£◊
+M4.1  Av·H<ƒõ¶A_â7<ìtºAL£◊<T˝ÙA2∞!<£◊
+Ak†<ºjAVóç<49XA?`B<T˝ÙA2è\<T˝ÙAﬂ;<ãCñAá<ãCñAo<£◊
+AOïÅ<e`BAfAâ<e`BA7?}<e`B?¨∆?º:ƒõ¶  >áÆ;Â`B>Ñõ¶<oA=q?!GÆA	`BGJ 4269 B          ß  PM I22290+0139            @uc˚Ω{?˙ùSÕ›n?ﬂÀ)^û;ñªô? <?33<ı¬è?∏R=}Û∂>∏=£◊
+M0.4  A>ff<£◊
+A(r∞<ÉoAù≤<Dõ¶A
+z·<£◊
+A4ìu<¨1AÒ™<49XAÎÖ<T˝ÙAïÅ<T˝Ù@Ù  <ãCñ@ﬂ\)<ãCñ@Ÿx’<£◊
+A ¿É<e`BA.z·<e`BA©¸<e`B?ﬂÀ)^û;Â`BT 8?©¸<õ•„?üæ<¨1Aè\?Æ>ä=qLSPM J2229+0139    ®  PM I22361-0050  Gl 864    @u0•;éKáøÍÓN&‘Ä?Íë—N;Õ6;ÎÌ˙L =?ôö<‘˝Ù?$›/=Éo=è\)=£◊
+M0.6  A6·H<£◊
+A 1<ÉoAß<Dõ¶A ˘€<£◊
+A,Èy<£◊
+A-<49XA
+õ¶<Dõ¶Ab<T˝Ù@·/<ãCñ@Õ∏<ãCñ@∆∞!<£◊
+AŒŸ<e`BA&1'<e`BAE¢<e`B?Íè\(ı¬è<49Xà 4?∂F<ãCñ?¨<ìtºA\)?∏?˜çPGl 864             ©  PM I22503-0705  Gl 875    @uiKú∂Ñã¿\Hj“‹∞?Ï£S&¬<µ›ú =? ≈<ƒõ¶?˜œ=mëh<£◊
+=£◊
+M0.2  A4˘€<£◊
+A€#<ÉoAÂ`<Dõ¶@ˇ•„<£◊
+A*è\<£◊
+A5?<49XA	GÆ<Dõ¶AÂ`<T˝Ù@ﬁß<ãCñ@ ˘€<ãCñ@√Cñ<£◊
+A-<e`BA$¨<e`BA˝Ù<e`B?Ï£◊
+=p§<Dõ¶¸ .?lã<u¬è?ﬂ;<ÉoA
+=?Æ@óïÅGl 875             ™  PM I22532-1415  Gl 876    @uuˇÎJ¿,Ü˜„—Ã?˛ßÔù≤-<u¬èØ <>π€#<e`B>ßÔû=+>.{=£◊
+M3.7  A;˜œ<£◊
+A"Ìë<ÉoA∂F<Dõ¶@ÌV<£◊
+A0Aâ<¨1Ahs<49XA˝Ù<T˝Ù@ÏÂ`<T˝Ù@æV<ãCñ@©€#<ãCñ@°7L<£◊
+A;d<e`BA)“Ú<e`B@ı˚Á<e`B?˛ßÔù≤-<ºj8  >™~˙<o>Æóç<#◊
+A(ˆ?z·A!;dGl 876             ´  PM I22565+1633  Gl 880    @uÇRù«%√@0ç∞5ΩQ.@\(ı¬è\<›/à <?ãD<ìtº?Ò™=ix’>W
+==£◊
+M1.5  A"ff<£◊
+A
+ß<Éo@ıÅ<Dõ¶@—x’<£◊
+A∂F<£◊
+Ao<49X@Ê{<T˝Ù@÷üæ<T˝Ù@¨z·<ãCñ@ó†<ãCñ@ë`B<£◊
+A/<e`BA&È<e`B@Ÿ%<e`B@\(ı¬è\='Ôû∞ #?	x’<#◊
+?ÎÖ<49XA\)?∏?dõ¶Gl 880             ¨                  Gl 887    @ußx"ªÏ™¿AÌ1e”ôo@%«Æz·H>.{h V>Ôù≤<¥9X>˝p§=H¥9Ωu¬è=£◊
+M1.1  AÌë<£◊
+@ÍŸ<Éo@À∂F<T˝Ù@©/<£◊
+AÉ<¨1@◊Æ<49X@Ωx’<T˝Ù@Ø33<T˝Ù@Ü∏R<ãCñ@d›/<ãCñ@UV<£◊
+@Ÿ∏<e`B@˜æw<e`B@∞¥9<e`B@%«Æz·H>Ä  É !>Ï1<tº>˚dZ<49XA\)?z·>S˜œGl 887             ≠  PM I23099+1425W           @u∑®‡…Ÿ“@,⁄O BÆ–?‡Ì(åÁ;™d√≠ >?$õ¶<¥9X?.{=ãCñΩLÃÕ=£◊
+K7.4  A9˜œ<£◊
+A#“Ú<ÉoA˚Á<T˝ÙA	hs<£◊
+A0<¨1Aüæ<49XA$›<Dõ¶A7L<T˝Ù@ÙÂ`<ãCñ@‡õ¶<ãCñ@€
+=<£◊
+A∆®<e`BA)˚Á<e`BAì<e`B?‡Ì(åÁ<o4 +?¨<Dõ¶?#o<ÉoA33?   AVLSPM J2309+1425    Æ  PM I23182+4617  Gl 894.1  @uŸ1„ß⁄§@G%Ã¢€a?ÿcÒA [¿;^“âF <?»¥=\)?$›/=Éo>∏=£◊
+M0.7  AEx’<£◊
+A.¿É<ÉoA∏<Dõ¶A£◊<£◊
+A;S¯<¨1A$Ò™<49XAj<T˝ÙAâ7<T˝Ù@˚˜œ<ãCñ@Á"—<ãCñ@‡Aâ<£◊
+A&  <e`BA4Èy<e`BAì<e`B?ÿcÒA [¿;™d√q ??˜œ<õ•„?/<¨1Aè\?è\?5?}Gl 894.1           Ø  PM I23216+1717  GJ 4333   @uÊÇ+æ @1JbÀß2ﬂ?‡ ƒõ•„T;∫«¸ <>‘˝Ù<£◊
+>»1'=æw>u¬è=£◊
+M3.9  AUOﬂ<¨1A<=q<ÉoA(Aâ<Dõ¶AI∫<£◊
+AIïÅ<¨1A2É<49XAÒ™<T˝ÙA`B<T˝Ù@Î•„<ãCñ@ÿr∞<ãCñ@–I∫<£◊
+A+GÆ<e`BACo<e`BAá+<e`B?‡ ƒõ•„T<tºh $>≈°À<u¬è>ŒŸ<ãCñA\)?ÎÖ@¥bNGJ 4333            ∞  PM I23245+5751S Gl 895    @uÚ√Û‡6@LÌ[W>´5?Åo h‹<_¥ <?	˚Á<£◊
+?¬è=mëh>û∏R=£◊
+M1.4  A8J<£◊
+A ∞!<ÉoAºj<Dõ¶@˝ôö<£◊
+A-|Ó<¨1AV<49XA	
+=<T˝ÙA7L<T˝Ù@Ÿx’<ãCñ@√\)<ãCñ@º ≈<£◊
+A&È<e`BA'á<e`BAz·<e`B?ìtºj<e`B¢ #?Ö<Dõ¶?˜œ<Dõ¶Aè\?ÎÖ>kÖGl 895             ±  PM I23318+1956W Gl 896A   @vz$âLD@3ÔÌ=Öú?˘x‘˝Û∂F=+ <>—hs<Éo>¬J=•„<ı¬è=£◊
+M3.8  A<E¢<£◊
+A#∏<ÉoA˜œ<Dõ¶@Óv…<£◊
+A133<£◊
+A33<49XAçP<T˝Ù@ÔS¯<T˝Ù@≈p§<ãCñ@≤Ò™<ãCñ@™nò<£◊
+A ¡<e`BA)Û∂<e`B@˜çP<e`B?˘x‘˝Û∂F=PÂ`£ #>ø|Ó<#◊
+>…∫^<Dõ¶Az·?ÎÖA%ÖGl 896A            ≤  PM I23318+1956E Gl 896B   @vÄùIQÇ@3ÔÎØ#c?„æv»¥9X<ìtº  <>õ"—<T˝Ù>u¬è<ƒõ¶<ı¬è=£◊
+M4.9  A^E¢<ºjAAâ7<ÉoA)dZ<Dõ¶Alã<£◊
+AQx’<ºjA6<49XAx’<T˝ÙA	†<T˝Ù@‚E¢<ãCñ@“-<ãCñ@…á<£◊
+A*v…<e`BAH~˙<e`BA◊
+<e`B?„æv»¥9X<›/Ì  >Ñõ¶<o>}Û∂<tºAff?!GÆA‡lãGl 896B            ≥  PM I23419+4410  Gl 905    @v7™√")@F∑™%ÿ◊?ËI∫^5?}<Dõ¶r <>AÚ<o >z·<u¬è>kÖ=£◊
+M5.2  Ac∆®<ºjAEÛ∂<ãCñA+∫^<T˝ÙA1'<£◊
+AUdZ<¥9XA:=q<49XAß<T˝ÙA¿É<T˝Ù@⁄˘€<ãCñ@«†<ãCñ@ªÁm<£◊
+A+∂F<e`BAM%<e`BAM”<e`B?ËI∫^5?}<Éo„ >333;Dõ¶>á+;ÉoA∏R?!GÆ@„Gl 905             ¥  PM I23428+3049  GJ 1288   @v;Ñöø3@>“ûnÎp%?Æ~•¯L≠X:<æb) <>>ﬂ§<Á>ìu<u¬èΩı¬è=£◊
+M4.7  AÄÅ<¥9XAf  <ãCñAP<T˝ÙA3Oﬂ<£◊
+At(ˆ<¥9XA[ŒŸ<49XA@ı√<T˝ÙA1∆®<T˝ÙAì<ãCñA„T<ãCñAÂ`<£◊
+AQ ¡<e`BAm/<e`BA7„T<e`B?ÆÉ‰%ÆÊ2:ê-‡d >6E¢;£◊
+> ƒú;ƒõ¶Aff?ôö?Í·HGJ 1288            µ  PM I23431+3632  GJ 1289   @v<kƒÿÏ@BDºj~˘⁄?–}øHÃ;ìtºe <>s∂F<T˝Ù>NŸ<£◊
+=LÃÕ=£◊
+M4.3  Af<¨1AJnò<ÉoA5ù≤<Dõ¶A»¥<£◊
+AX›/<¨1A@Z<49XA'©¸<T˝ÙA ¡<T˝ÙAçP<ãCñ@z·<ãCñ@Á33<£◊
+A8Z<e`BAQ•„<e`BA&È<e`B?–}øHÃ;ﬁ“â≤ #>e`B<49X>RÒ™<49XA∏R?(ˆ@2·HGJ 1289            ∂  PM I23492+0224  Gl 908    @vT’<›÷ﬂ@5¸;Oaf@Â`Aâ7L<õ•„> <>–bN<e`B>–Â`='ÔûæÊff=£◊
+M1.4  A'"—<£◊
+Ab<ÉoA ^5<T˝Ù@‹z·<£◊
+A»¥<¨1Aß<49X@ÒOﬂ<T˝Ù@‡‘˛<T˝Ù@∫^5<ãCñ@™=q<ãCñ@¢–Â<£◊
+A£◊<e`BAÉ<e`B@„ﬂ;<e`B@Â`Aâ7L=+x >…∫^;Â`B>◊
+=<oA33?ÃÕ@¨Gl 908             ∑  PM I23505-0933  GJ 4367   @vZí∑˝¿#)sñ–ë?æûöu;#◊
+ï <>°GÆ<u¬è>åÃÕ<›/>Ωp§=£◊
+M3.9  AoÖ<¥9XATQÏ<ÉoA@Aâ<Dõ¶A& ≈<£◊
+Abè\<¨1AJüæ<49XA2–Â<T˝ÙA%ëh<T˝ÙA–Â<ãCñA∆®<ãCñA7L<£◊
+AC`B<e`BA[ôö<e`BA*è\<e`B?æûöu;ó$◊ >ôá<49X>ñ<u¬èAè\?ôö@(ˆGJ 4367                                                                                                                                                                                                                                                                                                   

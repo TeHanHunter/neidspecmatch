@@ -58,7 +58,7 @@ def get_data_ready(H1, Hrefs, w, v, polyvals=None, vsinis=None, order=101, plot=
     # plt.show()
     # plt.plot(H1.w[91], H1.f_debl[91])
     # plt.savefig('/home/tehan/Downloads/target.png')
-    _, rabs = H1.rvabs_for_orders(v, orders=[55], plot=plot)
+    _, rabs = H1.rvabs_for_orders(v, orders=[91], plot=plot)
     H1.redshift(rv=np.median(rabs))
     f1, e1 = H1.resample_order(w, plot=True, order=order)
     print("Target={}, rv={:0.3f}km/s, rvmed={:0.3f}km/s".format(H1.target.name, H1.rv, np.median(rabs)))
@@ -67,7 +67,7 @@ def get_data_ready(H1, Hrefs, w, v, polyvals=None, vsinis=None, order=101, plot=
     eerefs = []
     for i, H in enumerate(Hrefs.splist):
         H.deblaze()
-        _, rabs = H.rvabs_for_orders(v, orders=[55], plot=plot)
+        _, rabs = H.rvabs_for_orders(v, orders=[91], plot=plot)
         H.redshift(rv=np.median(rabs))
         if polyvals is None and vsinis is None:
             _f, _e = H.resample_order(w, order=order)
