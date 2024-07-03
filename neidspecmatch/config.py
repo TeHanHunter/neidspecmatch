@@ -15,8 +15,8 @@ print('DIRNAME: {}'.format(DIRNAME))
 
 # Default library path
 PATH_LIBRARIES = os.path.join(DIRNAME, "library")
-PATH_LIBRARY = os.path.join(PATH_LIBRARIES, "20240301_specmatch_nir")
-PATH_LIBRARY_DB = os.path.join(PATH_LIBRARY, "20240301_50stars.csv")
+PATH_LIBRARY = os.path.join(PATH_LIBRARIES, "20240701_specmatch_nir")
+PATH_LIBRARY_DB = os.path.join(PATH_LIBRARY, "20240701_72stars.csv")
 PATH_LIBRARY_FITS = os.path.join(PATH_LIBRARY, "FITS")
 PATH_LIBRARY_CROSSVAL = os.path.join(PATH_LIBRARY, "crossval")
 PATH_LIBRARY_ZIPNAME = os.path.join(PATH_LIBRARY, '20210406_specmatch_nir_library.zip')

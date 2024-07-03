@@ -75,7 +75,7 @@ def find_star(name, combined=None):
     print(combined[idx])
 
 if __name__ == '__main__':
-    name = 'HD 143761'
+    name = 'HD 141004'
     # combined = combine_Mann_Yee()
     # combined.write(f'{DIRNAME}/library/combined.csv', format='csv',)
     combined = Table.read(f'{DIRNAME}/library/combined.csv', format='csv',)
