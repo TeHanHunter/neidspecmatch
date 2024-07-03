@@ -34,6 +34,7 @@ pip3 install .
 cd ..
 pip3 install lmfit
 pip3 install barycorrpy
+pip3 install celerite
 git clone https://github.com/TeHanHunter/neidspecmatch.git
 cd neidspecmatch
 pip3 install .
