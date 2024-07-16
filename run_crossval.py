@@ -26,6 +26,7 @@ if __name__ == '__main__':
     order = '101'
     df_lib = pd.read_csv(neidspecmatch.config.PATH_LIBRARY_DB)
     HLS = neidspec.NEIDSpecList(filelist=neidspecmatch.config.LIBRARY_FITSFILES)
+    print(HLS)
     outputdir = neidspecmatch.config.PATH_LIBRARY_CROSSVAL
     plot_results = True
     calibrate_feh = True

@@ -1058,6 +1058,7 @@ def run_crossvalidation_for_orders(order, df_lib=config.PATH_LIBRARY_DB, HLS=Non
         print(i)
         # Target data
         Htarget = HLS.splist[i]
+        print(Htarget.object)
         df_target = df_lib[df_lib['OBJECT_ID'] == Htarget.object]
         # Removing the target star from the library
         Hrefs = np.delete(np.array(HLS.splist), i)

@@ -66,25 +66,33 @@ def find_star(name, combined=None):
     custom_simbad.add_votable_fields('rvz_radvel')
     result_table = custom_simbad.query_object(name)
     radial_velocity = result_table['RVZ_RADVEL'][0]
-    print(f"Radial Velocity of {name}: {radial_velocity} km/s")
+    # print(f"Radial Velocity of {name}: {radial_velocity} km/s")
     ra_deg = result_table['RA']
     dec_deg = result_table['DEC']
     coord = SkyCoord(ra=ra_deg[0], dec=dec_deg[0], unit=(u.hourangle, u.deg))
     idx = np.argmin((combined['RA']-coord.ra.deg)**2 + (combined['Dec']-coord.dec.deg)**2)
     print(np.sqrt((combined['RA']-coord.ra.deg)**2 + (combined['Dec']-coord.dec.deg)**2)[idx])
-    print(combined[idx])
+    # print(combined[idx])
+    return radial_velocity, combined[idx]
 
 if __name__ == '__main__':
-    name = 'HD 141004'
+    name = 'Gl 905'
     # combined = combine_Mann_Yee()
     # combined.write(f'{DIRNAME}/library/combined.csv', format='csv',)
     combined = Table.read(f'{DIRNAME}/library/combined.csv', format='csv',)
-    find_star(name, combined=combined)
+    rv, row = find_star(name, combined=combined)
     # All simbad IDs
     simbadres = Simbad.query_objectids(name)
     # simbadres.pprint_all()
     all_IDS = ''
+    gaia_dr3 = ''
     for i in range(len(simbadres)):
         all_IDS += str(simbadres[i][0])
         all_IDS += '|'
-    print(all_IDS)
+        if str(simbadres[i][0])[:8] == 'Gaia DR3':
+            gaia_dr3 = str(simbadres[i][0])
+        if str(simbadres[i][0])[:2] == 'HD':
+            print(str(simbadres[i][0]))
+    items = [name.replace(' ', '_'), row['Source'], row['Teff'], row['e_Teff'], row['[Fe/H]'], row['e_[Fe/H]'],
+             row['log(g)'], row['e_log(g)'], 'N/A', all_IDS, gaia_dr3, '', '', '', '', '', rv]
+    print(*items, sep=',')
