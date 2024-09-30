@@ -5,6 +5,26 @@ import argparse
 import pandas as pd
 
 if __name__ == '__main__':
+    # Make sure library is available, if not, download it
+    neidspecmatch.get_library()
+    for i in range(103,104):
+        order = str(i)
+        df_lib = pd.read_csv(neidspecmatch.config.PATH_LIBRARY_DB)
+        HLS = neidspec.NEIDSpecList(filelist=neidspecmatch.config.LIBRARY_FITSFILES)
+        outputdir = neidspecmatch.config.PATH_LIBRARY_CROSSVAL
+        plot_results = True
+        calibrate_feh = True
+        scaleres = 1.
+
+        # Run cross validation for orders
+        neidspecmatch.run_crossvalidation_for_orders(order=order,
+                                                     df_lib=df_lib,
+                                                     HLS=HLS,
+                                                     outputdir=outputdir,
+                                                     plot_results=plot_results,
+                                                     calibrate_feh=calibrate_feh,
+                                                     scaleres=scaleres)
+
     # parser = argparse.ArgumentParser(description="NEID SpecMatch: Cross Validation")
     # parser.add_argument("order", type=int, default=101, help="Order to use for cross validation, e.g., order 101")
     # parser.add_argument("--df_lib", type=str, default=neidspecmatch.config.PATH_LIBRARY_DB,
@@ -20,23 +40,3 @@ if __name__ == '__main__':
     #         neidspecmatch.config.PATH_LIBRARY_CROSSVAL, True, True, 1.]
     #
     # args = parser.parse_args(argv[1:])
-    #
-    # Make sure library is available, if not, download it
-    neidspecmatch.get_library()
-    order = '101'
-    df_lib = pd.read_csv(neidspecmatch.config.PATH_LIBRARY_DB)
-    HLS = neidspec.NEIDSpecList(filelist=neidspecmatch.config.LIBRARY_FITSFILES)
-    print(HLS)
-    outputdir = neidspecmatch.config.PATH_LIBRARY_CROSSVAL
-    plot_results = True
-    calibrate_feh = True
-    scaleres = 1.
-
-    # Run cross validation for orders
-    neidspecmatch.run_crossvalidation_for_orders(order=order,
-                                                 df_lib=df_lib,
-                                                 HLS=HLS,
-                                                 outputdir=outputdir,
-                                                 plot_results=plot_results,
-                                                 calibrate_feh=calibrate_feh,
-                                                 scaleres=scaleres)

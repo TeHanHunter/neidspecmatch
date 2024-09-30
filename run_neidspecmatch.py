@@ -17,14 +17,18 @@ if __name__=='__main__':
     # Make sure library is availabe, if not, download it
     neidspecmatch.get_library()
 
-    filename = '/home/tehan/PycharmProjects/neidspecmatch/library/20240301_specmatch_nir/FITS/neidL2_20220307T035212.fits'
-    targetname = 'HD 28343'
-    outputdir = '/home/tehan/Downloads/specmatch_results'
-    orders = ['101']
+    filename = '/Users/tehan/Documents/NEID_archive/14020_Spectra/TIC 437039407_17_SpectraAveraged_joe.fits'
+    filename = '/Users/tehan/Documents/SURFSUP/NEID_Spectra/neidL2_20230906T103614.fits'
+    targetname = 'TIC 257397333'
+    # targetname = 'TIC 459762279'
+    outputdir = '/Users/tehan/Documents/SURFSUP/NEID_Spectra/NEIDSM'
+    orders = ['102']
     path_df_lib = neidspecmatch.config.PATH_LIBRARY_DB
     maxvsini = 100
     calibrate_feh = False
     scaleres = 1
+    deblazed = False
+    mode = 'HR'
 
     # Run specmatch for orders
     neidspecmatch.run_specmatch_for_orders(targetfile=filename,
@@ -34,4 +38,6 @@ if __name__=='__main__':
                                            orders=orders,
                                            maxvsini=maxvsini,
                                            calibrate_feh=calibrate_feh,
-                                           scaleres=scaleres)
+                                           scaleres=scaleres,
+                                           deblazed=deblazed,
+                                           mode=mode)

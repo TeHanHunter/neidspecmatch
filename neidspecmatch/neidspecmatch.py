@@ -30,7 +30,7 @@ rcParams['xtick.direction'] = 'in'
 rcParams['ytick.direction'] = 'in'
 
 
-def get_data_ready(H1, Hrefs, w, v, polyvals=None, vsinis=None, order=101, plot=False):
+def get_data_ready(H1, Hrefs, w, v, polyvals=None, vsinis=None, order=101, plot=False, deblazed=False):
     """
     Get data ready for MCMC
     
@@ -54,20 +54,20 @@ def get_data_ready(H1, Hrefs, w, v, polyvals=None, vsinis=None, order=101, plot=
         files = sorted(glob.glob('20200209_ad_leos/AD_Leo/*/*.pkl'))
         summarize_values_from_orders(files,'AD_Leo')
     """
-    H1.deblaze()
-    # plt.show()
-    # plt.plot(H1.w[91], H1.f_debl[91])
-    # plt.savefig('/home/tehan/Downloads/target.png')
-    _, rabs = H1.rvabs_for_orders(v, orders=[91], plot=plot)
+    if not deblazed:
+        H1.deblaze()
+    # _, rabs = H1.rvabs_for_orders(v, orders=[55,56,91], plot=plot)
+    _, rabs = H1.rvabs_for_orders(v, orders=[91,92,93], plot=plot)
+    print(rabs)
     H1.redshift(rv=np.median(rabs))
-    f1, e1 = H1.resample_order(w, plot=True, order=order)
+    f1, e1 = H1.resample_order(w, plot=True, order=order, deblazed=deblazed)
     print("Target={}, rv={:0.3f}km/s, rvmed={:0.3f}km/s".format(H1.target.name, H1.rv, np.median(rabs)))
 
     ffrefs = []
     eerefs = []
     for i, H in enumerate(Hrefs.splist):
         H.deblaze()
-        _, rabs = H.rvabs_for_orders(v, orders=[91], plot=plot)
+        _, rabs = H.rvabs_for_orders(v, orders=[55,56,91], plot=plot)
         H.redshift(rv=np.median(rabs))
         if polyvals is None and vsinis is None:
             _f, _e = H.resample_order(w, order=order)
@@ -76,6 +76,8 @@ def get_data_ready(H1, Hrefs, w, v, polyvals=None, vsinis=None, order=101, plot=
         ffrefs.append(_f)
         eerefs.append(_e)
         print("Target={}, rv={:0.3f}km/s, rvmed={:0.3f}km/s".format(H1.target.name, H1.rv, np.median(rabs)))
+        print('HR mode has an LSF width of the instrument resolution of 2.8 km/s;')
+        print('HE mode has an LSF width of the instrument resolution of 4.5 km/s.')
     # plt.show()
     # plt.plot(w, f1)
     # plt.savefig('/home/tehan/Downloads/target.png')
@@ -201,7 +203,7 @@ class FitLinCombSpec(object):
         fig.subplots_adjust(hspace=0.05)
 
     def plot_model_with_components(self, pv, fig=None, ax=None, names=None, savename='compositeComparison.pdf',
-                                   title='', scaleres=1.):
+                                   title='', scaleres=1., mode='HR'):
         """
         INPUT:
             scaleres - amount to scale residuals from composite spectrum (default 1)
@@ -229,15 +231,28 @@ class FitLinCombSpec(object):
 
         ax.text(w[0], 1.15, 'Target Spectrum (Black), Composite Spectrum (Red)', fontsize=8)
         ax.text(w[0], 0.15, 'Residual: Target - Composite (Scale: {:0.0f}x)'.format(scaleres), fontsize=8)
+        if mode == 'HR':
+            if self.vsini < 2.8:
+                title += 'Target={}, Teff={:0.3f}, Fe/H={:0.3f}, logg={:0.3f}, vsini<{:0.3f}km/s'.format(
+                    self.targetname,self.teff, self.feh,self.logg, 2.8)
+            else:
+                title += 'Target={}, Teff={:0.3f}, Fe/H={:0.3f}, logg={:0.3f}, vsini={:0.3f}km/s'.format(
+                    self.targetname,self.teff, self.feh,self.logg, self.vsini)
+        elif mode == 'HE':
+            if self.vsini < 4.5:
+                title += 'Target={}, Teff={:0.3f}, Fe/H={:0.3f}, logg={:0.3f}, vsini<{:0.3f}km/s'.format(
+                    self.targetname,self.teff, self.feh,self.logg, 4.5)
+            else:
+                title += 'Target={}, Teff={:0.3f}, Fe/H={:0.3f}, logg={:0.3f}, vsini={:0.3f}km/s'.format(
+                    self.targetname,self.teff, self.feh,self.logg, self.vsini)
+                self.logg, max(self.vsini, 4.5)
 
-        title += 'Target={}, Teff={:0.3f}, Fe/H={:0.3f}, logg={:0.3f}, vsini={:0.3f}km/s'.format(self.targetname,
-                                                                                                 self.teff, self.feh,
-                                                                                                 self.logg, self.vsini)
         ax.set_title(title, fontsize=10)
 
         ax.plot(w, (self.lpf.data_target['f'] - ff) * scaleres, color='black', lw=1)
         ax.set_xlabel('Wavelength [A]', fontsize=12, labelpad=2)
         ax.set_ylabel('Flux (+offset)', fontsize=12, labelpad=2)
+        ax.set_ylim(-1,7)
         # ax.set_title('log_ln={}, c={}'.format(self.lpf(pv),str(self.lpf.get_pv_all(pv))),fontsize=10)
         utils.ax_apply_settings(ax, ticksize=10)
         fig.tight_layout()
@@ -424,7 +439,7 @@ class FitTargetRefStarVsiniPolynomial(object):
             print("Finished MCMC")
 
 
-def chi2spectraPolyVsini(ww, H1, H2, rv1=None, rv2=None, plot=False, verbose=False, maxvsini=30., order=101):
+def chi2spectraPolyVsini(ww, H1, H2, rv1=None, rv2=None, plot=False, verbose=False, maxvsini=30., order=101, deblazed=False):
     """
     INPUT:
         ww - wavelength grid to interpolate on (array)
@@ -450,9 +465,13 @@ def chi2spectraPolyVsini(ww, H1, H2, rv1=None, rv2=None, plot=False, verbose=Fal
         chi2spectraPolyVsini(ww,H1,H2,rv1=14.51,plot=True)
         
     """
-    ff1, ee1 = H1.resample_order(ww, order=order)
+    ff1, ee1 = H1.resample_order(ww, order=order, deblazed=deblazed)
     ff2, ee2 = H2.resample_order(ww, order=order)
-
+    plt.close('all')
+    plt.plot(ww, ff1, label='H1')
+    plt.plot(ww, ff2, label='H2')
+    # plt.title(H2.basename)
+    # plt.savefig(f"/Users/tehan/Documents/NEID_archive/14020_Spectra/{H2.basename.replace('.fits','.png')}")
     C = Chi2FunctionVsiniPolynomial(ww, ff1, ee1, ff2, ee2, maxvsini)
     FTRSVP = FitTargetRefStarVsiniPolynomial(C)
     FTRSVP.minimize_AMOEBA()
@@ -466,7 +485,7 @@ def chi2spectraPolyVsini(ww, H1, H2, rv1=None, rv2=None, plot=False, verbose=Fal
     return chi2, vsini, coeffs
 
 
-def chi2spectraPolyLoop(ww, H1, Hrefs, plot_all=False, plot_chi=True, verbose=True, maxvsini=30., order=101):
+def chi2spectraPolyLoop(ww, H1, Hrefs, plot_all=False, plot_chi=True, verbose=True, maxvsini=30., order=101, deblazed=False):
     """
     Calculate chi square - target and list of reference spectra
     
@@ -494,7 +513,7 @@ def chi2spectraPolyLoop(ww, H1, Hrefs, plot_all=False, plot_chi=True, verbose=Tr
             print('First step: Matching target star to all library stars')
             print("##################")
 
-        chi, vsini, p = chi2spectraPolyVsini(ww, H1, H2, plot=plot_all, maxvsini=maxvsini, order=order)
+        chi, vsini, p = chi2spectraPolyVsini(ww, H1, H2, plot=plot_all, maxvsini=maxvsini, order=order, deblazed=deblazed)
         if verbose:
             print(
                 '{:3d}/{:2d}, Target = {:18s} Library Star = {:18s} chi2 = {:6.3f}'.format(i + 1, len(Hrefs), H1.object,
@@ -535,7 +554,7 @@ def weighted_value(values, weights):
 
 
 def run_specmatch(Htarget, Hrefs, ww, v, df_library, df_target=None, plot=True, savefolder='out/',
-                  maxvsini=30., calibrate_feh=True, scaleres=1., order=101):
+                  maxvsini=30., calibrate_feh=True, scaleres=1., order=101, deblazed=False, mode='HR'):
     """
     Second chi2 loop, creates composite spectrum 
     
@@ -570,7 +589,7 @@ def run_specmatch(Htarget, Hrefs, ww, v, df_library, df_target=None, plot=True, 
     ##############################
     # STEP 1: Chi2 Loop
     df_chi, df_chi_best, Hbest = chi2spectraPolyLoop(ww, Htarget, Hrefs, plot_all=False, verbose=True,
-                                                     maxvsini=maxvsini, order=order)
+                                                     maxvsini=maxvsini, order=order, deblazed=deblazed)
     ##############################
     # Combine best data
     # print(df_chi_best['OBJECT_ID'])
@@ -615,7 +634,7 @@ def run_specmatch(Htarget, Hrefs, ww, v, df_library, df_target=None, plot=True, 
     # STEP 2 LINEAR COMBINATION
     ##############################
     f1, e1, ffrefs, eerefs = get_data_ready(Htarget, Hbest, ww, v, polyvals=df_chi_best.poly_params.values,
-                                            vsinis=df_chi_best.vsini.values, order=order)
+                                            vsinis=df_chi_best.vsini.values, order=order, deblazed=deblazed)
     L = LPFunctionLinComb(ww, f1, e1, ffrefs, eerefs)
     LCS = FitLinCombSpec(L, df_chi_best_total.Teff.values,
                          df_chi_best_total['[Fe/H]'].values,
@@ -633,7 +652,7 @@ def run_specmatch(Htarget, Hrefs, ww, v, df_library, df_target=None, plot=True, 
     print(LCS.min_pv)
     # LCS.plot_model(LCS.min_pv)# SEJ
     if plot:
-        LCS.plot_model_with_components(LCS.min_pv, names=df_chi_best['OBJECT_ID'].values, title="",
+        LCS.plot_model_with_components(LCS.min_pv, names=df_chi_best['OBJECT_ID'].values, title="", mode=mode,
                                        savename=savefolder + targetname + '_compositecomparison.png', scaleres=scaleres)
 
     teff = LCS.teff
@@ -824,7 +843,7 @@ def summarize_values_from_orders(files_pkl, targetname):
 
 def run_specmatch_for_orders(targetfile, targetname, outputdirectory='specmatch_results', HLS=None,
                              path_df_lib=config.PATH_LIBRARY_DB, orders=['55', '101', '102', '103'],
-                             maxvsini=30., calibrate_feh=True, scaleres=1.):
+                             maxvsini=30., calibrate_feh=True, scaleres=1., deblazed=False, mode='HR'):
     """
     run neidspecmatch for a given target file and orders
     
@@ -874,7 +893,7 @@ def run_specmatch_for_orders(targetfile, targetname, outputdirectory='specmatch_
         wmin = config.BOUNDS[o][0]  # Lower wavelength bound in A
         wmax = config.BOUNDS[o][1]  # Upper wavelength bound in A
         ww = np.arange(wmin, wmax, 0.01)  # Wavelength array to resample to
-        v = np.linspace(-125, 125, 1501)  # Velocities in km/s to use for absolute RV consideration
+        v = np.linspace(-175, 175, 2501)  # Velocities in km/s to use for absolute RV consideration
         savefolder = '{}/{}_{}/'.format(outputdirectory, Htarget.object, o)  # foldername to save
 
         #############################################################
@@ -890,7 +909,9 @@ def run_specmatch_for_orders(targetfile, targetname, outputdirectory='specmatch_
                                                               maxvsini=maxvsini,
                                                               calibrate_feh=calibrate_feh,
                                                               scaleres=scaleres,
-                                                              order=int(o))
+                                                              order=int(o),
+                                                              deblazed=deblazed,
+                                                              mode=mode)
 
 
 def plot_crossvalidation_results_1d(order, df_crossval, savefolder):
@@ -914,7 +935,8 @@ def plot_crossvalidation_results_1d(order, df_crossval, savefolder):
     print(label)
     cx.plot(df_crossval.d_logg, 'k.', markersize=8)
     cx.set_ylim(cx.get_ylim()[0] * 2.2, cx.get_ylim()[1] * 2.2)
-
+    np.savetxt(savefolder + 'crossval_std.csv', np.array([[np.std(df_crossval.d_teff), np.std(df_crossval.d_feh),
+                                                           np.std(df_crossval.d_logg)]]), delimiter=',')
     for xx in (ax, bx, cx):
         utils.ax_apply_settings(xx)
         xx.tick_params(labelsize=9, pad=2)
@@ -1040,7 +1062,7 @@ def run_crossvalidation_for_orders(order, df_lib=config.PATH_LIBRARY_DB, HLS=Non
     wmin = config.BOUNDS[order][0]
     wmax = config.BOUNDS[order][1]
     ww = np.arange(wmin, wmax, 0.01)
-    v = np.linspace(-125, 125, 1501)
+    v = np.linspace(-175, 175, 2501)
     res = []
     obj_names = []
 
