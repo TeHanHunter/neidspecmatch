@@ -17,12 +17,11 @@ if __name__=='__main__':
     # Make sure library is availabe, if not, download it
     neidspecmatch.get_library()
 
-    filename = '/Users/tehan/Documents/NEID_archive/14020_Spectra/TIC 437039407_17_SpectraAveraged_joe.fits'
-    filename = '/Users/tehan/Documents/SURFSUP/NEID_Spectra/neidL2_20230906T103614.fits'
-    targetname = 'TIC 257397333'
-    # targetname = 'TIC 459762279'
+    # filename = '/Users/tehan/Documents/NEID_archive/14020_Spectra/TIC 437039407_17_SpectraAveraged_joe.fits'
+    filename = '/Users/tehan/Downloads/neidL2_20231111T104927.fits'
+    targetname = 'TIC 437229644'
     outputdir = '/Users/tehan/Documents/SURFSUP/NEID_Spectra/NEIDSM'
-    orders = ['102']
+    orders = ['55','101','102','103']
     path_df_lib = neidspecmatch.config.PATH_LIBRARY_DB
     maxvsini = 100
     calibrate_feh = False
