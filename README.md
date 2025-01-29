@@ -11,6 +11,8 @@ NEIDSpecMatch: Spectral matching of NEID data. Modified from [HPFSpecMatch](http
 - lmfit (`pip install lmfit`)
 - barycorrpy (`pip install barycorrpy`)
 
+  Known Issue: The latest version of barycorrpy deprecated some syntax used in the NEIDSpecMatch. Please use earlier versions (0.4.4 tested to work) while we update the syntax. 
+
 # Installation
 create a new conda env with
 `conda create -n neidspecmatch python==3.10`
