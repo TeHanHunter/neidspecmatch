@@ -41,3 +41,8 @@ git clone https://github.com/TeHanHunter/neidspecmatch.git
 cd neidspecmatch
 pip3 install .
 ```
+# Library download
+The current library include 89 library stars. You may download them [here](https://drive.google.com/drive/folders/1_ZcQavq5boQt5f7RjelEUF6sqZKibSbT?usp=sharing).
+
+# Reference
+TODO
