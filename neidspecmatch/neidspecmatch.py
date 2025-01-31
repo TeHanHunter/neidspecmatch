@@ -259,6 +259,54 @@ class FitLinCombSpec(object):
         fig.savefig(savename, dpi=200)
         print('Saved to {}'.format(savename))
 
+    import pickle
+
+    def plot_model_with_component_save(self, pv, fig=None, ax=None, names=None, savename='compositeComparison.pdf',
+                                   title='', scaleres=1., mode='HR', datafile='plot_data.pkl'):
+        """
+        INPUT:
+            scaleres - amount to scale residuals from composite spectrum (default 1)
+        Make a plot of the 5 best stars and compare to targets spectrum.
+        Compare composite spectrum to target spectrum and plot residuals.
+        """
+        w = self.lpf.w
+        pv_all = self.lpf.get_pv_all(pv)
+        self.calculate_stellar_parameters(pv_all)
+        target_spectrum = self.lpf.data_target['f']
+        composite_spectrum = self.lpf.compute_model(pv)
+        ref_spectra = [self.lpf.data_refs['f'][i] for i in range(5)]
+        labels = []
+        for i in range(5):
+            if names is not None:
+                label = '{}, $c_{}$={:0.5f}'.format(names[i].replace('_', ' '), i + 1, pv_all[i])
+                label += ', Teff={:0.0f}K'.format(self.teffs[i])
+            else:
+                label = '$c_{}$={:0.5f}'.format(i + 1, pv_all[i])
+                label += ', Teff={:0.0f}K'.format(self.teffs[i])
+            labels.append(label)
+
+        # Save data to a pickle file
+        plot_data = {
+            'wavelength': w,
+            'target_spectrum': target_spectrum,
+            'composite_spectrum': composite_spectrum,
+            'ref_spectra': ref_spectra,
+            'labels': labels,
+            'title': title,
+            'scaleres': scaleres,
+            'mode': mode,
+            'vsini': self.vsini,
+            'targetname': self.targetname,
+            'teff': self.teff,
+            'feh': self.feh,
+            'logg': self.logg
+        }
+        with open(datafile, 'wb') as f:
+            pickle.dump(plot_data, f)
+        print(f'Saved plot data to {datafile}')
+
+        # ... (rest of your plotting code here)
+
     def minimize_PyDE(self, npop=100, de_iter=200, mc_iter=1000, mcmc=True, threads=8, maximize=True, plot_priors=True,
                       sample_ball=False):
         """
@@ -554,7 +602,7 @@ def weighted_value(values, weights):
 
 
 def run_specmatch(Htarget, Hrefs, ww, v, df_library, df_target=None, plot=True, savefolder='out/',
-                  maxvsini=30., calibrate_feh=True, scaleres=1., order=101, deblazed=False, mode='HR'):
+                  maxvsini=30., calibrate_feh=True, scaleres=1., order=101, deblazed=False, mode='HR', save_plot_data=False):
     """
     Second chi2 loop, creates composite spectrum 
     
@@ -654,6 +702,9 @@ def run_specmatch(Htarget, Hrefs, ww, v, df_library, df_target=None, plot=True, 
     if plot:
         LCS.plot_model_with_components(LCS.min_pv, names=df_chi_best['OBJECT_ID'].values, title="", mode=mode,
                                        savename=savefolder + targetname + '_compositecomparison.png', scaleres=scaleres)
+    if save_plot_data:
+        LCS.plot_model_with_component_save(LCS.min_pv, names=df_chi_best['OBJECT_ID'].values, title="", mode=mode,
+                                       datafile=savefolder + targetname + '_compositecomparison.pkl', scaleres=scaleres)
 
     teff = LCS.teff
     feh = LCS.feh
@@ -843,7 +894,7 @@ def summarize_values_from_orders(files_pkl, targetname):
 
 def run_specmatch_for_orders(targetfile, targetname, outputdirectory='specmatch_results', HLS=None,
                              path_df_lib=config.PATH_LIBRARY_DB, orders=['55', '101', '102', '103'],
-                             maxvsini=30., calibrate_feh=True, scaleres=1., deblazed=False, mode='HR'):
+                             maxvsini=30., calibrate_feh=True, scaleres=1., deblazed=False, mode='HR', save_plot_data=False):
     """
     run neidspecmatch for a given target file and orders
     
@@ -911,7 +962,8 @@ def run_specmatch_for_orders(targetfile, targetname, outputdirectory='specmatch_
                                                               scaleres=scaleres,
                                                               order=int(o),
                                                               deblazed=deblazed,
-                                                              mode=mode)
+                                                              mode=mode,
+                                                              save_plot_data=save_plot_data)
 
 
 def plot_crossvalidation_results_1d(order, df_crossval, savefolder):

@@ -28,7 +28,7 @@ if __name__=='__main__':
     scaleres = 1
     deblazed = False
     mode = 'HR'
-
+    save_plot_data=True
     # Run specmatch for orders
     neidspecmatch.run_specmatch_for_orders(targetfile=filename,
                                            targetname=targetname,
@@ -39,4 +39,5 @@ if __name__=='__main__':
                                            calibrate_feh=calibrate_feh,
                                            scaleres=scaleres,
                                            deblazed=deblazed,
-                                           mode=mode)
+                                           mode=mode,
+                                           save_plot_data=save_plot_data)
