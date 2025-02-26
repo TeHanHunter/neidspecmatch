@@ -1,5 +1,5 @@
 # NEIDspecmatch (in progress)
-NEIDSpecMatch: Spectral matching of NEID data. Modified from [HPFSpecMatch](https://gummiks.github.io/hpfspecmatch/). 
+NEIDSpecMatch: Spectral matching of NEID data. Based on: [HPFSpecMatch](https://gummiks.github.io/hpfspecmatch/). 
 
 # Dependencies 
 
@@ -42,10 +42,10 @@ cd neidspecmatch
 pip3 install .
 ```
 # Library download
-The current library include 89 library stars. You may download them [here](https://drive.google.com/drive/folders/1_ZcQavq5boQt5f7RjelEUF6sqZKibSbT?usp=sharing).
+The current library include 78 library stars. You may download them [here](https://drive.google.com/drive/folders/1_ZcQavq5boQt5f7RjelEUF6sqZKibSbT?usp=sharing).
 
 # Cross-validation and result uncertainty 
-The cross-validation is a necessary step to estimate the uncertainty of the recovered stellar parameters. To run the cross-validation on the current library, one can run `run_crossval.py` for the desired order. The output include a file in the format of `crossvalidation_results_o102.csv`. One can take the standard deviation of the column d_teff, d_feh, and	d_logg on certain rows (depending on the star type you want to estimate the uncertainty). 
+The cross-validation is a necessary step to estimate the uncertainty of the recovered stellar parameters. To run the cross-validation on the current library, one can run `run_crossval.py` for the desired order(s). The output include a file in the format of `crossvalidation_results_o102.csv`. One can take the standard deviation of the column d_teff, d_feh, and	d_logg on certain rows (depending on the star type you want to estimate the uncertainty). 
 
 # Fit a spectrum
 Once the library is in place, one can run NEIDSpecMatch using `run_neidspecmatch.py`. 
