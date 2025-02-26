@@ -68,7 +68,7 @@ instance/
 .scrapy
 
 # Sphinx documentation
-docs/_build/
+tests/_build/
 
 # PyBuilder
 target/
@@ -110,7 +110,7 @@ venv.bak/
 *.pyc
 .DS_Store
 __pycache__
-docs/.*
+tests/.*
 .ipynb_checkpoints
 *.swp
 *.swm

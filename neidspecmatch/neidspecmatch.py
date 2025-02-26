@@ -224,28 +224,29 @@ class FitLinCombSpec(object):
             if names is not None:
                 label = '{}, $c_{}$={:0.5f}'.format(names[i].replace('_', ' '), i + 1, self.lpf.get_pv_all(pv)[i])
                 label += ', Teff={:0.0f}K'.format(self.teffs[i])
+                label += ', [Fe/H]={:0.2f}'.format(self.fehs[i])
             else:
                 label = '$c_{}$={:0.5f}'.format(i + 1, pv_all[i])
                 label += ', Teff={:0.0f}K'.format(self.teffs[i])
+                label += ', [Fe/H]={:0.2f}'.format(self.fehs[i])
             ax.text(w[0], (6.12 - i), label, color='black', fontsize=8)
 
         ax.text(w[0], 1.15, 'Target Spectrum (Black), Composite Spectrum (Red)', fontsize=8)
         ax.text(w[0], 0.15, 'Residual: Target - Composite (Scale: {:0.0f}x)'.format(scaleres), fontsize=8)
-        if mode == 'HR':
-            if self.vsini < 2.8:
-                title += 'Target={}, Teff={:0.3f}, Fe/H={:0.3f}, logg={:0.3f}, vsini<{:0.3f}km/s'.format(
-                    self.targetname,self.teff, self.feh,self.logg, 2.8)
-            else:
-                title += 'Target={}, Teff={:0.3f}, Fe/H={:0.3f}, logg={:0.3f}, vsini={:0.3f}km/s'.format(
-                    self.targetname,self.teff, self.feh,self.logg, self.vsini)
-        elif mode == 'HE':
-            if self.vsini < 4.5:
-                title += 'Target={}, Teff={:0.3f}, Fe/H={:0.3f}, logg={:0.3f}, vsini<{:0.3f}km/s'.format(
-                    self.targetname,self.teff, self.feh,self.logg, 4.5)
-            else:
-                title += 'Target={}, Teff={:0.3f}, Fe/H={:0.3f}, logg={:0.3f}, vsini={:0.3f}km/s'.format(
-                    self.targetname,self.teff, self.feh,self.logg, self.vsini)
-                self.logg, max(self.vsini, 4.5)
+        # if mode == 'HR':
+        #     if self.vsini < 2.8:
+        #         title += 'Target={}, Teff={:0.3f}, Fe/H={:0.3f}, logg={:0.3f}, vsini<{:0.3f}km/s'.format(
+        #             self.targetname,self.teff, self.feh,self.logg, 2.8)
+        #     else:
+        #         title += 'Target={}, Teff={:0.3f}, Fe/H={:0.3f}, logg={:0.3f}, vsini={:0.3f}km/s'.format(
+        #             self.targetname,self.teff, self.feh,self.logg, self.vsini)
+        # elif mode == 'HE':
+        #     if self.vsini < 4.5:
+        #         title += 'Target={}, Teff={:0.3f}, Fe/H={:0.3f}, logg={:0.3f}, vsini<{:0.3f}km/s'.format(
+        #             self.targetname,self.teff, self.feh,self.logg, 4.5)
+        #     else:
+        title += 'Target={}, Teff={:0.3f}, Fe/H={:0.3f}, logg={:0.3f}, vsini={:0.3f}km/s'.format(
+            self.targetname,self.teff, self.feh,self.logg, self.vsini)
 
         ax.set_title(title, fontsize=10)
 
@@ -253,6 +254,14 @@ class FitLinCombSpec(object):
         ax.set_xlabel('Wavelength [A]', fontsize=12, labelpad=2)
         ax.set_ylabel('Flux (+offset)', fontsize=12, labelpad=2)
         ax.set_ylim(-1,7)
+        # ax.set_xlim(8645, 8650)
+        print('___' + self.targetname)
+        if self.targetname == 'TIC 268804174':
+            ax.set_xlim(8645,8650)
+        elif self.targetname == 'TIC 365159477':
+            ax.set_xlim(8605,8615)
+        elif self.targetname == 'TIC 248027247':
+            ax.set_xlim(8650,8655)
         # ax.set_title('log_ln={}, c={}'.format(self.lpf(pv),str(self.lpf.get_pv_all(pv))),fontsize=10)
         utils.ax_apply_settings(ax, ticksize=10)
         fig.tight_layout()
@@ -280,9 +289,11 @@ class FitLinCombSpec(object):
             if names is not None:
                 label = '{}, $c_{}$={:0.5f}'.format(names[i].replace('_', ' '), i + 1, pv_all[i])
                 label += ', Teff={:0.0f}K'.format(self.teffs[i])
+                label += ', [Fe/H]={:0.2f}'.format(self.fehs[i])
             else:
                 label = '$c_{}$={:0.5f}'.format(i + 1, pv_all[i])
                 label += ', Teff={:0.0f}K'.format(self.teffs[i])
+                label += ', [Fe/H]={:0.2f}'.format(self.fehs[i])
             labels.append(label)
 
         # Save data to a pickle file
@@ -894,7 +905,7 @@ def summarize_values_from_orders(files_pkl, targetname):
 
 def run_specmatch_for_orders(targetfile, targetname, outputdirectory='specmatch_results', HLS=None,
                              path_df_lib=config.PATH_LIBRARY_DB, orders=['55', '101', '102', '103'],
-                             maxvsini=30., calibrate_feh=True, scaleres=1., deblazed=False, mode='HR', save_plot_data=False):
+                             maxvsini=30., calibrate_feh=True, scaleres=1., deblazed=False, mode='HR', save_plot_data=False, add_vsini=10):
     """
     run neidspecmatch for a given target file and orders
     
@@ -924,8 +935,7 @@ def run_specmatch_for_orders(targetfile, targetname, outputdirectory='specmatch_
     
     """
     # Target data
-    Htarget = neidspec.NEIDSpectrum(targetfile, targetname=targetname)
-
+    Htarget = neidspec.NEIDSpectrum(targetfile, targetname=targetname, add_vsini=add_vsini)
     print('Reading Library DataBase from: {}'.format(path_df_lib))
     df_lib = pd.read_csv(path_df_lib)
 
@@ -937,7 +947,9 @@ def run_specmatch_for_orders(targetfile, targetname, outputdirectory='specmatch_
 
     # Run spectral matching algorithm for first two orders
     # in principle we should run all orders, just first two as an example
+    vsinis = []
     for o in orders:
+        # Htarget = neidspec.NEIDSpectrum(targetfile, targetname=targetname, add_vsini=add_vsini)
         print("##################")
         print("Order {}".format(o))
         print("##################")
@@ -964,7 +976,8 @@ def run_specmatch_for_orders(targetfile, targetname, outputdirectory='specmatch_
                                                               deblazed=deblazed,
                                                               mode=mode,
                                                               save_plot_data=save_plot_data)
-
+        vsinis.append(vis)
+    return vsinis
 
 def plot_crossvalidation_results_1d(order, df_crossval, savefolder):
     """
@@ -1158,7 +1171,7 @@ def run_crossvalidation_for_orders(order, df_lib=config.PATH_LIBRARY_DB, HLS=Non
 
     result_savename = '{}/crossvalidation_results_o{}.csv'.format(outputdir, order)
     df_crossval.to_csv(result_savename, index=False)
-    print('Saved tesult to: {}'.format(result_savename))
+    print('Saved result to: {}'.format(result_savename))
 
     if plot_results == True:
         plot_crossvalidation_results_1d(order, df_crossval, outputdir)

@@ -7,14 +7,15 @@ import pandas as pd
 if __name__ == '__main__':
     # Make sure library is available, if not, download it
     neidspecmatch.get_library()
-    for i in range(103,104):
+    # for i in range(55,104):
+    for i in range(102,103):
         order = str(i)
         df_lib = pd.read_csv(neidspecmatch.config.PATH_LIBRARY_DB)
         HLS = neidspec.NEIDSpecList(filelist=neidspecmatch.config.LIBRARY_FITSFILES)
         outputdir = neidspecmatch.config.PATH_LIBRARY_CROSSVAL
         plot_results = True
-        calibrate_feh = True
-        scaleres = 1.
+        calibrate_feh = False
+        scaleres = 2.
 
         # Run cross validation for orders
         neidspecmatch.run_crossvalidation_for_orders(order=order,

@@ -142,8 +142,38 @@ def plot_lc(local_directory=None, catalog=None):
             plt.close(fig)
 
 
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+def plot_vsini_limit(file='/Users/tehan/PycharmProjects/neidspecmatch/all_vsinis_he.npy'):
+    all_vsinis = np.load(file, allow_pickle=True)
+    injected_vsini = np.linspace(10, 0.01, 20)[:len(all_vsinis)]
+
+    fig, axs = plt.subplots(2, 1, figsize=(6, 8), sharex=True, gridspec_kw={'height_ratios': [2, 1]})
+
+    # Main plot: Injected vs. Recovered vsini
+    axs[0].plot(injected_vsini, all_vsinis[:, 0], marker='.', label='i55')
+    axs[0].plot(injected_vsini, all_vsinis[:, 1], marker='.', label='i101')
+    axs[0].plot(injected_vsini, all_vsinis[:, 2], marker='.', label='i102')
+    axs[0].plot(injected_vsini, all_vsinis[:, 3], marker='.', label='i103')
+    axs[0].plot([0, 10], [0, 10], 'k')
+    axs[0].set_ylabel('Recovered vsini')
+    axs[0].legend()
+
+    # Residual plot: Difference between recovered and injected
+    for i in range(4):
+        axs[1].plot(injected_vsini, all_vsinis[:, i] - injected_vsini, marker='.', label=f'Residual {i}')
+
+    axs[1].axhline(0, color='k', linestyle='--')
+    axs[1].set_xlabel('Injected vsini')
+    axs[1].set_ylabel('Residual')
+
+    plt.savefig('HE_vsini_recovery.png')
+    plt.show()
 
 
 if __name__ == '__main__':
-    plot_lc(local_directory = '/home/tehan/Documents/GEMS/lc/',
-            catalog = '/home/tehan/Documents/GEMS/GEMS.csv')
+    # plot_lc(local_directory = '/home/tehan/Documents/GEMS/lc/',
+    #         catalog = '/home/tehan/Documents/GEMS/GEMS.csv')
+    plot_vsini_limit()
