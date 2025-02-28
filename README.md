@@ -1,4 +1,4 @@
-# NEIDspecmatch (in progress)
+# NEIDspecmatch (Beta)
 NEIDSpecMatch: Spectral matching of NEID data. Based on: [HPFSpecMatch](https://gummiks.github.io/hpfspecmatch/). 
 
 # Dependencies 
@@ -42,13 +42,15 @@ cd neidspecmatch
 pip3 install .
 ```
 # Library download
-The current library include 78 library stars. You may download them [here](https://drive.google.com/drive/folders/1YPzRRKow2PD0Lhkr8fCIos6fSNbFCTS1?usp=share_link).
+The current library include 78 library stars. You may download them [here](https://drive.google.com/drive/folders/1YPzRRKow2PD0Lhkr8fCIos6fSNbFCTS1?usp=share_link). The full directory (yyyymmdd_specmatch_nir/) need to be saved under the library/ folder. Make sure the path in config.py agrees with the name of the library. 
 
 # Cross-validation and result uncertainty 
-The cross-validation is a necessary step to estimate the uncertainty of the recovered stellar parameters. To run the cross-validation on the current library, one can run `run_crossval.py` for the desired order(s). The output include a file in the format of `crossvalidation_results_o102.csv`. One can take the standard deviation of the column d_teff, d_feh, and	d_logg on certain rows (depending on the star type you want to estimate the uncertainty). 
+The cross-validation is a necessary step to estimate the uncertainty of the recovered stellar parameters. To run the cross-validation on the current library, one can run `run_crossval.py` for the desired order(s). The output include a file in the format of `crossvalidation_results_o102.csv`. One can take the standard deviation of the column d_teff, d_feh, and	d_logg on all/certain rows (depending on the star type you want to estimate the uncertainty). 
+
+The alternative is to use the cross-validation result saved in the same link as the library, although we recommend running the cross-validation locally to check the completeness of the installation. 
 
 # Fit a spectrum
-Once the library is in place, one can run NEIDSpecMatch using `run_neidspecmatch.py`. 
+Once the library is in place, one can run NEIDSpecMatch using `run_neidspecmatch.py`. You need to specify the file path, target name (as in the fits header), orders, and more.
 
 # Reference
 TODO
