@@ -126,8 +126,8 @@ PATH_LIBRARY = os.path.join(PATH_LIBRARIES, "20250226_specmatch_nir")
 PATH_LIBRARY_DB = os.path.join(PATH_LIBRARY, "20250226_78stars.csv")
 PATH_LIBRARY_FITS = os.path.join(PATH_LIBRARY, "FITS")
 PATH_LIBRARY_CROSSVAL = os.path.join(PATH_LIBRARY, "crossval")
-PATH_LIBRARY_ZIPNAME = os.path.join(PATH_LIBRARY, '20210406_specmatch_nir_library.zip')
-URL_LIBRARY = 'https://www.dropbox.com/s/rtees0v6yt0t9eb/20210811_specmatch_nir.zip?dl=1'
+PATH_LIBRARY_ZIPNAME = os.path.join(PATH_LIBRARY, '20250226_specmatch_nir.zip')
+URL_LIBRARY = 'https://zenodo.org/records/14947454/files/20250226_specmatch_nir.zip?download=1'
 LIBRARY_FITSFILES = sorted(glob.glob(PATH_LIBRARY_FITS + '/*.fits'))
 print(PATH_LIBRARY_FITS)
 PATH_FSR = os.path.join(DIRNAME, 'lib/neid_fsr.csv')

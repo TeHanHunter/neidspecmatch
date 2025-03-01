@@ -29,9 +29,9 @@ def plot_crossval_feh_delta_feh(feh_true, d_feh, ax=None,
         fig, ax = plt.subplots(dpi=200)
 
     # Scatter plot of [Fe/H] true vs delta [Fe/H]
-    ax.plot(feh_true, d_feh+feh_true, marker='o', lw=0, color='black', markersize=4)
+    ax.plot(feh_true, d_feh, marker='o', lw=0, color='black', markersize=4)
     # Linear fit to the data
-    p = np.polyfit(feh_true, d_feh+feh_true, deg=1)
+    p = np.polyfit(feh_true, d_feh, deg=1)
     xx = np.linspace(-0.5, 0.5, 200)
     yy = np.polyval(p, xx)
     ax.plot(xx, yy, color='crimson', label='Linear fit\n$p_1$={:0.4f}\n$p_2$={:0.4f}'.format(p[0], p[1]))
@@ -134,8 +134,9 @@ def plot_crossvalidation_results_main(order, df_crossval, savefolder=None,
     print(np.sqrt(np.mean((target_spectrum - composite_spectrum)**2)))
     dx.set_title(title, fontsize=xlabel_fontsize)
     dx.plot(w, (target_spectrum - composite_spectrum) * scaleres, color='black', lw=1)
-    dx.set_xlabel('Wavelength [A]', fontsize=xlabel_fontsize, labelpad=2)
-    dx.set_ylabel('Flux (+offset)', fontsize=ylabel_fontsize, labelpad=2)
+    dx.set_xlabel(r'Wavelength [$\AA$]', fontsize=xlabel_fontsize, labelpad=2)
+    dx.set_ylabel('Normalize Flux + offset', fontsize=ylabel_fontsize, labelpad=2)
+    dx.set_yticklabels([])
     dx.set_ylim(-1, 7)
     # dx.set_xlim(8655, 8665)
 
@@ -155,10 +156,10 @@ def plot_crossvalidation_results_main(order, df_crossval, savefolder=None,
 if __name__ == '__main__':
     order = 102
     df_crossval = pd.read_csv(
-        f'/Users/tehan/PycharmProjects/neidspecmatch/library/20240822_specmatch_nir/crossval/o{order}_crossval/crossvalidation_results_o{order}.csv')
+        f'/Users/tehan/PycharmProjects/neidspecmatch/library/20250226_specmatch_nir/crossval/o{order}_crossval/crossvalidation_results_o{order}.csv')
     print(np.where(np.abs(df_crossval['d_feh']) > 0.3))
     print(df_crossval.iloc[31])
     # Running the function with the provided data
     plot_crossvalidation_results_main(order=order, df_crossval=df_crossval,
-                                      # savefolder=f'/Users/tehan/PycharmProjects/neidspecmatch/library/20240822_specmatch_nir/crossval/o{order}_crossval/'
+                                      savefolder=f'/Users/tehan/Documents/SURFSUP/NEID_Spectra/NEIDSM/'
                                       )

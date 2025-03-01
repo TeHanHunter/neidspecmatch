@@ -1,22 +1,23 @@
 import neidspec
 import numpy as np
 import pandas as pd
-import glob
 import astropy.io
 import pickle
 import os
 from neidspec import stats_help
-from lmfit import minimize, Parameters
-import pyde
-import pyde.de
+# import pyde
+# import pyde.de
+from pytransit.utils import de
+import glob
+
 import emcee
 import scipy.optimize
 from neidspec import rotbroad_help
 from neidspec import utils
 import matplotlib.pyplot as plt
 import astropy.modeling
-from neidspecmatch.priors import PriorSet, UP, NP, JP
-from neidspecmatch.likelihood import ll_normal_es_py, ll_normal_ev_py
+from neidspecmatch.priors import PriorSet, UP
+from neidspecmatch.likelihood import ll_normal_ev_py
 import neidspecmatch.config as config
 from matplotlib.gridspec import GridSpec
 from matplotlib import rcParams
@@ -233,20 +234,20 @@ class FitLinCombSpec(object):
 
         ax.text(w[0], 1.15, 'Target Spectrum (Black), Composite Spectrum (Red)', fontsize=8)
         ax.text(w[0], 0.15, 'Residual: Target - Composite (Scale: {:0.0f}x)'.format(scaleres), fontsize=8)
-        # if mode == 'HR':
-        #     if self.vsini < 2.8:
-        #         title += 'Target={}, Teff={:0.3f}, Fe/H={:0.3f}, logg={:0.3f}, vsini<{:0.3f}km/s'.format(
-        #             self.targetname,self.teff, self.feh,self.logg, 2.8)
-        #     else:
-        #         title += 'Target={}, Teff={:0.3f}, Fe/H={:0.3f}, logg={:0.3f}, vsini={:0.3f}km/s'.format(
-        #             self.targetname,self.teff, self.feh,self.logg, self.vsini)
-        # elif mode == 'HE':
-        #     if self.vsini < 4.5:
-        #         title += 'Target={}, Teff={:0.3f}, Fe/H={:0.3f}, logg={:0.3f}, vsini<{:0.3f}km/s'.format(
-        #             self.targetname,self.teff, self.feh,self.logg, 4.5)
-        #     else:
-        title += 'Target={}, Teff={:0.3f}, Fe/H={:0.3f}, logg={:0.3f}, vsini={:0.3f}km/s'.format(
-            self.targetname,self.teff, self.feh,self.logg, self.vsini)
+        if mode == 'HR':
+            if self.vsini < 2.8:
+                title += 'Target={}, Teff={:0.3f}, Fe/H={:0.3f}, logg={:0.3f}, vsini<{:0.3f}km/s'.format(
+                    self.targetname,self.teff, self.feh,self.logg, 2.8)
+            else:
+                title += 'Target={}, Teff={:0.3f}, Fe/H={:0.3f}, logg={:0.3f}, vsini={:0.3f}km/s'.format(
+                    self.targetname,self.teff, self.feh,self.logg, self.vsini)
+        elif mode == 'HE':
+            if self.vsini < 4.5:
+                title += 'Target={}, Teff={:0.3f}, Fe/H={:0.3f}, logg={:0.3f}, vsini<{:0.3f}km/s'.format(
+                    self.targetname,self.teff, self.feh,self.logg, 4.5)
+            else:
+                title += 'Target={}, Teff={:0.3f}, Fe/H={:0.3f}, logg={:0.3f}, vsini={:0.3f}km/s'.format(
+                    self.targetname,self.teff, self.feh,self.logg, self.vsini)
 
         ax.set_title(title, fontsize=10)
 
@@ -267,8 +268,6 @@ class FitLinCombSpec(object):
         fig.tight_layout()
         fig.savefig(savename, dpi=200)
         print('Saved to {}'.format(savename))
-
-    import pickle
 
     def plot_model_with_component_save(self, pv, fig=None, ax=None, names=None, savename='compositeComparison.pdf',
                                    title='', scaleres=1., mode='HR', datafile='plot_data.pkl'):
@@ -328,7 +327,7 @@ class FitLinCombSpec(object):
         """
         centers = np.array(self.lpf.ps.centers)
         print("Running PyDE Optimizer")
-        self.de = pyde.de.DiffEvol(self.lpf, self.lpf.ps.bounds, npop,
+        self.de = de.DiffEvol(self.lpf, self.lpf.ps.bounds, npop,
                                    maximize=maximize)  # we want to maximize the likelihood
         self.min_pv, self.min_pv_lnval = self.de.optimize(ngen=de_iter)
         print("Optimized using PyDE")
@@ -480,7 +479,7 @@ class FitTargetRefStarVsiniPolynomial(object):
         """
         centers = np.array(self.chi2f.ps.centers)
         print("Running PyDE Optimizer")
-        self.de = pyde.de.DiffEvol(self.chi2f, self.chi2f.ps.bounds, npop,
+        self.de = de.DiffEvol(self.chi2f, self.chi2f.ps.bounds, npop,
                                    maximize=False)  # we want to maximize the likelihood
         self.min_pv, self.min_pv_chi2val = self.de.optimize(ngen=de_iter)
         print("Optimized using PyDE")
@@ -904,8 +903,8 @@ def summarize_values_from_orders(files_pkl, targetname):
 
 
 def run_specmatch_for_orders(targetfile, targetname, outputdirectory='specmatch_results', HLS=None,
-                             path_df_lib=config.PATH_LIBRARY_DB, orders=['55', '101', '102', '103'],
-                             maxvsini=30., calibrate_feh=True, scaleres=1., deblazed=False, mode='HR', save_plot_data=False, add_vsini=10):
+                             path_df_lib=config.PATH_LIBRARY_DB, path_df_lib_fits=config.PATH_LIBRARY_FITS, orders=['55', '101', '102', '103'],
+                             maxvsini=30., calibrate_feh=True, scaleres=1., deblazed=False, mode='HR', save_plot_data=False):
     """
     run neidspecmatch for a given target file and orders
     
@@ -935,14 +934,14 @@ def run_specmatch_for_orders(targetfile, targetname, outputdirectory='specmatch_
     
     """
     # Target data
-    Htarget = neidspec.NEIDSpectrum(targetfile, targetname=targetname, add_vsini=add_vsini)
+    Htarget = neidspec.NEIDSpectrum(targetfile, targetname=targetname)
     print('Reading Library DataBase from: {}'.format(path_df_lib))
     df_lib = pd.read_csv(path_df_lib)
 
     # Reference data
     if HLS is None:
         print('No HLS supplied, defaulting to default library')
-        HLS = neidspec.NEIDSpecList(filelist=config.LIBRARY_FITSFILES)
+        HLS = neidspec.NEIDSpecList(filelist=sorted(glob.glob(path_df_lib_fits + '/*.fits')))
         Hrefs = HLS.splist
 
     # Run spectral matching algorithm for first two orders
@@ -1081,6 +1080,7 @@ def plot_crossvalidation_results_2d(order, df_crossval, savefolder):
 
 def run_crossvalidation_for_orders(order, df_lib=config.PATH_LIBRARY_DB, HLS=None,
                                    outputdir=config.PATH_LIBRARY_CROSSVAL,
+                                   path_df_lib_fits=config.PATH_LIBRARY_FITS,
                                    plot_results=True,
                                    calibrate_feh=True,
                                    scaleres=1.):
@@ -1136,7 +1136,7 @@ def run_crossvalidation_for_orders(order, df_lib=config.PATH_LIBRARY_DB, HLS=Non
     # Reference data
     if HLS is None:
         print('No HLS supplied, defaulting to default library')
-        HLS = neidspec.NEIDSpecList(filelist=config.LIBRARY_FITSFILES)
+        HLS = neidspec.NEIDSpecList(filelist=sorted(glob.glob(path_df_lib_fits + '/*.fits')))
 
     # Looping over every star in the library
     print(len(df_lib))

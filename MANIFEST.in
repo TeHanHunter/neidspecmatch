@@ -1,1 +1,3 @@
-include hpfspec/data/masks/ccf/*.mas
+include README.md
+include LICENSE
+recursive-include neidspecmatch/data *

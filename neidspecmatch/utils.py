@@ -8,7 +8,7 @@ import re
 import pandas as pd
 import radvel
 from astroquery.simbad import Simbad
-import wget, zipfile, shutil
+import wget, zipfile
 import neidspecmatch.config as config
 norm_mean = lambda x: x/np.nanmean(x)
 

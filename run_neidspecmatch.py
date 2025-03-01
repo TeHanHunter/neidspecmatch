@@ -1,6 +1,4 @@
-import neidspec
 import neidspecmatch
-import argparse
 import numpy as np
 
 if __name__=='__main__':
@@ -19,25 +17,25 @@ if __name__=='__main__':
     neidspecmatch.get_library()
 
     # filename = '/Users/tehan/Documents/NEID_archive/14020_Spectra/TIC 437039407_17_SpectraAveraged_joe.fits'
-    filename = '/Users/tehan/Downloads/neidL2_20210223T123115.fits'
-    targetname = 'TIC 325554331'
-    outputdir = '/Users/tehan/Downloads/barnard/'
+    filename = '/Users/tehan/Documents/SURFSUP/NEID_Spectra/neidL2_20231111T104927.fits'
+    targetname = 'TIC 437229644'
+    outputdir = '/Users/tehan/Documents/SURFSUP/NEID_Spectra/NEIDSM/'
     orders = ['55','101','102','103']
     # orders = ['101']
     path_df_lib = neidspecmatch.config.PATH_LIBRARY_DB
+    path_df_lib_fits = neidspecmatch.config.PATH_LIBRARY_FITS
     maxvsini = 100
-    calibrate_feh = False
+    calibrate_feh = True
     scaleres = 1
     deblazed = False
-    mode = 'HE'
+    mode = 'HR'
     save_plot_data=True
-    all_vsinis = []
     for add_vsini in np.linspace(10,0.01,20):
-        # Run specmatch for orders
-        vsinis = neidspecmatch.run_specmatch_for_orders(targetfile=filename,
+        neidspecmatch.run_specmatch_for_orders(targetfile=filename,
                                                targetname=targetname,
                                                outputdirectory=outputdir,
                                                path_df_lib=path_df_lib,
+                                               path_df_lib_fits=path_df_lib_fits,
                                                orders=orders,
                                                maxvsini=maxvsini,
                                                calibrate_feh=calibrate_feh,
@@ -46,6 +44,3 @@ if __name__=='__main__':
                                                mode=mode,
                                                save_plot_data=save_plot_data,
                                                add_vsini=add_vsini)
-        all_vsinis.append(vsinis)
-        print(all_vsinis)
-        np.save("tests/all_vsinis_he.npy", np.array(all_vsinis))

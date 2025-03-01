@@ -1,11 +1,9 @@
-from importlib import reload
 import os
 import glob2
 import pandas as pd
-import numpy as np
-import sys
 import hpfspec
-import neidspecmatch, utils, config
+import utils, config
+import neidspecmatch
 from tqdm import trange
 
 def run_hpfsm(targetname='TIC_39699837', orders=['55','101', '102', '103',]):
