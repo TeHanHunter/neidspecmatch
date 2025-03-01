@@ -6,7 +6,7 @@ def readme():
 
 setup(
     name='neidspecmatch',
-    version='0.1.3',
+    version='0.1.4',
     description='Matching NEID Spectra',
     long_description=readme(),
     long_description_content_type='text/markdown',
