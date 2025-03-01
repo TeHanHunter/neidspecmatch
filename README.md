@@ -14,6 +14,7 @@ pip install neidspecmatch
 
 # Cross-validation and result uncertainty 
 The cross-validation is a necessary step to estimate the uncertainty of the recovered stellar parameters. To run the cross-validation on the current library, one can follow [tutorial 1](tutorial/1.%20Setup%20and%20crossvalidation.ipynb) for the desired order(s). The output include a file in the format of `crossvalidation_results_o102.csv`. One can take the standard deviation of the column d_teff, d_feh, and	d_logg on all/certain rows (depending on the star type you want to estimate the uncertainty). 
+![cross-validation of order index 102](tests/img/crossvalidation_o102_main.png)
 
 The alternative is to use the cross-validation result saved in the same link as the library, although we recommend running the cross-validation locally to check the completeness of the installation. 
 
