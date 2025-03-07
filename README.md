@@ -1,4 +1,5 @@
-# NEIDspecmatch 
+# NEIDspecmatch [![DOI](https://zenodo.org/badge/769285239.svg)](https://doi.org/10.5281/zenodo.14991480)
+
 NEIDSpecMatch: a tool developed to extract stellar parameters from high-resolution spectra obtained with the NEID spectrograph. Based on: [HPFSpecMatch](https://gummiks.github.io/hpfspecmatch/). 
 
 ![TIC 437229644 example in order index 102](tests/img/TIC%20437229644_compositecomparison.png)
