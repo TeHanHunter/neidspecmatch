@@ -64,4 +64,24 @@ pip3 install .
 ```
 
 # Reference
-TODO
+```
+@ARTICLE{2025RNAAS...9...63H,
+       author = {{Han}, Te and {Robertson}, Paul and {Ca{\~n}as}, Caleb I. and {Stefansson}, Gudmundur and {Kanodia}, Shubham and {Ninan}, Joe P. and {Alvarado-Montes}, Jaime A. and {Bender}, Chad F. and {Dong}, Jiayin and {Fernandes}, Rachel and {Gupta}, Arvind F. and {Halverson}, Samuel and {Krolikowski}, Daniel M. and {Lin}, Andrea S.~J. and {Mahadevan}, Suvrath and {Paredes}, Leonardo A. and {Roy}, Arpita and {Schwab}, Christian and {Terrien}, Ryan C.},
+        title = "{NEIDSpecMatch: Stellar Parameter Estimation with NEID Spectra Using an Empirical Library}",
+      journal = {Research Notes of the American Astronomical Society},
+     keywords = {Stellar properties, Spectroscopy, Astronomical instrumentation, 1624, 1558, 799, Solar and Stellar Astrophysics, Astrophysics of Galaxies, High Energy Astrophysical Phenomena, Instrumentation and Methods for Astrophysics},
+         year = 2025,
+        month = mar,
+       volume = {9},
+       number = {3},
+          eid = {63},
+        pages = {63},
+          doi = {10.3847/2515-5172/adc264},
+archivePrefix = {arXiv},
+       eprint = {2503.16729},
+ primaryClass = {astro-ph.SR},
+       adsurl = {https://ui.adsabs.harvard.edu/abs/2025RNAAS...9...63H},
+      adsnote = {Provided by the SAO/NASA Astrophysics Data System}
+}
+
+```
