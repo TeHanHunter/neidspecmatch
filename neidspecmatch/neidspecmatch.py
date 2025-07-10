@@ -934,7 +934,7 @@ def run_specmatch_for_orders(targetfile, targetname, outputdirectory='specmatch_
     
     """
     # Target data
-    Htarget = neidspec.NEIDSpectrum(targetfile, targetname=targetname)
+    Htarget = neidspec.NEIDSpectrum(targetfile, targetname=targetname, save_name=outputdirectory)
     print('Reading Library DataBase from: {}'.format(path_df_lib))
     df_lib = pd.read_csv(path_df_lib)
 
