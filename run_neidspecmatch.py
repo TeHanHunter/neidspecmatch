@@ -17,9 +17,9 @@ if __name__=='__main__':
     neidspecmatch.get_library()
 
     # filename = '/Users/tehan/Documents/NEID_archive/14020_Spectra/TIC 437039407_17_SpectraAveraged_joe.fits'
-    filename = '/Users/tehan/Documents/SURFSUP/NEID_Spectra/neidL2_20231111T104927.fits'
-    targetname = 'TIC 437229644'
-    outputdir = '/Users/tehan/Documents/SURFSUP/NEID_Spectra/NEIDSM/'
+    filename = '/Users/tehan/Downloads/neidL2_20220608T061058.fits'
+    targetname = 'TIC 20182780'
+    outputdir = f'/Users/tehan/Downloads/{targetname}/'
     orders = ['55','101','102','103']
     # orders = ['101']
     path_df_lib = neidspecmatch.config.PATH_LIBRARY_DB
@@ -30,17 +30,15 @@ if __name__=='__main__':
     deblazed = False
     mode = 'HR'
     save_plot_data=True
-    for add_vsini in np.linspace(10,0.01,20):
-        neidspecmatch.run_specmatch_for_orders(targetfile=filename,
-                                               targetname=targetname,
-                                               outputdirectory=outputdir,
-                                               path_df_lib=path_df_lib,
-                                               path_df_lib_fits=path_df_lib_fits,
-                                               orders=orders,
-                                               maxvsini=maxvsini,
-                                               calibrate_feh=calibrate_feh,
-                                               scaleres=scaleres,
-                                               deblazed=deblazed,
-                                               mode=mode,
-                                               save_plot_data=save_plot_data,
-                                               add_vsini=add_vsini)
+    neidspecmatch.run_specmatch_for_orders(targetfile=filename,
+                                           targetname=targetname,
+                                           outputdirectory=outputdir,
+                                           path_df_lib=path_df_lib,
+                                           path_df_lib_fits=path_df_lib_fits,
+                                           orders=orders,
+                                           maxvsini=maxvsini,
+                                           calibrate_feh=calibrate_feh,
+                                           scaleres=scaleres,
+                                           deblazed=deblazed,
+                                           mode=mode,
+                                           save_plot_data=save_plot_data)
