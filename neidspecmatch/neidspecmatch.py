@@ -57,7 +57,7 @@ def get_data_ready(H1, Hrefs, w, v, polyvals=None, vsinis=None, order=101, plot=
     """
     if not deblazed:
         H1.deblaze()
-    _, rabs = H1.rvabs_for_orders(v, orders=[55,56,91], plot=plot)
+    _, rabs = H1.rvabs_for_orders(v, orders=[55,56,63,64], plot=plot)
     # _, rabs = H1.rvabs_for_orders(v, orders=[91,92,93], plot=plot)
     print(rabs)
     H1.redshift(rv=np.median(rabs))
@@ -68,7 +68,7 @@ def get_data_ready(H1, Hrefs, w, v, polyvals=None, vsinis=None, order=101, plot=
     eerefs = []
     for i, H in enumerate(Hrefs.splist):
         H.deblaze()
-        _, rabs = H.rvabs_for_orders(v, orders=[55,56,91], plot=plot)
+        _, rabs = H.rvabs_for_orders(v, orders=[55,56,63,64], plot=plot)
         H.redshift(rv=np.median(rabs))
         if polyvals is None and vsinis is None:
             _f, _e = H.resample_order(w, order=order)
