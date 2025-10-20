@@ -29,7 +29,7 @@ def process_neid_fits(
     neidspecmatch.get_library()
 
     # Find all FITS files
-    fits_files = glob(os.path.join(input_dir, '*.fits'))
+    fits_files = glob(os.path.join(input_dir, 'neidL2_20231007T055347.fits'))
 
     if not fits_files:
         print(f"No FITS files found in {input_dir}")
@@ -60,7 +60,11 @@ def process_neid_fits(
             scaleres=scaleres,
             deblazed=deblazed,
             mode=mode,
-            save_plot_data=save_plot_data
+            save_plot_data=save_plot_data,
+            absrv=95,  # Initial absrv estimate - will be refined using wavelength offset fitting
+            vsini=28,
+            refine_absrv=True,  # Enable iterative absrv refinement using wavelength offset fitting
+            max_refinement_iterations=3,  # Maximum iterations for refinement
         )
 
 
@@ -90,7 +94,7 @@ def gather_neidl2_pickle_results(
                 order = subfolder.split("_")[-1]
                 all_orders.add(order)
 
-    all_orders = sorted(all_orders, key=lambda x: int(x) if x.isdigit() else x)
+    all_orders = sorted(all_orders, key=lambda x: int(x) if x.isdigit() else float('inf'))
 
     # Build headers
     headers = ["Folder", "TIC"]
@@ -166,4 +170,4 @@ if __name__ == '__main__':
             mode='HR',
             save_plot_data=True
     )
-    gather_neidl2_pickle_results(output_dir)
+    # gather_neidl2_pickle_results(output_dir)
