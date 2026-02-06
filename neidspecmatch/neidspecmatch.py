@@ -966,9 +966,14 @@ def fit_wavelength_offset_to_rv_offset(wavelength, target_flux, composite_flux, 
         chi2 = np.sum(((target_flux - shifted_composite) / error_flux) ** 2)
         return chi2
     
-    # Fit for wavelength offset using scipy optimization
-    # Search range: ±0.1 Angstroms (equivalent to ±several km/s)
-    bounds = (-0.1, 0.1)  # Angstroms
+    # Compute wavelength bounds corresponding to ±15 km/s
+    c = 299792.458  # Speed of light in km/s
+    mean_wavelength = np.mean(wavelength)
+    max_rv_offset_kms = 15.0
+    wavelength_window = (max_rv_offset_kms / c) * mean_wavelength
+    
+    # Fit for wavelength offset using scipy optimization over ±15 km/s equivalent
+    bounds = (-wavelength_window, wavelength_window)
     
     try:
         result = opt.minimize_scalar(chi2_wavelength_offset, bounds=bounds, method='bounded')
@@ -978,9 +983,6 @@ def fit_wavelength_offset_to_rv_offset(wavelength, target_flux, composite_flux, 
         # Convert wavelength offset to RV offset using redshift formula
         # For small offsets: delta_lambda/lambda = delta_v/c
         # So: delta_v = c * delta_lambda/lambda
-        c = 299792.458  # Speed of light in km/s
-        mean_wavelength = np.mean(wavelength)
-        
         # RV offset from wavelength shift
         rv_offset = c * wavelength_offset / mean_wavelength
         
@@ -1043,8 +1045,8 @@ def refit_absrv_with_composite(Htarget, LCS, ww, v, order, absrv_current, max_it
 
 def run_specmatch_for_orders(targetfile, targetname, outputdirectory='specmatch_results', HLS=None,
                              path_df_lib=config.PATH_LIBRARY_DB, path_df_lib_fits=config.PATH_LIBRARY_FITS, orders=['55', '101', '102', '103'],
-                             maxvsini=30., calibrate_feh=True, scaleres=1., deblazed=False, mode='HR', save_plot_data=False, absrv=None, vsini=None, 
-                             refine_absrv=True, max_refinement_iterations=3):
+                             maxvsini=30., calibrate_feh=True, scaleres=1., deblazed=False, mode='HR', save_plot_data=False, absrv=None, vsini=None,
+                             refine_absrv=True, max_refinement_iterations=3, run_label=None):
     """
     run neidspecmatch for a given target file and orders
     
@@ -1062,6 +1064,8 @@ def run_specmatch_for_orders(targetfile, targetname, outputdirectory='specmatch_
         vsini - vsini value in km/s to use as gaussian prior instead of fitting (default = None)
         refine_absrv - whether to iteratively refine the absolute radial velocity using wavelength offset fitting (default = True)
         max_refinement_iterations - maximum number of iterations for absrv refinement (default = 3)
+        run_label - optional string appended to order folders to help distinguish multiple runs stored
+                    in the same outputdirectory (default = None)
     
     OUTPUT:
         result files will be saved to outputdirectory. If refine_absrv=True and significant improvement is found,
@@ -1106,7 +1110,9 @@ def run_specmatch_for_orders(targetfile, targetname, outputdirectory='specmatch_
         wmax = config.BOUNDS[o][1]  # Upper wavelength bound in A
         ww = np.arange(wmin, wmax, 0.01)  # Wavelength array to resample to
         v = np.linspace(-175, 175, 2501)  # Velocities in km/s to use for absolute RV consideration
-        savefolder = '{}/{}_{}/'.format(outputdirectory, Htarget.object, o)  # foldername to save
+        label_fragment = f"_{run_label}" if run_label else ""
+        folder_name = f"{Htarget.object}{label_fragment}_{o}"
+        savefolder = os.path.join(outputdirectory, folder_name, '')  # foldername to save
 
         #############################################################
         # Run specmatch for order (initial fit)
