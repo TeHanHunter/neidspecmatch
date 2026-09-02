@@ -1,0 +1,63 @@
+cff-version: 1.2.0
+message: "If you use NEIDSpecMatch, cite both the software release and the research note."
+title: NEIDSpecMatch
+type: software
+version: 0.2.0b1
+date-released: 2026-08-31
+doi: 10.5281/zenodo.14991480
+url: "https://github.com/TeHanHunter/neidspecmatch"
+repository-code: "https://github.com/TeHanHunter/neidspecmatch"
+license: MIT
+authors:
+  - family-names: Han
+    given-names: Te
+  - family-names: Stefansson
+    given-names: Gudmundur
+preferred-citation:
+  type: article
+  title: "NEIDSpecMatch: Stellar Parameter Estimation with NEID Spectra Using an Empirical Library"
+  doi: 10.3847/2515-5172/adc264
+  journal: Research Notes of the American Astronomical Society
+  year: 2025
+  volume: 9
+  issue: 3
+  start: 63
+  authors:
+    - family-names: Han
+      given-names: Te
+    - family-names: Robertson
+      given-names: Paul
+    - family-names: Cañas
+      given-names: Caleb I.
+    - family-names: Stefansson
+      given-names: Gudmundur
+    - family-names: Kanodia
+      given-names: Shubham
+    - family-names: Ninan
+      given-names: Joe P.
+    - family-names: Alvarado-Montes
+      given-names: Jaime A.
+    - family-names: Bender
+      given-names: Chad F.
+    - family-names: Dong
+      given-names: Jiayin
+    - family-names: Fernandes
+      given-names: Rachel
+    - family-names: Gupta
+      given-names: Arvind F.
+    - family-names: Halverson
+      given-names: Samuel
+    - family-names: Krolikowski
+      given-names: Daniel M.
+    - family-names: Lin
+      given-names: Andrea S. J.
+    - family-names: Mahadevan
+      given-names: Suvrath
+    - family-names: Paredes
+      given-names: Leonardo A.
+    - family-names: Roy
+      given-names: Arpita
+    - family-names: Schwab
+      given-names: Christian
+    - family-names: Terrien
+      given-names: Ryan C.

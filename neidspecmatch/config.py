@@ -1,9 +1,6 @@
 import os
 import glob
-from astropy.io import fits
-import matplotlib.pyplot as plt
-import numpy as np
-import pandas as pd
+from platformdirs import user_data_path
 
 # NEID wavelength bounds for different orders in Angstrom. Derived from NEID FSR (neid_fsr.csv)
 BOUNDS = {
@@ -115,51 +112,38 @@ BOUNDS = {
     '115': [10467.806991143882, 10608.438775041766],
 }
 
-# Directory name of package
+# Directory name of package (read-only package data only).
 DIRNAME = os.path.dirname(os.path.dirname(__file__))
-# DIRNAME = '/home/sejones/neidspecmatch'
-print('DIRNAME: {}'.format(DIRNAME))
 
-# Default library path
-PATH_LIBRARIES = os.path.join(DIRNAME, "library")
-PATH_LIBRARY = os.path.join(PATH_LIBRARIES, "20250226_specmatch_nir")
-PATH_LIBRARY_DB = os.path.join(PATH_LIBRARY, "20250226_78stars.csv")
+DEFAULT_LIBRARY_ID = "20250226_specmatch_nir"
+DEFAULT_LIBRARY_CATALOG = "20250226_78stars.csv"
+LIBRARY_ENVVAR = "NEIDSPECMATCH_LIBRARY"
+
+
+def resolve_library_path(library_path=None, library_id=DEFAULT_LIBRARY_ID):
+    """Resolve a library directory without creating or downloading anything.
+
+    Precedence is an explicit argument, ``NEIDSPECMATCH_LIBRARY``, then the
+    platform-appropriate per-user data directory.  The environment variable
+    and explicit argument point to the versioned library directory itself.
+    """
+    if library_path is not None:
+        return os.path.abspath(os.path.expanduser(os.fspath(library_path)))
+    configured = os.environ.get(LIBRARY_ENVVAR)
+    if configured:
+        return os.path.abspath(os.path.expanduser(configured))
+    return os.fspath(user_data_path("neidspecmatch") / "libraries" / library_id)
+
+
+# Backward-compatible constants.  They are quiet and point to user-writable
+# storage rather than site-packages.
+PATH_LIBRARY = resolve_library_path()
+PATH_LIBRARIES = os.path.dirname(PATH_LIBRARY)
+PATH_LIBRARY_DB = os.path.join(PATH_LIBRARY, DEFAULT_LIBRARY_CATALOG)
 PATH_LIBRARY_FITS = os.path.join(PATH_LIBRARY, "FITS")
 PATH_LIBRARY_CROSSVAL = os.path.join(PATH_LIBRARY, "crossval")
-PATH_LIBRARY_ZIPNAME = os.path.join(PATH_LIBRARY, '20250226_specmatch_nir.zip')
+PATH_LIBRARY_ZIPNAME = os.path.join(PATH_LIBRARY, DEFAULT_LIBRARY_ID + '.zip')
 URL_LIBRARY = 'https://zenodo.org/records/14947454/files/20250226_specmatch_nir.zip?download=1'
+LIBRARY_ZIP_MD5 = 'e54e203610e948512e641b6e30530570'
+LIBRARY_ZIP_SIZE_BYTES = 7337841681
 LIBRARY_FITSFILES = sorted(glob.glob(PATH_LIBRARY_FITS + '/*.fits'))
-print(PATH_LIBRARY_FITS)
-PATH_FSR = os.path.join(DIRNAME, 'lib/neid_fsr.csv')
-
-if __name__ == '__main__':
-    fsr_csv = pd.read_csv(PATH_FSR)
-    example_spec = fits.open(PATH_LIBRARY_FITS + '/neidL2_20211219T071619.fits')
-    w = example_spec[7].data
-
-    bounds_dict = {}
-
-    for i, row in fsr_csv.iterrows():
-        order_num = row['order']
-        fsr_start = row['fsr_start']
-        fsr_end = row['fsr_end']
-
-        # Skip orders with NaN values
-        if pd.isna(fsr_start) or pd.isna(fsr_end):
-            continue
-
-        start = int(fsr_start)
-        end = int(fsr_end)
-
-        # Extract the wavelength bounds for the current order
-        wavelength_start = w[i][start]
-        wavelength_end = w[i][end - 1]  # Subtract 1 to get the last pixel within FSR
-
-        # Store the bounds in the dictionary
-        bounds_dict[int(order_num)] = [wavelength_start, wavelength_end]
-
-        # Print the resulting dictionary in a vertical format
-    print("{")
-    for key, value in bounds_dict.items():
-        print(f"    '{key}': {value},")
-    print("}")

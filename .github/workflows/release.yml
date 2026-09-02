@@ -1,0 +1,349 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Publish the tested tag artifacts to PyPI
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  MPLBACKEND: Agg
+  PIP_DISABLE_PIP_VERSION_CHECK: "1"
+  PYTHONWARNINGS: default
+
+jobs:
+  build:
+    name: Build release artifacts once
+    runs-on: ubuntu-latest
+    outputs:
+      package-version: ${{ steps.version.outputs.package-version }}
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, reviewed 2026-08-31
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Require a clean checkout
+        run: test -z "$(git status --porcelain=v1)"
+
+      - name: Reject unresolved or stale repository data
+        shell: bash
+        run: |
+          set -euo pipefail
+          tracked_data="$(git ls-files lib library tests/img)"
+          if [[ -n "$tracked_data" ]]; then
+            echo "Unresolved-rights data remain tracked:" >&2
+            echo "$tracked_data" >&2
+            exit 1
+          fi
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import subprocess
+
+          paths = subprocess.check_output(
+              ["git", "ls-files", "*.ipynb"], text=True
+          ).splitlines()
+          stale = []
+          for value in paths:
+              path = Path(value)
+              text = path.read_text(encoding="utf-8")
+              notebook = json.loads(text)
+              has_output = any(
+                  cell.get("outputs") or cell.get("execution_count") is not None
+                  for cell in notebook.get("cells", [])
+                  if cell.get("cell_type") == "code"
+              )
+              has_personal_path = "/Users/" in text or "/home/" in text
+              if has_output or has_personal_path:
+                  stale.append(str(path))
+          if stale:
+              raise SystemExit(
+                  "Notebooks must be clean-output and path-agnostic: "
+                  f"{stale}"
+              )
+          PY
+
+      - name: Reject hard-coded credential arguments
+        run: |
+          python - <<'PY'
+          import ast
+          from pathlib import Path
+          import subprocess
+
+          sensitive = {"api_key", "apikey", "password", "secret", "token"}
+          findings = []
+          paths = subprocess.check_output(
+              ["git", "ls-files", "*.py"], text=True
+          ).splitlines()
+          for value in paths:
+              path = Path(value)
+              tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+              for node in ast.walk(tree):
+                  if not isinstance(node, ast.Call):
+                      continue
+                  for keyword in node.keywords:
+                      if keyword.arg is None or keyword.arg.lower() not in sensitive:
+                          continue
+                      literal = keyword.value
+                      if (
+                          isinstance(literal, ast.Constant)
+                          and isinstance(literal.value, str)
+                          and literal.value
+                      ):
+                          findings.append((str(path), node.lineno, keyword.arg))
+          if findings:
+              raise SystemExit(
+                  "Nonempty credential literals found at "
+                  f"{findings}; values intentionally suppressed"
+              )
+          PY
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0, reviewed 2026-08-31
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Build distributions
+        run: |
+          python -m pip install --require-hashes -r constraints/release-py312.txt
+          python -m build --no-isolation
+
+      - name: Validate distribution metadata and wheel layout
+        run: |
+          python -m twine check dist/*
+          check-wheel-contents dist/*.whl
+          python - <<'PY'
+          from pathlib import Path
+          from hashlib import sha256
+          from tarfile import open as open_tar
+          from zipfile import ZipFile
+
+          max_artifact_bytes = 5 * 1024 * 1024
+          oversized = [
+              f"{item.name} ({item.stat().st_size} bytes)"
+              for item in Path("dist").iterdir()
+              if item.is_file() and item.stat().st_size > max_artifact_bytes
+          ]
+          if oversized:
+              raise SystemExit(f"Unexpectedly large release artifacts: {oversized}")
+          forbidden = (".DS_Store", "__pycache__", ".pyc", "data/target_files/")
+          wheels = list(Path("dist").glob("*.whl"))
+          if len(wheels) != 1:
+              raise SystemExit(f"Expected exactly one wheel, found {len(wheels)}")
+          for wheel in wheels:
+              with ZipFile(wheel) as archive:
+                  names = archive.namelist()
+              unexpected = [name for name in names if any(part in name for part in forbidden)]
+              if unexpected:
+                  raise SystemExit(f"Unexpected files in {wheel}: {unexpected}")
+              if not any(name.endswith("/LICENSE") for name in names):
+                  raise SystemExit(f"LICENSE is missing from {wheel}")
+              packaged_data = {
+                  name for name in names if name.startswith("neidspecmatch/data/")
+              }
+              manifest_path = "neidspecmatch/data/default_library_allowlist.json"
+              expected_data = {"neidspecmatch/data/__init__.py", manifest_path}
+              if packaged_data != expected_data:
+                  raise SystemExit(
+                      "Wheel package-data allowlist mismatch: "
+                      f"expected {sorted(expected_data)}, found {sorted(packaged_data)}"
+                  )
+              with ZipFile(wheel) as archive:
+                  digest = sha256(archive.read(manifest_path)).hexdigest()
+              if digest != "e3a5b624f970299f5ed3db4f744d07d10c5a5d423adb7d81cd60ad4d4fa53dfe":
+                  raise SystemExit(f"Default-library allowlist digest mismatch: {digest}")
+
+          sdists = list(Path("dist").glob("*.tar.gz"))
+          if len(sdists) != 1:
+              raise SystemExit(f"Expected exactly one sdist, found {len(sdists)}")
+          with open_tar(sdists[0], "r:gz") as archive:
+              sdist_names = archive.getnames()
+              relative_members = {
+                  member.name.split("/", 1)[1]: member
+                  for member in archive.getmembers()
+                  if member.isfile() and "/" in member.name
+              }
+              relative_names = set(relative_members)
+              packaged_data = {
+                  name for name in relative_names
+                  if name.startswith("neidspecmatch/data/")
+              }
+              manifest_path = "neidspecmatch/data/default_library_allowlist.json"
+              expected_data = {"neidspecmatch/data/__init__.py", manifest_path}
+              if packaged_data != expected_data:
+                  raise SystemExit(
+                      "Sdist package-data allowlist mismatch: "
+                      f"expected {sorted(expected_data)}, found {sorted(packaged_data)}"
+                  )
+              stream = archive.extractfile(relative_members[manifest_path])
+              if stream is None:
+                  raise SystemExit("Could not read default-library allowlist from sdist")
+              digest = sha256(stream.read()).hexdigest()
+              if digest != "e3a5b624f970299f5ed3db4f744d07d10c5a5d423adb7d81cd60ad4d4fa53dfe":
+                  raise SystemExit(f"Sdist default-library allowlist digest mismatch: {digest}")
+          forbidden_prefixes = (
+              ".ci/", "data/", "img/", "lib/", "library/", "notebooks/",
+              "tutorial/",
+          )
+          unexpected_data = sorted(
+              name for name in relative_names
+              if name.startswith(forbidden_prefixes)
+          )
+          if unexpected_data:
+              raise SystemExit(
+                  f"Unlicensed or local-only data found in sdist: {unexpected_data}"
+              )
+          required = (
+              "CHANGELOG.md", "CITATION.cff", "DATA_LICENSES.md", "LICENSE",
+              "SECURITY.md", "docs/RELEASE_CHECKLIST.md",
+              "docs/VALIDATION_REPORT_0.2.0b1.md",
+              "constraints/release-validation.in",
+              "constraints/release-py310.txt",
+              "constraints/release-py311.txt",
+              "constraints/release-py312.txt",
+          )
+          missing = [
+              item for item in required
+              if not any(name.endswith(f"/{item}") for name in sdist_names)
+          ]
+          if missing:
+              raise SystemExit(f"Release documentation missing from sdist: {missing}")
+          PY
+
+      - name: Require tag and package versions to agree
+        id: version
+        shell: bash
+        run: |
+          package_version="$(python - <<'PY'
+          from pathlib import Path
+          from zipfile import ZipFile
+
+          wheels = list(Path("dist").glob("*.whl"))
+          if len(wheels) != 1:
+              raise SystemExit(f"Expected exactly one wheel, found {len(wheels)}")
+          with ZipFile(wheels[0]) as archive:
+              metadata_name = next(name for name in archive.namelist() if name.endswith(".dist-info/METADATA"))
+              metadata = archive.read(metadata_name).decode("utf-8")
+          for line in metadata.splitlines():
+              if line.startswith("Version: "):
+                  print(line.removeprefix("Version: "))
+                  break
+          else:
+              raise SystemExit("Wheel METADATA has no Version field")
+          PY
+          )"
+          echo "package-version=$package_version" >> "$GITHUB_OUTPUT"
+          if [[ "$GITHUB_REF_TYPE" == "tag" && "$GITHUB_REF_NAME" != "v$package_version" ]]; then
+            echo "Tag $GITHUB_REF_NAME does not match package version $package_version" >&2
+            exit 1
+          fi
+
+      - name: Upload the immutable release artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1, reviewed 2026-08-31
+        with:
+          name: distributions
+          path: dist/
+          if-no-files-found: error
+          retention-days: 90
+
+  test-artifact:
+    name: Test Python ${{ matrix.python-version }} artifact
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - name: Check out tests
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, reviewed 2026-08-31
+        with:
+          persist-credentials: false
+
+      - name: Check out NEIDSpec source for a non-tag rehearsal
+        if: github.ref_type != 'tag'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, reviewed 2026-08-31
+        with:
+          repository: TeHanHunter/neidspec
+          ref: v0.2.1
+          path: .ci/neidspec
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0, reviewed 2026-08-31
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Download the exact build artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1, reviewed 2026-08-31
+        with:
+          name: distributions
+          path: dist/
+
+      - name: Install the test environment
+        shell: bash
+        run: |
+          lock="constraints/release-py${{ matrix.python-version }}.txt"
+          lock="${lock/./}"
+          python -m pip install --require-hashes -r "$lock"
+          if [[ "$GITHUB_REF_TYPE" == "tag" ]]; then
+            python -m pip install --no-deps "neidspec==0.2.1"
+          else
+            python -m pip install --no-deps --editable .ci/neidspec
+          fi
+          python -m pip install --no-deps --force-reinstall dist/*.whl
+          python -m pip check
+
+      - name: Run unit tests against the artifact
+        run: |
+          cp -R tests "$RUNNER_TEMP/release-tests"
+          cd "$RUNNER_TEMP"
+          python -m unittest discover -s release-tests -p 'test_*.py' -v
+
+      - name: Smoke-test import outside the checkout
+        run: |
+          cd "$(mktemp -d)"
+          python -c "import neidspecmatch; print(neidspecmatch.__version__)"
+
+  publish:
+    name: Publish to PyPI through Trusted Publishing
+    needs: [build, test-artifact]
+    if: >-
+      github.ref_type == 'tag' &&
+      github.ref_protected == true &&
+      (github.event_name == 'push' || inputs.publish == true)
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/neidspecmatch
+    permissions:
+      id-token: write
+
+    steps:
+      - name: Download the exact tested artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1, reviewed 2026-08-31
+        with:
+          name: distributions
+          path: dist/
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # v1.14.2, reviewed 2026-08-31

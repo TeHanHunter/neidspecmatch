@@ -1,8 +1,7 @@
-import barycorrpy
 from astropy.time import Time
 from astropy import time, coordinates as coord, units as u
 
-def bjdbrv(jd_utc, ra=None, dec=None, obsname=None, lat=0., lon=0., elevation=None,
+def bjdbrv(jd_utc, ra=None, dec=None, obsname=None, lat=None, lon=None, elevation=None,
         pmra=0., pmdec=0., parallax=0., rv=0., zmeas=0.,
         epoch=2451545.0, tbase=0., leap_update=True,**kwargs):
     """
@@ -35,10 +34,27 @@ def bjdbrv(jd_utc, ra=None, dec=None, obsname=None, lat=0., lon=0., elevation=No
     (2457395.247062386, -23684.54364462639)
 
     """
-    if obsname=="Kitt Peak National Observatory": # Same as used in SERVAL
-        lat = 31.9580
-        lon = -111.6006
-        elevation = 2090.
+    try:
+        import barycorrpy
+    except ImportError as exc:
+        raise ImportError(
+            "Barycentric recomputation requires optional dependencies: "
+            "pip install neidspecmatch[archive]"
+        ) from exc
+    if obsname == "Kitt Peak National Observatory":
+        lat = 31.958092
+        lon = -111.600562
+        elevation = 2091.0
+    elif obsname is not None:
+        raise ValueError(
+            f"Unknown observatory {obsname!r}; supply explicit lat/lon/elevation."
+        )
+    if lat is None or lon is None or elevation is None:
+        raise ValueError(
+            "Provide a supported obsname or explicit lat, lon, and elevation. "
+            "For NEID L2 data, use the DRP SSBJD/SSBRV values instead of "
+            "recomputing them."
+        )
     # Barycentric Julian Date
     # adapted from http://docs.astropy.org/en/stable/time/#barycentric-and-heliocentric-light-travel-time-corrections
     targ = coord.SkyCoord(ra, dec, unit=(u.deg, u.deg), frame='icrs')
