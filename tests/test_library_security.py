@@ -183,6 +183,12 @@ class LibraryAndSecurityTests(unittest.TestCase):
         paths = [record["path"] for record in packaged["files"]]
         self.assertEqual(len(paths), 79)
         self.assertEqual(len(paths), len(set(paths)))
+        self.assertIsInstance(
+            utils._validated_header_identity_exceptions(
+                packaged.get("header_identity_exceptions", [])
+            ),
+            dict,
+        )
 
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp) / "library"
@@ -209,6 +215,50 @@ class LibraryAndSecurityTests(unittest.TestCase):
             spectrum.write_bytes(b"spectruN")
             with self.assertRaisesRegex(ValueError, "SHA-256 mismatch"):
                 utils._verify_library_against_allowlist(root, allowlist)
+
+    def test_download_manifest_preserves_release_identity_exceptions(self):
+        exceptions = [{
+            "path": "FITS/star.fits",
+            "catalog_object_id": "star",
+            "fits_object": "archive typo",
+            "gaia_source_id": "123456789012",
+            "reason": "synthetic test exception",
+        }]
+        allowlist = {
+            "allowlist_id": "test-release",
+            "header_identity_exceptions": exceptions,
+        }
+
+        with tempfile.TemporaryDirectory() as temp:
+            destination = Path(temp) / "library"
+
+            def fake_download(url, filename, **kwargs):
+                with zipfile.ZipFile(filename, "w") as stream:
+                    stream.writestr(config.DEFAULT_LIBRARY_CATALOG, "OBJECT_ID\n")
+                    stream.writestr("FITS/star.fits", b"")
+                return config.LIBRARY_ZIP_MD5
+
+            with (
+                mock.patch.object(
+                    utils, "load_default_library_allowlist",
+                    return_value=(allowlist, "a" * 64),
+                ),
+                mock.patch.object(
+                    utils, "_stream_download", side_effect=fake_download
+                ),
+                mock.patch.object(
+                    utils, "_verify_library_against_allowlist"
+                ),
+                mock.patch.object(utils, "validate_library", return_value={}),
+                mock.patch.object(utils, "build_library_manifest") as build,
+            ):
+                utils.get_library(
+                    library_path=destination, overwrite=True, verbose=0
+                )
+
+        self.assertEqual(
+            build.call_args.kwargs["header_identity_exceptions"], exceptions
+        )
 
     def test_release_allowlist_rejects_extras_with_bounded_diagnostics(self):
         with tempfile.TemporaryDirectory() as temp:

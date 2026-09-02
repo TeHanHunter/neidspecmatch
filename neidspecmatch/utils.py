@@ -619,6 +619,9 @@ def load_default_library_allowlist():
         raise ValueError("Default library archive-integrity metadata is invalid.")
     if not str(allowlist.get("allowlist_id", "")).strip():
         raise ValueError("Default library allowlist has no identifier.")
+    _validated_header_identity_exceptions(
+        allowlist.get("header_identity_exceptions", [])
+    )
     return allowlist, hashlib.sha256(payload).hexdigest()
 
 
@@ -1281,6 +1284,9 @@ def get_library(overwrite=False, library_path=None, verbose=1):
                 "id": release_allowlist["allowlist_id"],
                 "sha256": allowlist_sha256,
             },
+            header_identity_exceptions=release_allowlist.get(
+                "header_identity_exceptions", []
+            ),
         )
         validate_library(
             source, expected_fits=78, require_manifest=True, deep=True,
