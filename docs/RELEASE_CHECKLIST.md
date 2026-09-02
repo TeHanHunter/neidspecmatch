@@ -26,7 +26,7 @@ and reported validation results must agree.
 
 - [ ] Run secret scanning over the full git history and every distribution.
   Confirm any historically exposed credential remains revoked or rotated.
-- [ ] Confirm the revoked NEID Archive password is absent from the 0.2.0b1
+- [ ] Confirm the revoked NEID Archive password is absent from the 0.2.0
   source tree, wheel, and sdist. The verified affected PyPI releases are 0.1.1,
   0.1.2, 0.1.3, and 0.1.4; do not print or reuse the historical literal.
 - [ ] After 0.2.0 is available, yank PyPI releases 0.1.1 through 0.1.4 with
@@ -37,11 +37,15 @@ and reported validation results must agree.
 - [ ] Reject symlinks, absolute paths, `..` traversal, unexpected layout, and
   executable serialization from untrusted library archives.
 - [ ] Resolve and record the license, source, citation, version, and digest for
-  every data file. Keep the CC BY 4.0 empirical library as a separately
-  downloaded, versioned dataset rather than embedding its approximately
-  7.3 GB archive in software artifacts. Do not publish the response file,
-  catalogs, or literature-derived assets while their redistribution rights
-  remain unresolved; see `DATA_LICENSES.md`.
+  every data file. Keep the replacement empirical-library Zenodo version as an
+  unpublished draft until an authorized NEID representative confirms in
+  writing that the Level-2 FITS may be redistributed and states the applicable
+  terms. Do not infer that permission from public download access or the old
+  Zenodo record's uploader-supplied CC BY label. Do not apply deposit-wide
+  CC BY terms to the NEID FITS. See `DATA_LICENSES.md` and
+  `docs/NEID_DATA_RIGHTS_DECISION.md`.
+- [ ] Do not publish the response file, catalogs, or literature-derived assets
+  while their redistribution rights remain unresolved.
 - [ ] Confirm `git ls-files lib library tests/img` is empty. Removing unresolved data
   from the release branch does not remove it from existing history; treat
   history rewrite as a separate destructive remediation decision.
@@ -98,6 +102,9 @@ and reported validation results must agree.
   never to accommodate the external reference library or other scientific data.
 - [ ] Install the exact wheel into clean environments, run the tests, run
   `python -m pip check`, and import the package outside the source checkout.
+- [ ] Smoke-test all four installed commands outside the checkout:
+  `neidspecmatch-fit`, `neidspecmatch-crossval`,
+  `neidspecmatch-crossval-figure`, and `neidspecmatch-library`.
 - [ ] Compare local, GitHub-release, and PyPI artifacts by filename, size, and
   SHA-256 digest; verify wheel `METADATA`, `RECORD`, licenses, and source commit.
 - [ ] Upload the tested distributions to the GitHub Actions artifact store for
