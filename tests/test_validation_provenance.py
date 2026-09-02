@@ -1,4 +1,5 @@
 import copy
+import hashlib
 import json
 import tempfile
 import unittest
@@ -14,6 +15,28 @@ from neidspecmatch.version import __version__
 
 
 class ValidationProvenanceTests(unittest.TestCase):
+    def test_pipeline_fingerprint_binds_sources_and_numerical_libraries(self):
+        package_directory = Path(core.__file__).resolve().parent
+        digest = hashlib.sha256()
+        digest.update(json.dumps({
+            "astropy": core.astropy.__version__,
+            "numpy": core.np.__version__,
+            "pandas": core.pd.__version__,
+            "scipy": core.scipy.__version__,
+        }, sort_keys=True, separators=(",", ":")).encode("utf-8"))
+        digest.update(b"\0")
+        for source in sorted(package_directory.rglob("*.py")):
+            name = source.relative_to(package_directory).as_posix()
+            if name == "crossvalidation_figure.py":
+                continue
+            digest.update(name.encode("utf-8"))
+            digest.update(b"\0")
+            digest.update(source.read_bytes())
+            digest.update(b"\0")
+        self.assertEqual(
+            core._pipeline_source_fingerprint(), digest.hexdigest()
+        )
+
     def _crossvalidation_frame(self):
         index = np.arange(8, dtype=float)
         return pd.DataFrame({
@@ -603,6 +626,10 @@ class ValidationProvenanceTests(unittest.TestCase):
             },
             pairwise_optimizer_diagnostics={"all_references_success": True},
         )
+        for runtime in (
+            "python", "numpy", "scipy", "astropy", "pandas"
+        ):
+            self.assertTrue(provenance["software"][runtime])
         self.assertIn(
             "target_dq_status_not_pass",
             provenance["overall_validation"]["reasons"],

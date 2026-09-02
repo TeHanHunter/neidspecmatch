@@ -2093,23 +2093,31 @@ def _json_default(value):
 
 
 def _pipeline_source_fingerprint():
-    """Hash all matcher sources plus the numerical runtime versions."""
+    """Hash estimator sources and the numerical-library runtime identity.
+
+    Exact runtime versions are recorded explicitly in every result receipt.
+    NumPy, SciPy, Astropy, and pandas are also folded into this digest because
+    they participate in the numerical result.  Python itself is not: the
+    release tests one locked numerical stack on every supported Python minor.
+    Publication-figure code is excluded because it cannot change a fit and
+    records its own source hash in every figure provenance receipt.
+    """
     digest = hashlib.sha256()
-    dependency_versions = {
-        'python': sys.version.split()[0],
+    numerical_versions = {
         'numpy': np.__version__,
         'scipy': scipy.__version__,
         'astropy': astropy.__version__,
         'pandas': pd.__version__,
-        'neidspec': getattr(neidspec, '__version__', 'unknown'),
     }
     digest.update(json.dumps(
-        dependency_versions, sort_keys=True, separators=(',', ':')
+        numerical_versions, sort_keys=True, separators=(',', ':')
     ).encode('utf-8'))
     digest.update(b'\0')
     package_directory = Path(__file__).resolve().parent
     for path in sorted(package_directory.rglob('*.py')):
         name = path.relative_to(package_directory).as_posix()
+        if name == 'crossvalidation_figure.py':
+            continue
         digest.update(name.encode('utf-8'))
         digest.update(b'\0')
         digest.update(path.read_bytes())
