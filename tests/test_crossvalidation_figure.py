@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-import scripts.plot_crossvalidation_research_note as figure
+import neidspecmatch.crossvalidation_figure as figure
 
 
 class CrossvalidationFigureTests(unittest.TestCase):
@@ -32,19 +32,30 @@ class CrossvalidationFigureTests(unittest.TestCase):
             "files": files,
             "archive_products": [{
                 "l2filename": Path(path).name,
+                "l2checksum": f"{index + 1:032x}",
                 "swversion": drp_version,
                 "flagged": "0",
                 "rejected": "0",
-            } for path in fits_paths],
+            } for index, path in enumerate(fits_paths)],
             "reference_dq_records": [{
                 "path": path,
                 "dq_status": "pass",
+                **figure.package_utils.DEFAULT_LIBRARY_DQ_PASS,
             } for path in fits_paths],
             "source_archive": {
                 "all_unflagged_unrejected": True,
+                "product_count": 78,
                 "required_drp_major_minor": "1.5",
                 "swversion_counts": {drp_version: 78},
                 "fits_dq_status_counts": {"pass": 78},
+                "metadata_sha256": "c" * 64,
+            },
+            "source_catalog": {
+                "unchanged_science_fields": True,
+                "output_sha256": "a" * 64,
+                "source_sha256": "b" * 64,
+                "source_record_doi": "10.0000/example",
+                "source_record_filename": "source.zip/library.csv",
             },
         }
 
@@ -292,6 +303,38 @@ class CrossvalidationFigureTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "DRP-1.5"):
                 figure.load_library_evidence(path)
 
+    def test_manifest_preflight_rejects_malformed_integrity_record(self):
+        payload = self._manifest_payload()
+        payload["files"][0]["size_bytes"] = -1
+        payload["files"][0]["sha256"] = "not-a-sha256"
+        payload["source_catalog"]["output_sha256"] = "not-a-sha256"
+        with tempfile.TemporaryDirectory() as temp_name:
+            path = Path(temp_name) / "library_manifest.json"
+            path.write_text(json.dumps(payload), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "file record"):
+                figure.load_library_evidence(path)
+
+    def test_manifest_preflight_rejects_unapproved_warning_policy(self):
+        payload = self._manifest_payload()
+        record = payload["reference_dq_records"][0]
+        record.update({
+            "dq_status": "warning",
+            "dq_manual_flag": 999,
+            "dq_warning_reason": "unreviewed",
+        })
+        payload["source_archive"]["fits_dq_status_counts"] = {
+            "pass": 77,
+            "warning": 1,
+        }
+        payload["source_archive"]["accepted_fits_warning_policy"] = (
+            figure.package_utils.DEFAULT_LIBRARY_WARNING_POLICY
+        )
+        with tempfile.TemporaryDirectory() as temp_name:
+            path = Path(temp_name) / "library_manifest.json"
+            path.write_text(json.dumps(payload), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "DQ provenance"):
+                figure.load_library_evidence(path)
+
     def test_order_loader_fails_closed_when_core_rejects_evidence(self):
         with tempfile.TemporaryDirectory() as temp_name:
             root = Path(temp_name)
@@ -386,6 +429,9 @@ class CrossvalidationFigureTests(unittest.TestCase):
             self.assertEqual(provenance["orders"], list(figure.ORDERS))
             self.assertEqual(
                 provenance["cool_hot_boundary_k"], figure.COOL_LIMIT_K
+            )
+            self.assertEqual(
+                provenance["matplotlib_version"], figure.matplotlib.__version__
             )
             self.assertEqual(
                 provenance["drp_version_counts"], {"v1.5.3": 78}
