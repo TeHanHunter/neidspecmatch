@@ -1,20 +1,22 @@
 # Changelog
 
-## 0.2.0b1 (2026-08-31)
+## 0.2.0 (unreleased)
 
-This beta validates the corrected software and release pipeline, but it does
-not yet provide publication-valid stellar-parameter uncertainties. For
-ordinary free-`v sin i` fits, those require the planned v1.5.x
-reference-library cross-validation before the stable 0.2.0 release. Fixed and
-bounded fits also require independent labeled broad-lined validation.
+This release corrects the software and release pipeline and adds a current
+DRP-1.5 empirical reference library with order- and population-specific
+leave-one-out validation for the ordinary free-`v sin i` estimator: order 55
+for the hot population and orders 101, 102, and 103 for the cool population,
+split at 4500 K. Atmospheric parameters retain raw [Fe/H]. Fixed and bounded
+fits still require independent labeled broad-lined validation.
 
 - Remove the silently applied HPF order-5 metallicity coefficients. Raw
   empirical-library [Fe/H] is now the default; calibration requires a
   validated, order/library/population-specific artifact.
-- Audit all 49 archived full-library order results: every cross-fitted
-  calibration increased [Fe/H] scatter (order 102: 0.128 to 0.154 dex), so no
-  coefficient artifact is bundled or recommended. Near-singular inverse
-  calibrations are marked unvalidated and cannot be applied.
+- Audit all 49 historical DRP-1.3/20250226-library order results: every
+  cross-fitted calibration increased [Fe/H] scatter (order 102: 0.128 to
+  0.154 dex), so no coefficient artifact is bundled or recommended.
+  Near-singular inverse calibrations are marked unvalidated and cannot be
+  applied.
 - Cross-fit calibration coefficients and emit per-order error-metric,
   calibration, residual, and provenance products. Record the correlation
   limitation of archived spectral leave-one-out predictions.
@@ -31,9 +33,10 @@ bounded fits also require independent labeled broad-lined validation.
   API and custom reprocessed-library manifests, and verify pinned source size,
   archive checksum, exact ZIP layout, NEID L2 schema, and every payload file
   against a release-owned SHA-256 allowlist.
-- Bind result/CV receipts to full matcher and `neidspec` source fingerprints,
-  numerical versions, raw/checkpoint hashes, DRP/blaze state, and DQ
-  composition.
+- Bind result/CV receipts to the estimator and `neidspec` source fingerprints,
+  exact numerical-library versions, raw/checkpoint hashes, DRP/blaze state,
+  and DQ composition. Presentation-only figure code is separately hashed and
+  does not invalidate numerical validation evidence.
 - Treat calibration cross-fitting as diagnostic only: correlated spectral-LOO
   inputs are not strict nested validation, so 0.2 artifacts cannot be applied.
 - Remove source-code archive credentials and require environment variables.
@@ -55,3 +58,6 @@ bounded fits also require independent labeled broad-lined validation.
 - Replace machine-specific runners with argument-driven command-line tools and
   add regression tests for calibration, quiet imports, archive credentials,
   cross-validation products, and vsini constraints.
+- Add the installed `neidspecmatch-crossval-figure` command, which fails closed
+  unless all four raw/checkpoint/summary products match the supplied library
+  manifest and writes an independently hashed provenance receipt.

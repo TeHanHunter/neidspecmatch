@@ -1,32 +1,34 @@
-# NEIDSpecMatch 0.2.0b1 beta validation report
+# NEIDSpecMatch 0.2.0 validation report
 
-Status: **beta release candidate; maintainer approved**  
-Validation date: 2026-08-31
+Status: **release candidate; exact four-order validation in progress**
+Validation date: 2026-09-03
 
-This report records software, artifact, and archive-availability evidence. It
-does not claim a publication-valid stellar-parameter scale. For the ordinary
-free-`v sin i` estimator, that claim requires new cross-validation using the
-current v1.5 reference reductions. Fixed and bounded pairwise-`v sin i` fits
-remain exploratory pending independent labeled broad-lined validation;
-synthetic broadening alone is a stress test, not publication validation.
+This report records software, artifact, archive, and cross-validation
+evidence. The release validation applies only to the ordinary free-`v sin i`
+estimator for the exact library/order/population combinations reported below.
+Fixed and bounded pairwise-`v sin i` fits remain exploratory pending
+independent labeled broad-lined validation; synthetic broadening alone is a
+stress test, not publication validation.
 
 ## Automated regression matrix
 
-The same 58-test suite was run with warnings treated as errors. Each
+The same 86-test suite was run with warnings treated as errors. Each
 environment was installed from its Python-specific, fully hashed release lock
 with `pip --require-hashes`; `pip check` reported no broken requirements.
 
 | Python | Representative numerical environment | Result |
 | --- | --- | --- |
-| 3.10.14 | NumPy 1.26.4; SciPy 1.12.0 | 58 passed |
-| 3.11.11 | NumPy 1.26.4; SciPy 1.12.0 | 58 passed |
-| 3.12.2 | NumPy 1.26.4; SciPy 1.12.0 | 58 passed |
+| 3.10.14 | NumPy 1.26.4; SciPy 1.12.0 | 86 passed |
+| 3.11.11 | NumPy 1.26.4; SciPy 1.12.0 | 86 passed |
+| 3.12.2 | NumPy 1.26.4; SciPy 1.12.0 | 86 passed |
 
 The lock input is identical across the two coordinated repositories. The
 locks include the Linux-only keyring dependency chain used by GitHub Actions.
 Their SHA-256 values are:
 
 - lock input: `800f4b9ad02401fffd503cc95f1de4200510a8fcda7cea9de269d02b7c4f555c`
+- publication-validation runtime:
+  `3336c8922cc74c329e3a11c04dcf5179cb9e84b7a64405fbbc26382becf4dc24`
 - Python 3.10: `25692d843eb13f3bd675bef6566e068e2f0efeb1d48e699a952d26833c5b6436`
 - Python 3.11: `d41b8b1a82e9034a03d09519b8e6b4ef23e8d8c9a93ea55ed31ee8e4738b8752`
 - Python 3.12: `78ce7b0f88f2637bae4375f37bde58bd89d67c466ef954a54b24e62ca4bdb1c3`
@@ -40,7 +42,52 @@ target/reference DQ gates.
 The DRP guard follows the NEID release policy: patch releases within one
 major/minor series are compatible and their exact values remain recorded;
 different minor series are rejected by default. Thus v1.5.2 and v1.5.3 may be
-validated together, while v1.4.x and v1.5.x may not.
+validated together, while v1.4.x and v1.5.x may not. The coordinated
+`neidspec 0.2.1` dependency was confirmed available from PyPI on 2026-09-03.
+
+## Frozen DRP-1.5 empirical library
+
+The default release library identifier is
+`20260831_specmatch_neid_drp15`. It contains one catalog and 78 NEID Level-2
+HR spectra: 77 reduced with DRP v1.5.3 and one with v1.5.2. Seventy-two
+reference products pass the package DQ screen and six carry explicitly
+accepted warning status; that exact composition is bound into the validation
+receipt.
+
+- Reserved dataset DOI: `10.5281/zenodo.22262405`
+- ZIP size: `6,536,877,943` bytes
+- ZIP MD5, verified locally and returned by Zenodo after upload:
+  `b8abc3ade339074cbd137a9fd2749297`
+- ZIP SHA-256:
+  `4edbd37203236ac4969d3f679d79a131d012417ad3d59a8628670625717979e8`
+- Packaged release allowlist SHA-256:
+  `2f7a5ef3de977c38e16670769476d29dcee5317cafbda282c5daa7b2f0bd9396`
+- Installed deep library-manifest SHA-256:
+  `55a1be296e756859598377b62b1dc4a654ba61aabe53368c49a22431a5f29006`
+
+The archive is present in an unpublished Zenodo draft. The draft must remain
+unpublished until an authorized NEID representative confirms redistribution
+terms in writing. Upload and checksum verification establish integrity, not
+permission to redistribute.
+
+## Exact four-order cross-validation
+
+The final leave-one-spectrum-out run uses the ordinary free-`v sin i`
+estimator for array-row orders 55, 101, 102, and 103. It contains 78 folds per
+order. Release population metrics use order 55 for the hot population and
+orders 101--103 for the cool population, divided at 4500 K. Raw `[Fe/H]` is
+reported; no empirical detrending is applied.
+
+The numerical estimator fingerprints frozen before this run are:
+
+- NEIDSpecMatch source:
+  `4c2dcc6bca85d7ac55f987db5879f7a6a15080202cbfb5d40a5d363e14b88215`
+- NEIDSpec source:
+  `f49070f7f18499e85c0c9cb37596a6a9ece3c18eef56bb80ea6e617a599f6ba4`
+
+Final per-order/population bias, sample scatter, RMSE, finite coverage, and
+artifact hashes will replace this sentence after all 312 folds finish and the
+fail-closed figure/summary verifier succeeds.
 
 ## Live archive availability audit
 
@@ -86,21 +133,19 @@ for v1.5 targets.
 
 ## Artifact rehearsal and validation boundary
 
-A disposable source copy produced one wheel and one sdist. `twine check`,
+A frozen release-candidate source copy produced one wheel and one sdist.
+`twine check`,
 `check-wheel-contents`, and exact package-data allowlisting passed. The exact
 wheel was then installed outside the checkout in all three locked Python
-environments: all 58 tests and `pip check` passed, version 0.2.0b1 imported, and
-all three command-line entry points displayed help. The rehearsal wheel was
-about 86 KiB and the sdist about 241 KiB. Final artifacts must be rebuilt after
-this inspection and must contain the release-owned reference-library SHA-256
+environments: all release tests and `pip check` passed, version 0.2.0 imported, and
+all four command-line entry points displayed help. The current wheel is about
+120 KiB and the sdist about 312 KiB. Final artifacts will be rebuilt once after
+the cross-validation report is complete and must contain the release-owned reference-library SHA-256
 allowlist but no spectra, legacy catalogs, notebooks, plots, credentials, or
 local paths.
 
 The archived v1.3 cross-validation results and paper equations are historical
-only. Current free-`v sin i` performance metrics require downloading the v1.5
-reference products, producing a new deep library manifest, and rerunning
-leave-one-out validation with this exact code. Residual RMSE is not
-automatically a Gaussian or per-target `1 sigma` uncertainty. Fixed or bounded
-broadening, fitted rotational velocity, and empirical metallicity calibration
-remain unvalidated unless separately supported by appropriate independent
-evidence.
+only. Residual RMSE is not automatically a Gaussian or per-target `1 sigma`
+uncertainty. Fixed or bounded broadening, fitted rotational velocity, and
+empirical metallicity calibration remain unvalidated unless separately
+supported by appropriate independent evidence.

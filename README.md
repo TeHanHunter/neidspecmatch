@@ -6,7 +6,7 @@ NEIDSpecMatch estimates stellar parameters by comparing a high-resolution NEID
 spectrum with an empirical library. It is based on
 [HPFSpecMatch](https://gummiks.github.io/hpfspecmatch/).
 
-Version 0.2.0b1 is a beta science release. Publication use of the ordinary
+Version 0.2.0 is a science release. Publication use of the ordinary
 free-`v sin i` estimator requires matching the target and library DRP series,
 choosing orders appropriate for the target, and using the cross-validation
 product for exactly that library/order/population. The package does not turn an
@@ -14,17 +14,26 @@ unvalidated fit into a publication-quality result automatically.
 
 ## Installation
 
-Use Python 3.10, 3.11, or 3.12 in a clean environment:
+Use Python 3.10, 3.11, or 3.12 in a clean environment. For results intended
+to match the 0.2.0 validation product, install the exact numerical stack used
+for that validation:
 
 ```bash
-python -m pip install 'neidspecmatch==0.2.0b1'
+python -m pip install \
+  --constraint https://raw.githubusercontent.com/TeHanHunter/neidspecmatch/v0.2.0/constraints/validated-runtime.txt \
+  'neidspecmatch==0.2.0'
 ```
+
+A normal `python -m pip install 'neidspecmatch==0.2.0'` remains supported for
+exploration. Every result records its runtime versions, and a different
+NumPy/SciPy/Astropy/pandas stack will deliberately not match the published
+cross-validation receipt.
 
 Optional features are isolated from the core install:
 
 ```bash
-python -m pip install 'neidspecmatch[archive]==0.2.0b1'  # archive/catalog helpers
-python -m pip install 'neidspecmatch[dev]==0.2.0b1'      # tests and builds
+python -m pip install 'neidspecmatch[archive]==0.2.0'  # archive/catalog helpers
+python -m pip install 'neidspecmatch[dev]==0.2.0'      # tests and builds
 ```
 
 For each reference, the pairwise stage solves six continuum coefficients by
@@ -36,13 +45,18 @@ Powell, or stochastic differential evolution.
 
 ## Library location and download
 
-The 78-star v1 library is archived under CC BY 4.0 on
-[Zenodo (DOI 10.5281/zenodo.14947454)](https://doi.org/10.5281/zenodo.14947454)
-by Te Han. Reuse requires attribution. The archive remains external because it
-is 7.3 GB and because its exact manifest/reduction provenance must stay
-explicit—not because its reuse rights are unresolved. NEIDSpecMatch never
-downloads it at import time and never writes into site-packages. Select its
-versioned directory in one of three ways:
+The historical 78-star v1 library is available from
+[Zenodo (DOI 10.5281/zenodo.14947454)](https://doi.org/10.5281/zenodo.14947454).
+Although that uploader-supplied record is labeled CC BY 4.0, NEIDSpecMatch does
+not treat the label as evidence of authority to relicense the underlying NEID
+Level-2 FITS. The replacement DRP-1.5 library is prepared under reserved DOI
+`10.5281/zenodo.22262405`, but must remain unpublished until NEID confirms the
+redistribution terms in writing; see `DATA_LICENSES.md`.
+The archive remains external because it is multi-gigabyte and because its
+exact manifest and reduction provenance must stay explicit. External download
+does not, by itself, resolve data rights. NEIDSpecMatch never downloads it at
+import time and never writes into site-packages. Select its versioned directory
+in one of three ways:
 
 1. pass `library_path=...`;
 2. set `NEIDSPECMATCH_LIBRARY` to that directory; or
@@ -60,7 +74,7 @@ an integrity check only, not cryptographic authentication:
 ```python
 import neidspecmatch
 
-neidspecmatch.get_library()  # explicit network and 7.3 GB disk operation
+neidspecmatch.get_library()  # explicit 6.1 GiB download; about 8.6 GiB extracted
 neidspecmatch.validate_library()
 ```
 
@@ -72,7 +86,7 @@ default for the cool/M-dwarf use case:
 
 ```bash
 neidspecmatch-fit TARGET_L2.fits 'TIC 123456' results \
-  --orders 102 --library-path /data/20250226_specmatch_nir -v
+  --orders 102 --library-path /data/20260831_specmatch_neid_drp15 -v
 ```
 
 Plots are opt-in with `--plot`. `-v` reports per-order progress; omit it for a
@@ -113,13 +127,17 @@ broad-lined science case. Consequently, `Teff`, `[Fe/H]`, and `log(g)` from a
 fixed or bounded run remain exploratory pending validation on independent,
 labeled broad-lined standards representative of the science targets.
 
-Order 55 may be selected explicitly for the previously defined hot-star
-population. Other valid order indices remain available for exploratory work,
-but are marked unvalidated unless a current, exactly matching validation
-product is supplied for the ordinary free-`v sin i` mode. Publication
-validation is population- and order-specific: run one order per invocation.
-Do not median order 55 and 102 and describe that combination as validated
-without a new combined-order validation product.
+The 0.2.0 release-validation scope is order 55 for the hot population and
+orders 101, 102, and 103 for the cool population, with the boundary at 4500 K.
+Order 102 remains the conservative default for cool/M-dwarf targets. Other
+valid order indices remain available for exploratory work, but are marked
+unvalidated unless a current, exactly matching validation product is supplied
+for the ordinary free-`v sin i` mode. Publication validation is population-
+and order-specific: run one order per publication-facing science-fit
+invocation. The cross-validation command may process multiple independent
+orders in one invocation. Do not combine results from multiple orders and
+describe that estimator as validated without a separate combined-order
+validation product.
 
 Normal input is an untouched NEID L2 product and the matcher applies its blaze
 correction. Use `--input-is-deblazed` only when HDU 1 is already corrected;
@@ -146,10 +164,18 @@ cuts use `teff_true` in validation, so bounded populations must be selected
 explicitly at science time; recovered Teff is not silently used as an
 unvalidated classifier.
 
-For the archived 20250226 library results, an all-star calibration increased
-the cross-fitted [Fe/H] scatter in every one of the 49 tested orders. For
-example, order 102 increased from 0.128 dex raw to 0.154 dex calibrated. Some
-orders were also nearly singular. Consequently, version 0.2 bundles no
+An independent temperature is not required to run the spectral fit and is not
+an input to its atmospheric-parameter optimization. It is used afterward only
+to establish membership when the applicable population error metrics are
+selected. For this release, use cool for an independent temperature below
+4500 K and hot at or above 4500 K; no reference star lies exactly on the
+boundary. Generic population bounds are stored inclusively, so a science
+target exactly at 4500 K must explicitly select the release convention `hot`.
+
+In the historical DRP-1.3/20250226-library audit, an all-star calibration
+increased the cross-fitted [Fe/H] scatter in every one of the 49 tested orders.
+For example, order 102 increased from 0.128 dex raw to 0.154 dex calibrated.
+Some orders were also nearly singular. Consequently, version 0.2 bundles no
 calibration artifact and recommends the raw value. Diagnostic artifact
 generation remains available for reviewed order/population analyses. Inverse
 calibrations that are non-monotonic, have `1 + slope < 0.1` in any cross-fit
@@ -170,9 +196,10 @@ treated as trusted-input-only because loading a pickle can execute code.
 Cross-validation defaults to no plots and raw [Fe/H]:
 
 ```bash
-neidspecmatch-crossval --orders 102 \
-  --library-path /data/20250226_specmatch_nir \
-  --library-id 20250226_specmatch_nir --output validation -v
+neidspecmatch-crossval --orders 55 101 102 103 \
+  --population all --population 'cool::4500' --population 'hot:4500' \
+  --library-path /data/20260831_specmatch_neid_drp15 \
+  --library-id 20260831_specmatch_neid_drp15 --output validation -v
 ```
 
 This command performs ordinary spectral leave-one-out validation with free
@@ -181,14 +208,34 @@ population. It does not validate a science fit made with `--vsini` or
 `--vsini-window`.
 
 This writes a raw result CSV, an atomic fold checkpoint, and a machine-readable
-per-order summary. Diagnostic calibration cross-fitting is opt-in and remains
-explicitly non-publication-valid:
+per-order summary. The installed fail-closed figure command first verifies all
+four raw/checkpoint/summary products and the exact library manifest, then
+writes the research-note-style figure, a combined summary, and a provenance
+receipt:
+
+```bash
+neidspecmatch-crossval-figure \
+  --validation-dir validation \
+  --library-manifest /data/20260831_specmatch_neid_drp15/library_manifest.json
+```
+
+For a science fit, supply the matching per-order summary and the independently
+established population membership. For example:
+
+```bash
+neidspecmatch-fit TARGET_L2.fits 'TIC 123456' results --orders 102 \
+  --validation-summary validation/o102_crossval/crossvalidation_summary_o102.csv \
+  --validation-population cool --validation-population-teff 3800
+```
+
+Diagnostic calibration cross-fitting is opt-in and remains explicitly
+non-publication-valid:
 
 ```bash
 neidspecmatch-crossval --orders 102 --fit-feh-calibration \
-  --population 'cool::4000' \
-  --library-path /data/20250226_specmatch_nir \
-  --library-id 20250226_specmatch_nir --output validation
+  --population 'cool::4500' \
+  --library-path /data/20260831_specmatch_neid_drp15 \
+  --library-id 20260831_specmatch_neid_drp15 --output validation
 ```
 
 Existing archived CV results can be summarized without rerunning thousands of
@@ -201,6 +248,8 @@ neidspecmatch-crossval \
   --library-id 20250226_specmatch_nir \
   --output validation
 ```
+
+Never relabel an archived result with a newer library identifier.
 
 For multiple orders, `crossvalidation_summary.csv` contains one row per
 order/population. The residual RMSE is a predictive-error score that includes
@@ -224,13 +273,15 @@ validate a science result. Calibration
 cross-fitting is not strict nested/leave-two-out validation, and oversampling
 does not create independent spectral pixels.
 
-The uncertainty equations reported for the 0.1 analysis do not automatically
-validate the changed 0.2 L2-blaze/RV/continuum pipeline. An ordinary fit with
-free pairwise `v sin i` remains marked exploratory until a current summary
-matches the exact result schema, pipeline fingerprint, neidspec version,
-deep-verified library manifest, DRP series, blaze source, order, population,
-and (when used) calibration artifact hash. Fixed and bounded fits remain
-exploratory even when an ordinary leave-one-out summary is available.
+The uncertainty equations reported for the 0.1 analysis do not validate the
+changed 0.2 L2-blaze/RV/continuum pipeline. The 0.2.0 release bundle supplies
+current evidence for orders 55, 101, 102, and 103 and the named 4500 K
+populations. An ordinary fit remains marked exploratory unless its summary
+matches the exact result schema, pipeline fingerprint, numerical-library
+versions, `neidspec` source, deep-verified library manifest, DRP series, blaze
+source, order, population, and (when used) calibration artifact hash. Fixed
+and bounded fits remain exploratory even when an ordinary leave-one-out
+summary is available.
 
 ## DRP and barycentric metadata
 

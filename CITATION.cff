@@ -2,8 +2,7 @@ cff-version: 1.2.0
 message: "If you use NEIDSpecMatch, cite both the software release and the research note."
 title: NEIDSpecMatch
 type: software
-version: 0.2.0b1
-date-released: 2026-08-31
+version: 0.2.0
 doi: 10.5281/zenodo.14991480
 url: "https://github.com/TeHanHunter/neidspecmatch"
 repository-code: "https://github.com/TeHanHunter/neidspecmatch"

@@ -10,15 +10,23 @@ The required match is intentionally strict:
 
 - exact NEIDSpecMatch and `neidspec` source fingerprints and result schema;
 - exact deep-hashed empirical-library manifest and reference pool;
-- one consistent NEID DRP version and the validated data-quality composition;
+- one consistent NEID DRP major/minor series, with the exact patch-version and
+  validated data-quality composition recorded;
 - the same Level-2 blaze treatment, NEID array-row order index, and wavelength
   grid;
 - the same explicitly defined temperature population; and
 - the exact [Fe/H] calibration artifact, if a calibration was applied.
 
 If any item is absent or differs, the result remains useful for diagnosis or
-exploration but is marked unvalidated.  Overrides such as mixed DRP versions
-do not turn an exploratory result into a validated one.
+exploration but is marked unvalidated. Overrides such as mixed or unknown DRP
+major/minor series do not turn an exploratory result into a validated one.
+
+The matcher fingerprint includes the exact NumPy, SciPy, Astropy, and pandas
+versions because they participate in the numerical result. The exact Python
+version is recorded but is not an equality gate: release validation uses the
+same locked numerical stack on Python 3.10, 3.11, and 3.12. Presentation-only
+cross-validation figure code is excluded from the matcher fingerprint and
+records its own independent source hash in the figure provenance receipt.
 
 The standard spectral leave-one-out procedure holds out each unmodified,
 predominantly narrow-lined library spectrum and fits pairwise `v sin i` freely.
@@ -50,8 +58,10 @@ remain recorded in provenance. A target reduced with a newer minor DRP should
 not be downgraded merely to satisfy the code; the defensible solution is to
 reprocess the reference library and targets consistently, then rerun
 cross-validation.  The archived 78-star v1 library contains DRP v1.3.0
-spectra, so it cannot validate results from later-minor-DRP targets without a
-specific new study.
+spectra, so it cannot validate results from later-minor-DRP targets. The 0.2.0
+default replaces those spectra with the same 78 labeled stars reduced in the
+DRP 1.5 series (77 v1.5.3 and one v1.5.2) and supplies new validation for
+orders 55, 101, 102, and 103 with a 4500 K cool/hot population boundary.
 
 Level-2 high-resolution NEID science inputs are checked for instrument,
 observation type, product level, observing mode, and DRP quality summary.
@@ -144,5 +154,7 @@ A publication-facing validation bundle should preserve:
 6. representative failure-mode and real-spectrum integration results; and
 7. for fixed or bounded broadening, independent labeled broad-lined standards.
 
-Until that bundle exists for a selected analysis state, describe outputs as
-exploratory rather than quoting the historical equations as current errors.
+The 0.2.0 release bundle preserves these items for the ordinary free-`v sin i`
+estimator on orders 55, 101, 102, and 103. Outputs outside its exact recorded
+library, DRP, numerical-runtime, order, population, and estimator state remain
+exploratory; the historical 0.1 equations are not current errors.

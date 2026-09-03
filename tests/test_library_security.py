@@ -16,6 +16,7 @@ import numpy as np
 from astropy.io import fits
 
 from neidspecmatch import config
+from neidspecmatch import crossvalidation_figure
 from neidspecmatch import utils
 from neidspecmatch import neid_archive
 import neidspecmatch.neidspecmatch as core
@@ -183,11 +184,38 @@ class LibraryAndSecurityTests(unittest.TestCase):
         paths = [record["path"] for record in packaged["files"]]
         self.assertEqual(len(paths), 79)
         self.assertEqual(len(paths), len(set(paths)))
-        self.assertIsInstance(
-            utils._validated_header_identity_exceptions(
-                packaged.get("header_identity_exceptions", [])
-            ),
-            dict,
+        exceptions = utils._validated_header_identity_exceptions(
+            packaged.get("header_identity_exceptions", [])
+        )
+        self.assertEqual(
+            set(exceptions), {"FITS/neidL2_20220104T100320.fits"}
+        )
+        self.assertEqual(
+            exceptions["FITS/neidL2_20220104T100320.fits"]["gaia_source_id"],
+            "999747822484300800",
+        )
+        provenance = packaged["library_provenance"]
+        flattened_manifest = {
+            "schema_version": packaged["schema_version"],
+            "library_id": packaged["library_id"],
+            "catalog": packaged["catalog"],
+            "fits_count": packaged["fits_count"],
+            "files": packaged["files"],
+            **provenance,
+        }
+        with tempfile.TemporaryDirectory() as temp:
+            manifest_path = Path(temp) / "library_manifest.json"
+            manifest_path.write_text(
+                json.dumps(flattened_manifest), encoding="utf-8"
+            )
+            evidence = crossvalidation_figure.load_library_evidence(
+                manifest_path
+            )
+        self.assertEqual(
+            evidence["drp_counts"], {"v1.5.2": 1, "v1.5.3": 77}
+        )
+        self.assertEqual(
+            evidence["quality_counts"], {"pass": 72, "warning": 6}
         )
 
         with tempfile.TemporaryDirectory() as temp:
@@ -227,6 +255,12 @@ class LibraryAndSecurityTests(unittest.TestCase):
         allowlist = {
             "allowlist_id": "test-release",
             "header_identity_exceptions": exceptions,
+            "library_provenance": {
+                "archive_products": [],
+                "reference_dq_records": [],
+                "source_archive": {},
+                "source_catalog": {},
+            },
         }
 
         with tempfile.TemporaryDirectory() as temp:
@@ -251,6 +285,7 @@ class LibraryAndSecurityTests(unittest.TestCase):
                 ),
                 mock.patch.object(utils, "validate_library", return_value={}),
                 mock.patch.object(utils, "build_library_manifest") as build,
+                mock.patch.object(utils, "_validate_installed_default_manifest"),
             ):
                 utils.get_library(
                     library_path=destination, overwrite=True, verbose=0
@@ -259,6 +294,92 @@ class LibraryAndSecurityTests(unittest.TestCase):
         self.assertEqual(
             build.call_args.kwargs["header_identity_exceptions"], exceptions
         )
+        self.assertEqual(
+            build.call_args.kwargs["library_provenance"],
+            allowlist["library_provenance"],
+        )
+
+    def test_manifest_preserves_release_library_provenance(self):
+        provenance = {
+            "archive_products": [{"l2filename": "star.fits"}],
+            "reference_dq_records": [{"path": "FITS/star.fits"}],
+            "source_archive": {"required_drp_major_minor": "1.5"},
+            "source_catalog": {"unchanged_science_fields": True},
+        }
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp) / "library"
+            (root / "FITS").mkdir(parents=True)
+            (root / "catalog.csv").write_text(
+                "OBJECT_ID,basenames\nstar,star.fits\n", encoding="utf-8"
+            )
+            (root / "FITS" / "star.fits").write_bytes(b"spectrum")
+            manifest_path = utils.build_library_manifest(
+                root,
+                library_id="test-library",
+                catalog_name="catalog.csv",
+                library_provenance=provenance,
+            )
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        for key, value in provenance.items():
+            self.assertEqual(manifest[key], value)
+
+    def test_installed_default_manifest_must_match_release_receipt(self):
+        provenance = {
+            "archive_products": [{"l2filename": "star.fits"}],
+            "reference_dq_records": [{"path": "FITS/star.fits"}],
+            "source_archive": {"required_drp_major_minor": "1.5"},
+            "source_catalog": {"unchanged_science_fields": True},
+        }
+        allowlist = {
+            "schema_version": 2,
+            "allowlist_id": "test-release",
+            "library_id": "test-library",
+            "catalog": "catalog.csv",
+            "fits_count": 1,
+            "files": [{
+                "path": "catalog.csv",
+                "size_bytes": 10,
+                "sha256": "3" * 64,
+            }, {
+                "path": "FITS/star.fits",
+                "size_bytes": 100,
+                "sha256": "4" * 64,
+            }],
+            "source_url": "https://example.invalid/library.zip",
+            "source_archive_integrity": {
+                "algorithm": "md5",
+                "scope": "integrity_only_not_authentication",
+                "value": "0" * 32,
+            },
+            "header_identity_exceptions": [],
+            "library_provenance": provenance,
+        }
+        digest = "1" * 64
+        manifest = {
+            "schema_version": allowlist["schema_version"],
+            "library_id": allowlist["library_id"],
+            "catalog": allowlist["catalog"],
+            "fits_count": allowlist["fits_count"],
+            "files": allowlist["files"],
+            "source_url": allowlist["source_url"],
+            "source_archive_integrity": allowlist["source_archive_integrity"],
+            "release_allowlist": {"id": "test-release", "sha256": digest},
+            "header_identity_exceptions": [],
+            **provenance,
+        }
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            path = root / "library_manifest.json"
+            path.write_text(json.dumps(manifest), encoding="utf-8")
+            utils._validate_installed_default_manifest(
+                root, allowlist, digest
+            )
+            manifest["release_allowlist"]["sha256"] = "2" * 64
+            path.write_text(json.dumps(manifest), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "release_allowlist"):
+                utils._validate_installed_default_manifest(
+                    root, allowlist, digest
+                )
 
     def test_release_allowlist_rejects_extras_with_bounded_diagnostics(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -394,10 +515,71 @@ class LibraryAndSecurityTests(unittest.TestCase):
                 Path(filename).write_bytes(b"not a zip")
                 return "0" * 32
 
-            with mock.patch.object(utils, "_stream_download", side_effect=fake_download):
+            with mock.patch.object(
+                utils, "_stream_download", side_effect=fake_download
+            ):
                 with self.assertRaises(ValueError):
                     utils.get_library(library_path=destination, verbose=0)
             self.assertFalse(destination.exists())
+
+    def test_manifest_mismatch_preserves_prior_library(self):
+        allowlist = {
+            "schema_version": 2,
+            "allowlist_id": "test-release",
+            "library_id": "test-library",
+            "catalog": config.DEFAULT_LIBRARY_CATALOG,
+            "fits_count": 78,
+            "files": [],
+            "source_url": "https://example.invalid/library.zip",
+            "source_archive_integrity": {
+                "algorithm": "md5",
+                "scope": "integrity_only_not_authentication",
+                "value": config.LIBRARY_ZIP_MD5,
+            },
+            "header_identity_exceptions": [],
+            "library_provenance": {
+                "archive_products": [],
+                "reference_dq_records": [],
+                "source_archive": {},
+                "source_catalog": {},
+            },
+        }
+
+        def fake_download(url, filename, **kwargs):
+            with zipfile.ZipFile(filename, "w") as stream:
+                stream.writestr(config.DEFAULT_LIBRARY_CATALOG, "OBJECT_ID\n")
+            return config.LIBRARY_ZIP_MD5
+
+        def write_mismatched_manifest(library_path, **kwargs):
+            path = Path(library_path) / "library_manifest.json"
+            path.write_text("{}\n", encoding="utf-8")
+            return path
+
+        with tempfile.TemporaryDirectory() as temp:
+            destination = Path(temp) / "library"
+            destination.mkdir()
+            marker = destination / "previous-library"
+            marker.write_text("preserve me", encoding="utf-8")
+            with (
+                mock.patch.object(
+                    utils, "load_default_library_allowlist",
+                    return_value=(allowlist, "a" * 64),
+                ),
+                mock.patch.object(
+                    utils, "_stream_download", side_effect=fake_download
+                ),
+                mock.patch.object(utils, "_verify_library_against_allowlist"),
+                mock.patch.object(
+                    utils, "build_library_manifest",
+                    side_effect=write_mismatched_manifest,
+                ),
+                mock.patch.object(utils, "validate_library", return_value={}),
+            ):
+                with self.assertRaisesRegex(ValueError, "Mismatched fields"):
+                    utils.get_library(
+                        library_path=destination, overwrite=True, verbose=0
+                    )
+            self.assertEqual(marker.read_text(encoding="utf-8"), "preserve me")
 
     def test_credentials_are_environment_driven_and_not_echoed(self):
         with mock.patch.dict(os.environ, {}, clear=True):
@@ -505,6 +687,34 @@ class LibraryAndSecurityTests(unittest.TestCase):
                 result["fits_schema"]["mapped_objects"][0]["OBJECT_ID"],
                 "star",
             )
+            archive_products = [{
+                "l2filename": "star.fits", "swversion": "1.3.0",
+            }]
+            dq_records = [{
+                "path": "FITS/star.fits", "dqlevel1": 0, "dqlevel2": 0,
+            }]
+            utils.validate_library_fits_schema(
+                root,
+                archive_products=archive_products,
+                reference_dq_records=dq_records,
+            )
+            with self.assertRaisesRegex(ValueError, "DRP provenance mismatch"):
+                utils.validate_library_fits_schema(
+                    root,
+                    archive_products=[{
+                        "l2filename": "star.fits", "swversion": "v1.5.3",
+                    }],
+                    reference_dq_records=dq_records,
+                )
+            with self.assertRaisesRegex(ValueError, "DQLEVEL1 provenance"):
+                utils.validate_library_fits_schema(
+                    root,
+                    archive_products=archive_products,
+                    reference_dq_records=[{
+                        "path": "FITS/star.fits", "dqlevel1": 1,
+                        "dqlevel2": 0,
+                    }],
+                )
 
     def test_header_identity_exception_requires_matching_gaia_provenance(self):
         with tempfile.TemporaryDirectory() as temp:

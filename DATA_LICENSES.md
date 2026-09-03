@@ -14,8 +14,9 @@ an uploader is not, by itself, evidence that the uploader was authorized to
 relicense third-party NEID Level-2 FITS files. NEIDSpecMatch therefore does not
 rely on that label as a grant of redistribution or sublicensing rights.
 
-The proposed 20260831 library contains 78 unmodified public NEID Level-2 FITS
-files reduced with DRP 1.5.2 or 1.5.3. Public download availability and an
+The staged 20260831 library (reserved DOI `10.5281/zenodo.22262405`) contains
+78 unmodified public NEID Level-2 FITS files reduced with DRP 1.5.2 or 1.5.3.
+Public download availability and an
 acknowledgement requirement do not necessarily grant permission to republish
 or apply a Creative Commons license to those files. The replacement Zenodo
 version must remain an **unpublished draft** until the NEID Archive or another

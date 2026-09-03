@@ -15,7 +15,7 @@ concurrency:
 env:
   MPLBACKEND: Agg
   PIP_DISABLE_PIP_VERSION_CHECK: "1"
-  PYTHONWARNINGS: default
+  PYTHONWARNINGS: error
 
 jobs:
   test:
@@ -133,6 +133,28 @@ jobs:
       - name: Run unit tests
         run: python -m unittest discover -s tests -p 'test_*.py' -v
 
+      - name: Verify the publication-validation runtime
+        run: |
+          python - <<'PY'
+          from importlib.metadata import version
+          from pathlib import Path
+
+          pins = {}
+          for line in Path("constraints/validated-runtime.txt").read_text().splitlines():
+              line = line.strip()
+              if not line or line.startswith("#"):
+                  continue
+              name, expected = line.split("==", 1)
+              pins[name] = expected
+          mismatches = {
+              name: {"expected": expected, "found": version(name)}
+              for name, expected in pins.items()
+              if version(name) != expected
+          }
+          if mismatches:
+              raise SystemExit(f"Validated runtime mismatch: {mismatches}")
+          PY
+
   package:
     name: Build and inspect distributions
     needs: test
@@ -193,6 +215,11 @@ jobs:
                   raise SystemExit(f"Unexpected files in {wheel}: {unexpected}")
               if not any(name.endswith("/LICENSE") for name in names):
                   raise SystemExit(f"LICENSE is missing from {wheel}")
+              figure_module = "neidspecmatch/crossvalidation_figure.py"
+              if figure_module not in names:
+                  raise SystemExit(
+                      f"Cross-validation figure module is missing from {wheel}"
+                  )
               packaged_data = {
                   name for name in names if name.startswith("neidspecmatch/data/")
               }
@@ -205,7 +232,7 @@ jobs:
                   )
               with ZipFile(wheel) as archive:
                   digest = sha256(archive.read(manifest_path)).hexdigest()
-              if digest != "e3a5b624f970299f5ed3db4f744d07d10c5a5d423adb7d81cd60ad4d4fa53dfe":
+              if digest != "2f7a5ef3de977c38e16670769476d29dcee5317cafbda282c5daa7b2f0bd9396":
                   raise SystemExit(f"Default-library allowlist digest mismatch: {digest}")
 
           sdists = list(Path("dist").glob("*.tar.gz"))
@@ -219,6 +246,11 @@ jobs:
                   if member.isfile() and "/" in member.name
               }
               relative_names = set(relative_members)
+              figure_module = "neidspecmatch/crossvalidation_figure.py"
+              if figure_module not in relative_names:
+                  raise SystemExit(
+                      "Cross-validation figure module is missing from sdist"
+                  )
               packaged_data = {
                   name for name in relative_names
                   if name.startswith("neidspecmatch/data/")
@@ -234,7 +266,7 @@ jobs:
               if stream is None:
                   raise SystemExit("Could not read default-library allowlist from sdist")
               digest = sha256(stream.read()).hexdigest()
-              if digest != "e3a5b624f970299f5ed3db4f744d07d10c5a5d423adb7d81cd60ad4d4fa53dfe":
+              if digest != "2f7a5ef3de977c38e16670769476d29dcee5317cafbda282c5daa7b2f0bd9396":
                   raise SystemExit(f"Sdist default-library allowlist digest mismatch: {digest}")
           forbidden_prefixes = (
               ".ci/", "data/", "img/", "lib/", "library/", "notebooks/",
@@ -251,8 +283,10 @@ jobs:
           required = (
               "CHANGELOG.md", "CITATION.cff", "DATA_LICENSES.md", "LICENSE",
               "SECURITY.md", "docs/RELEASE_CHECKLIST.md",
-              "docs/VALIDATION_REPORT_0.2.0b1.md",
+              "docs/GITHUB_RELEASE_NOTES_0.2.0.md",
+              "docs/VALIDATION_REPORT_0.2.0.md",
               "constraints/release-validation.in",
+              "constraints/validated-runtime.txt",
               "constraints/release-py310.txt",
               "constraints/release-py311.txt",
               "constraints/release-py312.txt",
@@ -272,6 +306,10 @@ jobs:
           python -m pip check
           cd "$(mktemp -d)"
           python -c "import neidspecmatch; print(neidspecmatch.__version__)"
+          neidspecmatch-fit --help >/dev/null
+          neidspecmatch-crossval --help >/dev/null
+          neidspecmatch-crossval-figure --help >/dev/null
+          neidspecmatch-library --help >/dev/null
 
       - name: Upload build artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1, reviewed 2026-08-31

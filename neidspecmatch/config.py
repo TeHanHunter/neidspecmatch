@@ -115,8 +115,8 @@ BOUNDS = {
 # Directory name of package (read-only package data only).
 DIRNAME = os.path.dirname(os.path.dirname(__file__))
 
-DEFAULT_LIBRARY_ID = "20250226_specmatch_nir"
-DEFAULT_LIBRARY_CATALOG = "20250226_78stars.csv"
+DEFAULT_LIBRARY_ID = "20260831_specmatch_neid_drp15"
+DEFAULT_LIBRARY_CATALOG = "20260831_78stars_neid_drp15.csv"
 LIBRARY_ENVVAR = "NEIDSPECMATCH_LIBRARY"
 
 
@@ -143,7 +143,10 @@ PATH_LIBRARY_DB = os.path.join(PATH_LIBRARY, DEFAULT_LIBRARY_CATALOG)
 PATH_LIBRARY_FITS = os.path.join(PATH_LIBRARY, "FITS")
 PATH_LIBRARY_CROSSVAL = os.path.join(PATH_LIBRARY, "crossval")
 PATH_LIBRARY_ZIPNAME = os.path.join(PATH_LIBRARY, DEFAULT_LIBRARY_ID + '.zip')
-URL_LIBRARY = 'https://zenodo.org/records/14947454/files/20250226_specmatch_nir.zip?download=1'
-LIBRARY_ZIP_MD5 = 'e54e203610e948512e641b6e30530570'
-LIBRARY_ZIP_SIZE_BYTES = 7337841681
+URL_LIBRARY = (
+    'https://zenodo.org/records/22262405/files/'
+    '20260831_specmatch_neid_drp15.zip?download=1'
+)
+LIBRARY_ZIP_MD5 = 'b8abc3ade339074cbd137a9fd2749297'
+LIBRARY_ZIP_SIZE_BYTES = 6536877943
 LIBRARY_FITSFILES = sorted(glob.glob(PATH_LIBRARY_FITS + '/*.fits'))
