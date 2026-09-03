@@ -20,11 +20,12 @@ the validation scope below before adopting publication-facing parameters.
   empirical-library `[Fe/H]` is now the default. No metallicity calibration is
   bundled because the tested cross-fitted corrections did not improve held-out
   performance and do not constitute independent validation.
-- **Explicit validation scope.** Ordinary free-`v sin i` fits are validated
-  for array-row order 55 in the hot population and orders 101, 102, and 103 in
-  the cool population, using a 4500 K boundary and the exact DRP-1.5 library,
-  runtime, and source fingerprints recorded in the release bundle. Order 102
-  is the conservative default for cool/M-dwarf targets. Validation errors are
+- **Explicit validation scope.** The release bundle reports ordinary
+  free-`v sin i` leave-one-out results for the full, cool, and hot populations
+  for each of array-row orders 55, 101, 102, and 103, using a 4500 K boundary
+  and the exact DRP-1.5 library and source fingerprints recorded in the
+  bundle. Order 55 is recommended for hotter stars; order 102 is the
+  conservative default for cool/M-dwarf targets. Validation errors are
   empirical population-level predictive metrics, not automatic per-target
   Gaussian uncertainties.
 - **Deterministic fitting.** Pairwise continuum/rotation fitting and the
@@ -60,6 +61,8 @@ Python 3.10, 3.11, and 3.12 are tested. For exact agreement with the release
 validation, install with the supplied `constraints/validated-runtime.txt`.
 The full validation report, raw cross-validation predictions, fold receipts,
 summary tables, and research-note-style figure are linked from the release.
+The completed products retain their 0.2.0b1 provenance; the report also
+includes a 129-fold numerical-continuity comparison to the final candidate.
 
 The DRP-1.5 library is archived under DOI
 [`10.5281/zenodo.22262405`](https://doi.org/10.5281/zenodo.22262405). Do not

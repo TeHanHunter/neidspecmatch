@@ -6,6 +6,13 @@ free-`v sin i` result is eligible for atmospheric-parameter publication use
 only when its JSON receipt matches a complete cross-validation product from
 the same analysis state.
 
+The 0.2.0 dataset's completed four-order run retains its original 0.2.0b1
+fingerprint and is accompanied by a separate numerical-continuity comparison
+to the final candidate. Those empirical population metrics remain reported as
+release evidence, but the final package does not relabel the archived receipt
+or set its strict runtime-attached validation flag from it. See
+`VALIDATION_REPORT_0.2.0.md` for the exact boundary.
+
 The required match is intentionally strict:
 
 - exact NEIDSpecMatch and `neidspec` source fingerprints and result schema;

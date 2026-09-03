@@ -4,9 +4,10 @@
 
 This release corrects the software and release pipeline and adds a current
 DRP-1.5 empirical reference library with order- and population-specific
-leave-one-out validation for the ordinary free-`v sin i` estimator: order 55
-for the hot population and orders 101, 102, and 103 for the cool population,
-split at 4500 K. Atmospheric parameters retain raw [Fe/H]. Fixed and bounded
+leave-one-out validation for the ordinary free-`v sin i` estimator. Orders
+55, 101, 102, and 103 each report the full library and both populations split
+at 4500 K. Order 55 is recommended for hotter stars and order 102 is the
+conservative default for cool/M-dwarf targets. Atmospheric parameters retain raw [Fe/H]. Fixed and bounded
 fits still require independent labeled broad-lined validation.
 
 - Remove the silently applied HPF order-5 metallicity coefficients. Raw

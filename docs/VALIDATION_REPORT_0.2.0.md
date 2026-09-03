@@ -1,6 +1,6 @@
 # NEIDSpecMatch 0.2.0 validation report
 
-Status: **release candidate; exact four-order validation in progress**
+Status: **release candidate; four-order validation complete**
 Validation date: 2026-09-03
 
 This report records software, artifact, archive, and cross-validation
@@ -70,24 +70,54 @@ unpublished until an authorized NEID representative confirms redistribution
 terms in writing. Upload and checksum verification establish integrity, not
 permission to redistribute.
 
-## Exact four-order cross-validation
+## Four-order cross-validation
 
-The final leave-one-spectrum-out run uses the ordinary free-`v sin i`
-estimator for array-row orders 55, 101, 102, and 103. It contains 78 folds per
-order. Release population metrics use order 55 for the hot population and
-orders 101--103 for the cool population, divided at 4500 K. Raw `[Fe/H]` is
-reported; no empirical detrending is applied.
+Leave-one-spectrum-out validation used the ordinary free-`v sin i` estimator
+for array-row orders 55, 101, 102, and 103. All 78 folds completed at every
+order (312 fits total). Every order reports the full library, 46 cool stars,
+and 32 hot stars, divided at 4500 K. Raw `[Fe/H]` is reported; no empirical
+detrending is applied.
 
-The numerical estimator fingerprints frozen before this run are:
+| Order | Population | N | Teff RMSE (K) | [Fe/H] RMSE (dex) | log(g) RMSE (dex) |
+| ---: | :--- | ---: | ---: | ---: | ---: |
+| 55 | cool | 46 | 67.25 | 0.1628 | 0.0474 |
+| 55 | hot | 32 | 103.98 | 0.0866 | 0.0887 |
+| 101 | cool | 46 | 72.09 | 0.1756 | 0.0578 |
+| 101 | hot | 32 | 150.14 | 0.0711 | 0.0810 |
+| 102 | cool | 46 | 60.92 | 0.1628 | 0.0387 |
+| 102 | hot | 32 | 152.11 | 0.0546 | 0.0782 |
+| 103 | cool | 46 | 56.59 | 0.1627 | 0.0381 |
+| 103 | hot | 32 | 137.42 | 0.0527 | 0.0935 |
 
-- NEIDSpecMatch source:
+The deposited summary CSV also reports all-star metrics, residual bias,
+sample scatter, finite coverage, and unrounded values. The completed run was
+made with the immediately preceding 0.2.0b1 candidate and records, without
+relabeling, these fingerprints:
+
+- NEIDSpecMatch 0.2.0b1 source:
+  `fd21efbd772ac88efb5e06b5fb289f49ec26b3b3126087a5ab874b0529cb1186`
+- NEIDSpec 0.2.0 source:
+  `c494c1af665aa71b29c89ef03ab8a1c7f42f0439c89077c1f0e5526b9bcb13bf`
+- library manifest:
+  `1b52fe513ffdd7c198bdc95800fea6956a7ad99148d30cabec217b7d5c8e03f6`
+
+After the release-only provenance, packaging, and coordinated NEIDSpec mask-
+medium updates, 129 overlapping cool-star folds were rerun with the final
+candidate. Median absolute changes were 0.77--1.63 K in Teff,
+0.0016--0.0039 dex in `[Fe/H]`, and 0.0006--0.0010 dex in `log(g)`; maxima
+were 12.7 K, 0.0248 dex, and 0.0160 dex. These are numerical-continuity checks,
+not replacement cross-validation. Their row-level data and provenance are in
+the release bundle. The final candidate fingerprints are:
+
+- NEIDSpecMatch 0.2.0 source:
   `4c2dcc6bca85d7ac55f987db5879f7a6a15080202cbfb5d40a5d363e14b88215`
-- NEIDSpec source:
+- NEIDSpec 0.2.1 source:
   `f49070f7f18499e85c0c9cb37596a6a9ece3c18eef56bb80ea6e617a599f6ba4`
 
-Final per-order/population bias, sample scatter, RMSE, finite coverage, and
-artifact hashes will replace this sentence after all 312 folds finish and the
-fail-closed figure/summary verifier succeeds.
+The original raw predictions and checkpoints are preserved with their true
+0.2.0b1 provenance. They are not rewritten to masquerade as an exact final-
+source run; the final package's strict runtime-attached validation gate
+therefore remains conservative.
 
 ## Live archive availability audit
 
@@ -140,7 +170,7 @@ wheel was then installed outside the checkout in all three locked Python
 environments: all release tests and `pip check` passed, version 0.2.0 imported, and
 all four command-line entry points displayed help. The current wheel is about
 120 KiB and the sdist about 312 KiB. Final artifacts will be rebuilt once after
-the cross-validation report is complete and must contain the release-owned reference-library SHA-256
+the validation bundle is frozen and must contain the release-owned reference-library SHA-256
 allowlist but no spectra, legacy catalogs, notebooks, plots, credentials, or
 local paths.
 

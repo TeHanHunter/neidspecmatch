@@ -127,9 +127,10 @@ broad-lined science case. Consequently, `Teff`, `[Fe/H]`, and `log(g)` from a
 fixed or bounded run remain exploratory pending validation on independent,
 labeled broad-lined standards representative of the science targets.
 
-The 0.2.0 release-validation scope is order 55 for the hot population and
-orders 101, 102, and 103 for the cool population, with the boundary at 4500 K.
-Order 102 remains the conservative default for cool/M-dwarf targets. Other
+The 0.2.0 release bundle reports the full, cool, and hot populations for each
+of orders 55, 101, 102, and 103, with the population boundary at 4500 K.
+Order 55 is recommended for hotter stars, while order 102 remains the
+conservative default for cool/M-dwarf targets. Other
 valid order indices remain available for exploratory work, but are marked
 unvalidated unless a current, exactly matching validation product is supplied
 for the ordinary free-`v sin i` mode. Publication validation is population-
@@ -207,6 +208,13 @@ pairwise `v sin i`; it validates only that estimator on the unmodified library
 population. It does not validate a science fit made with `--vsini` or
 `--vsini-window`.
 
+The 0.2.0 dataset preserves the completed products under their original
+0.2.0b1 fingerprints and separately supplies a numerical-continuity record to
+the final candidate. It does not rewrite historical receipts as exact final-
+source products. Consequently, the final package's stricter automatic
+runtime-attached validation flag remains conservative for those archived
+summaries; use the release report when quoting their population-level errors.
+
 This writes a raw result CSV, an atomic fold checkpoint, and a machine-readable
 per-order summary. The installed fail-closed figure command first verifies all
 four raw/checkpoint/summary products and the exact library manifest, then
@@ -275,8 +283,8 @@ does not create independent spectral pixels.
 
 The uncertainty equations reported for the 0.1 analysis do not validate the
 changed 0.2 L2-blaze/RV/continuum pipeline. The 0.2.0 release bundle supplies
-current evidence for orders 55, 101, 102, and 103 and the named 4500 K
-populations. An ordinary fit remains marked exploratory unless its summary
+78-fold evidence for orders 55, 101, 102, and 103 in both named 4500 K
+populations, as well as the full library. An ordinary fit remains marked exploratory unless its summary
 matches the exact result schema, pipeline fingerprint, numerical-library
 versions, `neidspec` source, deep-verified library manifest, DRP series, blaze
 source, order, population, and (when used) calibration artifact hash. Fixed
