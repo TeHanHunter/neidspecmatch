@@ -169,7 +169,7 @@ A frozen release-candidate source copy produced one wheel and one sdist.
 wheel was then installed outside the checkout in all three locked Python
 environments: all release tests and `pip check` passed, version 0.2.0 imported, and
 all four command-line entry points displayed help. The current wheel is about
-120 KiB and the sdist about 312 KiB. Final artifacts will be rebuilt once after
+120 KiB and the sdist about 315 KiB. Final artifacts will be rebuilt once after
 the validation bundle is frozen and must contain the release-owned reference-library SHA-256
 allowlist but no spectra, legacy catalogs, notebooks, plots, credentials, or
 local paths.
