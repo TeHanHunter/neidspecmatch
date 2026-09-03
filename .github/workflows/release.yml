@@ -320,7 +320,7 @@ jobs:
           if [[ "$GITHUB_REF_TYPE" == "tag" ]]; then
             python -m pip install --no-deps "neidspec==0.2.1"
           else
-            python -m pip install --no-deps --editable .ci/neidspec
+            python -m pip install --no-build-isolation --no-deps --force-reinstall .ci/neidspec
           fi
           python -m pip install --no-deps --force-reinstall dist/*.whl
           python -m pip check
