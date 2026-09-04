@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.2.0 (unreleased)
+## 0.2.0 (2026-09-03)
 
 This release corrects the software and release pipeline and adds a current
 DRP-1.5 empirical reference library with order- and population-specific

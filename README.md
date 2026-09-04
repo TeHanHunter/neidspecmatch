@@ -210,7 +210,7 @@ population. It does not validate a science fit made with `--vsini` or
 
 The 0.2.0 dataset preserves the completed products under their original
 0.2.0b1 fingerprints and separately supplies a numerical-continuity record to
-the final candidate. It does not rewrite historical receipts as exact final-
+the final 0.2.0 source. It does not rewrite historical receipts as exact final-
 source products. Consequently, the final package's stricter automatic
 runtime-attached validation flag remains conservative for those archived
 summaries; use the release report when quoting their population-level errors.

@@ -1,6 +1,6 @@
 # NEIDSpecMatch 0.2.0 validation report
 
-Status: **release candidate; four-order validation complete**
+Status: **released; four-order validation complete**
 Validation date: 2026-09-03
 
 This report records software, artifact, archive, and cross-validation
@@ -107,7 +107,7 @@ candidate. Median absolute changes were 0.77--1.63 K in Teff,
 0.0016--0.0039 dex in `[Fe/H]`, and 0.0006--0.0010 dex in `log(g)`; maxima
 were 12.7 K, 0.0248 dex, and 0.0160 dex. These are numerical-continuity checks,
 not replacement cross-validation. Their row-level data and provenance are in
-the release bundle. The final candidate fingerprints are:
+the release bundle. The final 0.2.0 source fingerprints are:
 
 - NEIDSpecMatch 0.2.0 source:
   `4c2dcc6bca85d7ac55f987db5879f7a6a15080202cbfb5d40a5d363e14b88215`

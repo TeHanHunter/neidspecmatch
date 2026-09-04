@@ -62,7 +62,7 @@ validation, install with the supplied `constraints/validated-runtime.txt`.
 The full validation report, raw cross-validation predictions, fold receipts,
 summary tables, and research-note-style figure are linked from the release.
 The completed products retain their 0.2.0b1 provenance; the report also
-includes a 129-fold numerical-continuity comparison to the final candidate.
+includes a 129-fold numerical-continuity comparison to the final 0.2.0 source.
 
 The DRP-1.5 library is archived under DOI
 [`10.5281/zenodo.22262405`](https://doi.org/10.5281/zenodo.22262405). Do not
