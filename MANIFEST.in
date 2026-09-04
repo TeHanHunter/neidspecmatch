@@ -1,3 +1,16 @@
 include README.md
 include LICENSE
-recursive-include neidspecmatch/data *
+include CHANGELOG.md
+include CITATION.cff
+include SECURITY.md
+include DATA_LICENSES.md
+include setup.cfg
+include pyproject.toml
+recursive-include docs *.md
+recursive-include constraints *.in *.txt
+recursive-include neidspecmatch/data *.json
+prune lib
+prune library
+prune tutorial
+prune tests/img
+global-exclude *.fits *.fit *.png *.ipynb

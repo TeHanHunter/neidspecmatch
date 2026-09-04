@@ -6,13 +6,21 @@ import numpy as np
 import pickle
 import re
 import pandas as pd
-import radvel
-from astroquery.simbad import Simbad
-import wget, zipfile
+import hashlib
+import json
+from importlib import resources
+from pathlib import Path, PurePosixPath
+import shutil
+import stat
+import tempfile
+from urllib.request import urlopen
+import warnings
+import zipfile
 import neidspecmatch.config as config
+from .paths import sha256_file
 norm_mean = lambda x: x/np.nanmean(x)
 
-def pickle_dump(filename,obj):
+def pickle_dump(filename, obj, *, verbose=False):
     """
     write obj to to filename and save
     
@@ -27,12 +35,18 @@ def pickle_dump(filename,obj):
         pickle_dump()
     
     """
-    savefile = open(filename,"w")
-    pickle.dump(obj, savefile)
-    savefile.close()
-    print("Saved to {}".format(filename))
+    warnings.warn(
+        "Pickle is a legacy Python-specific format. Prefer JSON for durable "
+        "NEIDSpecMatch results.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    with open(filename, "wb") as savefile:
+        pickle.dump(obj, savefile, protocol=pickle.HIGHEST_PROTOCOL)
+    if verbose:
+        print("Saved to {}".format(filename))
 
-def pickle_load(filename,python3=True):
+def pickle_load(filename, python3=True, *, trusted=False):
     """
     load obj from filename
     
@@ -46,9 +60,18 @@ def pickle_load(filename,python3=True):
     EXAMPLE:
         pickle_load()
     """
-    if python3:
-        openfile = open(filename,"rb")
-    return pickle.load(openfile,encoding='latin1')
+    if not trusted:
+        raise ValueError(
+            "Refusing to load pickle without trusted=True. Pickle can execute "
+            "arbitrary code; load only files from a trusted source."
+        )
+    warnings.warn(
+        "Loading legacy pickle; caller asserted that the file is trusted.",
+        RuntimeWarning,
+        stacklevel=2,
+    )
+    with open(filename, "rb") as openfile:
+        return pickle.load(openfile, encoding='latin1')
 
 
 def jd2datetime(times):
@@ -343,7 +366,7 @@ def plot_rv_model(bjd,RV,e_RV,P,T0,K,e,w,nbjd=None,nRV=None,ne_RV=None,title="",
             label="Unbin, median errorbar={:0.1f}m/s".format(np.median(e_RV)))
     ax.plot(bjd_model,rv_model,label="Expected Orbit",lw=1,color="crimson")
     res = RV - rv_obs
-    bx.errorbar(bjd,res,e_RV,elinewidth=1,mew=0.5,capsize=5,marker="o",lw=0,markersize=6,alpha=0.5,label='Residual: $\sigma$={:0.2f}m/s'.format(np.std(res)))
+    bx.errorbar(bjd,res,e_RV,elinewidth=1,mew=0.5,capsize=5,marker="o",lw=0,markersize=6,alpha=0.5,label=r'Residual: $\sigma$={:0.2f}m/s'.format(np.std(res)))
     
     if nbjd is not None:
         ax.errorbar(nbjd,nRV,ne_RV,elinewidth=1,mew=0.5,capsize=5,marker="h",lw=0,color="crimson",
@@ -385,7 +408,7 @@ def plot_rv_model_phased(bjd,RV,e_RV,P,T0,K,e,w,nbjd=None,nRV=None,ne_RV=None,ti
             label="Unbin, median errorbar={:0.1f}m/s".format(np.median(e_RV)))
     ax.plot(df_phase_model.phases,rv_model,label="Expected Orbit",lw=0,marker="o",markersize=2,color="crimson")
     res = RV - rv_obs
-    bx.errorbar(df_phase.phases,res,e_RV,elinewidth=1,mew=0.5,capsize=5,marker="o",lw=0,markersize=6,alpha=0.5,label='Residual: $\sigma$={:0.2f}m/s'.format(np.std(res)))
+    bx.errorbar(df_phase.phases,res,e_RV,elinewidth=1,mew=0.5,capsize=5,marker="o",lw=0,markersize=6,alpha=0.5,label=r'Residual: $\sigma$={:0.2f}m/s'.format(np.std(res)))
     
     if nbjd is not None:
         ax.errorbar(df_phase_bin.phases,nRV,ne_RV,elinewidth=1,mew=0.5,capsize=5,marker="h",lw=0,color="crimson",
@@ -455,6 +478,13 @@ def get_rv_curve(times_jd,P,tc,e,omega,K,plot=True,ax=None,verbose=True,plot_tno
     OUTPUT:
         rv: array of RVs at times times_jd
     """
+    try:
+        import radvel
+    except ImportError as exc:
+        raise ImportError(
+            "get_rv_curve requires optional dependencies: "
+            "pip install neidspecmatch[utilities]"
+        ) from exc
     t_peri = radvel.orbit.timetrans_to_timeperi(tc=tc,
                                                 per=P,
                                                 ecc=e,
@@ -507,6 +537,13 @@ def get_simbad_object_names(name,as_str=False):
     """
     Get all Simbad names for an object
     """
+    try:
+        from astroquery.simbad import Simbad
+    except ImportError as exc:
+        raise ImportError(
+            "SIMBAD queries require optional dependencies: "
+            "pip install neidspecmatch[archive]"
+        ) from exc
     result_table = Simbad.query_objectids(name).to_pandas()
     names = result_table.ID.values.astype(str)
     if as_str:
@@ -524,35 +561,1130 @@ def find_str_in_list(l,string):
             return element
     return ''
 
-def get_library(overwrite=False):
-    """
-    Download stellar library if it does not already exist
+LIBRARY_MANIFEST_SCHEMA = 2
+DEFAULT_MAX_ZIP_MEMBERS = 512
+DEFAULT_MAX_EXPANDED_BYTES = 64 * 1024 ** 3
+DEFAULT_MAX_DOWNLOAD_BYTES = 16 * 1024 ** 3
+DEFAULT_LIBRARY_ALLOWLIST_RESOURCE = "default_library_allowlist.json"
+DEFAULT_LIBRARY_DRP_SERIES = "1.5"
+DEFAULT_LIBRARY_DRP_VERSION_COUNTS = {"v1.5.2": 1, "v1.5.3": 77}
+DEFAULT_LIBRARY_DQ_STATUS_COUNTS = {"pass": 72, "warning": 6}
+DEFAULT_LIBRARY_DQ_PASS = {
+    "dq_manual_flag": 0,
+    "dq_warning_reason": None,
+    "dqlevel1": 36028797018963968,
+    "dqlevel2": 0,
+}
+DEFAULT_LIBRARY_DQ_WARNING = {
+    "dq_manual_flag": 52,
+    "dq_warning_reason": (
+        "manual_flag_52_shared_risk_contreras_fire_restart"
+    ),
+    "dqlevel1": 36028797019017473,
+    "dqlevel2": 0,
+}
+DEFAULT_LIBRARY_WARNING_POLICY = (
+    "DQLEVEL1 warning only when manual assessment flag is 52 (Shared Risk - "
+    "Contreras Fire Restart), all automated subsystem summaries pass, and "
+    "DQLEVEL2 passes"
+)
 
-    INPUT:
-        overwrite - if True, try redownloading and overwriting current library
-    
-    OUTPUT:
-        saves downloaded zip file to outputdir folder
-        
-    EXAMPLE:
-        neidspecmatch.utils.get_library()
-    """
 
-    if ((os.path.isdir(config.PATH_LIBRARY) is False) and (overwrite is False)) or (overwrite is True):
-        make_dir(config.PATH_LIBRARY)
-        
-        print('Downloading library from: {}'.format(config.URL_LIBRARY))
-        wget.download(config.URL_LIBRARY, config.PATH_LIBRARY_ZIPNAME)
-        
-        print('Extracting zip file')
-        with zipfile.ZipFile(config.PATH_LIBRARY_ZIPNAME, 'r') as zip_ref:
-            zip_ref.extractall(config.PATH_LIBRARY)  
-        print('Extracting zip file complete')
-        print('Deleting zip file')
-        os.remove(config.PATH_LIBRARY_ZIPNAME)
-        #shutil.rmtree('../library/__MACOSX')
-        print('Download complete')
-        
-    else:
-        print('Library already exists. Skipping download')
-        print('Library path is: {}'.format(config.PATH_LIBRARY))
+def _release_count_mapping(value, description):
+    if not isinstance(value, dict):
+        raise ValueError(f"{description} must be a mapping.")
+    parsed = {}
+    for key, count in value.items():
+        if isinstance(count, bool):
+            raise ValueError(f"{description} contains a Boolean count.")
+        try:
+            number = int(count)
+        except (TypeError, ValueError, OverflowError) as exc:
+            raise ValueError(f"{description} contains an invalid count.") from exc
+        if number < 0 or number != count:
+            raise ValueError(f"{description} contains an invalid count.")
+        name = str(key).strip()
+        if not name or name in parsed:
+            raise ValueError(f"{description} contains an invalid key.")
+        parsed[name] = number
+    return dict(sorted(parsed.items()))
+
+
+def _archive_zero(value):
+    return value is False or (
+        not isinstance(value, bool) and str(value).strip() == "0"
+    )
+
+
+def _validated_release_file_records(allowlist):
+    """Validate release-library paths and integrity records without I/O."""
+    fits_count = allowlist["fits_count"]
+    catalog = str(allowlist["catalog"])
+    if not catalog or PurePosixPath(catalog).name != catalog:
+        raise ValueError("Release library catalog must be a basename.")
+    records = allowlist.get("files")
+    if not isinstance(records, list) or len(records) != fits_count + 1:
+        raise ValueError("Default library allowlist has incomplete file records.")
+    parsed = {}
+    for record in records:
+        if not isinstance(record, dict) or set(record) != {
+            "path", "size_bytes", "sha256",
+        }:
+            raise ValueError("Default library allowlist has an invalid file record.")
+        path = str(record["path"])
+        size = record["size_bytes"]
+        digest = str(record["sha256"])
+        parts = path.split("/")
+        if (
+            not path
+            or path.startswith("/")
+            or "\\" in path
+            or any(part in {"", ".", ".."} for part in parts)
+            or path in parsed
+            or isinstance(size, bool)
+            or not isinstance(size, int)
+            or size <= 0
+            or re.fullmatch(r"[0-9a-f]{64}", digest) is None
+        ):
+            raise ValueError("Default library allowlist has an invalid file record.")
+        if path != catalog and not (
+            len(parts) == 2
+            and parts[0] == "FITS"
+            and PurePosixPath(parts[1]).suffix.lower() == ".fits"
+        ):
+            raise ValueError("Default library allowlist has an unsafe file path.")
+        parsed[path] = dict(record)
+    fits_paths = {path for path in parsed if path != catalog}
+    if catalog not in parsed or len(fits_paths) != fits_count:
+        raise ValueError("Default library allowlist file coverage is incomplete.")
+    return parsed, fits_paths
+
+
+def _validated_release_library_provenance(
+        allowlist, *, expected_drp_series,
+        expected_version_counts=None, expected_dq_counts=None):
+    """Validate release-library archive and DQ evidence without file I/O."""
+    provenance = allowlist.get("library_provenance")
+    required = {
+        "archive_products", "reference_dq_records", "source_archive",
+        "source_catalog",
+    }
+    if not isinstance(provenance, dict) or set(provenance) != required:
+        raise ValueError("Default library provenance is incomplete.")
+
+    fits_count = allowlist["fits_count"]
+    catalog = str(allowlist["catalog"])
+    file_records, fits_paths = _validated_release_file_records(allowlist)
+
+    archive_products = provenance["archive_products"]
+    if not isinstance(archive_products, list) or len(archive_products) != fits_count:
+        raise ValueError("Default library archive-product provenance is incomplete.")
+    versions = {}
+    for product in archive_products:
+        if not isinstance(product, dict):
+            raise ValueError("Default library archive product must be a mapping.")
+        filename = str(product.get("l2filename", ""))
+        path = f"FITS/{filename}"
+        version = str(product.get("swversion", "")).strip()
+        checksum = str(product.get("l2checksum", ""))
+        if (
+            PurePosixPath(filename).name != filename
+            or path not in fits_paths
+            or path in versions
+            or not _archive_zero(product.get("flagged"))
+            or not _archive_zero(product.get("rejected"))
+            or re.fullmatch(r"v?\d+\.\d+(?:\.\d+)?", version) is None
+            or re.fullmatch(r"[0-9a-fA-F]{32}", checksum) is None
+        ):
+            raise ValueError("Default library archive-product provenance is invalid.")
+        versions[path] = version
+    if set(versions) != fits_paths:
+        raise ValueError("Default library archive products do not cover the FITS files.")
+
+    dq_records = provenance["reference_dq_records"]
+    if not isinstance(dq_records, list) or len(dq_records) != fits_count:
+        raise ValueError("Default library DQ provenance is incomplete.")
+    dq_statuses = {}
+    for record in dq_records:
+        if not isinstance(record, dict):
+            raise ValueError("Default library DQ record must be a mapping.")
+        path = str(record.get("path", ""))
+        status = str(record.get("dq_status", "")).strip().lower()
+        expected_dq = (
+            DEFAULT_LIBRARY_DQ_PASS
+            if status == "pass"
+            else DEFAULT_LIBRARY_DQ_WARNING
+            if status == "warning"
+            else None
+        )
+        if (
+            path not in fits_paths
+            or path in dq_statuses
+            or expected_dq is None
+            or set(record) != {"path", "dq_status", *expected_dq}
+            or any(record.get(field) != value for field, value in expected_dq.items())
+        ):
+            raise ValueError("Default library DQ provenance is invalid.")
+        dq_statuses[path] = status
+    if set(dq_statuses) != fits_paths:
+        raise ValueError("Default library DQ records do not cover the FITS files.")
+
+    source_archive = provenance["source_archive"]
+    if not isinstance(source_archive, dict):
+        raise ValueError("Default library source-archive provenance is invalid.")
+    required_series = str(
+        source_archive.get("required_drp_major_minor", "")
+    ).strip()
+    version_counts = {}
+    for version in versions.values():
+        series = ".".join(version.lstrip("v").split(".")[:2])
+        if series != required_series:
+            raise ValueError(
+                f"Release library is not DRP-{expected_drp_series}."
+            )
+        version_counts[version] = version_counts.get(version, 0) + 1
+    dq_counts = {}
+    for status in dq_statuses.values():
+        dq_counts[status] = dq_counts.get(status, 0) + 1
+    if (
+        required_series != str(expected_drp_series)
+        or source_archive.get("all_unflagged_unrejected") is not True
+        or source_archive.get("product_count") != fits_count
+        or _release_count_mapping(
+            source_archive.get("swversion_counts"), "Release library DRP counts"
+        ) != dict(sorted(version_counts.items()))
+        or _release_count_mapping(
+            source_archive.get("fits_dq_status_counts"),
+            "Release library DQ counts",
+        ) != dict(sorted(dq_counts.items()))
+        or (
+            dq_counts.get("warning", 0) > 0
+            and source_archive.get("accepted_fits_warning_policy")
+            != DEFAULT_LIBRARY_WARNING_POLICY
+        )
+        or re.fullmatch(
+            r"[0-9a-f]{64}", str(source_archive.get("metadata_sha256", ""))
+        ) is None
+    ):
+        raise ValueError("Default library source-archive summary is inconsistent.")
+
+    source_catalog = provenance["source_catalog"]
+    catalog_sha256 = str(file_records[catalog].get("sha256", ""))
+    if (
+        not isinstance(source_catalog, dict)
+        or source_catalog.get("unchanged_science_fields") is not True
+        or str(source_catalog.get("output_sha256", "")) != catalog_sha256
+        or re.fullmatch(
+            r"[0-9a-f]{64}", str(source_catalog.get("source_sha256", ""))
+        ) is None
+        or not str(source_catalog.get("source_record_doi", "")).strip()
+        or not str(source_catalog.get("source_record_filename", "")).strip()
+    ):
+        raise ValueError("Default library source-catalog provenance is invalid.")
+
+    identity_exceptions = _validated_header_identity_exceptions(
+        allowlist.get("header_identity_exceptions", [])
+    )
+    if not set(identity_exceptions).issubset(fits_paths):
+        raise ValueError("Default library identity exception is not a FITS file.")
+    if (
+        expected_version_counts is not None
+        and dict(sorted(version_counts.items()))
+        != dict(sorted(expected_version_counts.items()))
+    ):
+        raise ValueError("Release library DRP composition is unexpected.")
+    if (
+        expected_dq_counts is not None
+        and dict(sorted(dq_counts.items()))
+        != dict(sorted(expected_dq_counts.items()))
+    ):
+        raise ValueError("Release library DQ composition is unexpected.")
+    return provenance
+
+
+def _validated_default_library_provenance(allowlist):
+    """Validate the exact archive/DQ evidence for the packaged default."""
+    return _validated_release_library_provenance(
+        allowlist,
+        expected_drp_series=DEFAULT_LIBRARY_DRP_SERIES,
+        expected_version_counts=DEFAULT_LIBRARY_DRP_VERSION_COUNTS,
+        expected_dq_counts=DEFAULT_LIBRARY_DQ_STATUS_COUNTS,
+    )
+
+
+def _library_data_files(path, fits_files, catalog_name):
+    return [path / catalog_name, *fits_files]
+
+
+def _manifest_file_records(path, fits_files, catalog_name):
+    records = []
+    for filename in _library_data_files(path, fits_files, catalog_name):
+        records.append({
+            "path": filename.relative_to(path).as_posix(),
+            "size_bytes": filename.stat().st_size,
+            "sha256": sha256_file(filename),
+        })
+    return records
+
+
+def load_default_library_allowlist():
+    """Load and validate the release-owned default-library SHA-256 allowlist.
+
+    Unlike the Zenodo-published MD5, these per-file digests are shipped with
+    the NEIDSpecMatch release and authenticate the exact catalog/FITS payload
+    that this code was reviewed against.
+    """
+    resource = resources.files("neidspecmatch.data").joinpath(
+        DEFAULT_LIBRARY_ALLOWLIST_RESOURCE
+    )
+    payload = resource.read_bytes()
+    allowlist = json.loads(payload.decode("utf-8"))
+    if not isinstance(allowlist, dict):
+        raise ValueError("Default library allowlist must be a JSON object.")
+    if int(allowlist.get("schema_version", -1)) != LIBRARY_MANIFEST_SCHEMA:
+        raise ValueError("Default library allowlist schema is unsupported.")
+    expected_fields = {
+        "library_id": config.DEFAULT_LIBRARY_ID,
+        "catalog": config.DEFAULT_LIBRARY_CATALOG,
+        "fits_count": 78,
+        "source_url": config.URL_LIBRARY,
+        "source_archive_size_bytes": config.LIBRARY_ZIP_SIZE_BYTES,
+    }
+    for field, expected in expected_fields.items():
+        if allowlist.get(field) != expected:
+            raise ValueError(
+                f"Default library allowlist has unexpected {field!r}."
+            )
+    integrity = allowlist.get("source_archive_integrity")
+    if not isinstance(integrity, dict) or (
+            integrity.get("algorithm") != "md5"
+            or integrity.get("value") != config.LIBRARY_ZIP_MD5
+            or integrity.get("scope") != "integrity_only_not_authentication"):
+        raise ValueError("Default library archive-integrity metadata is invalid.")
+    if not str(allowlist.get("allowlist_id", "")).strip():
+        raise ValueError("Default library allowlist has no identifier.")
+    _validated_default_library_provenance(allowlist)
+    return allowlist, hashlib.sha256(payload).hexdigest()
+
+
+def _verify_library_against_allowlist(
+        library_path, allowlist, *, allow_installed_manifest=False):
+    """Verify an extracted library against a release-owned file allowlist."""
+    path = Path(library_path)
+    _require_regular_path(path, "library directory", directory=True)
+    if not isinstance(allowlist, dict):
+        raise ValueError("Library allowlist must be a mapping.")
+    records = allowlist.get("files")
+    if not isinstance(records, list) or not records:
+        raise ValueError("Library allowlist is missing per-file records.")
+    expected = {}
+    for record in records:
+        if not isinstance(record, dict):
+            raise ValueError("Library allowlist contains an invalid record.")
+        relative_text = str(record.get("path", ""))
+        relative = PurePosixPath(relative_text)
+        if (
+                not relative_text or relative.is_absolute()
+                or ".." in relative.parts or "." in relative.parts):
+            raise ValueError(f"Unsafe library allowlist path: {relative_text!r}")
+        if relative_text in expected:
+            raise ValueError("Library allowlist contains duplicate file paths.")
+        expected[relative_text] = record
+    catalog = str(allowlist.get("catalog", ""))
+    fits_count = int(allowlist.get("fits_count", -1))
+    expected_paths = {catalog}
+    expected_paths.update(
+        name for name in expected if PurePosixPath(name).parts[:1] == ("FITS",)
+    )
+    if set(expected) != expected_paths or len(expected_paths) != fits_count + 1:
+        raise ValueError(
+            "Library allowlist must contain exactly one catalog and the declared FITS files."
+        )
+    actual = set()
+    for item in path.rglob("*"):
+        if item.is_symlink():
+            raise ValueError(f"Library payload cannot contain a symbolic link: {item}")
+        if item.is_file():
+            _require_regular_path(item, "library payload file")
+            relative = item.relative_to(path).as_posix()
+            if allow_installed_manifest and relative == "library_manifest.json":
+                continue
+            actual.add(relative)
+    if actual != set(expected):
+        missing = sorted(set(expected).difference(actual))
+        extra = sorted(actual.difference(expected))
+        preview_limit = 20
+        raise ValueError(
+            "Library payload does not match the release allowlist "
+            f"(missing_count={len(missing)}, extra_count={len(extra)}, "
+            f"missing_preview={missing[:preview_limit]}, "
+            f"extra_preview={extra[:preview_limit]})."
+        )
+    for relative, record in expected.items():
+        filename = path / relative
+        if filename.stat().st_size != int(record.get("size_bytes", -1)):
+            raise ValueError(f"Release-allowlist size mismatch: {relative}")
+        expected_digest = str(record.get("sha256", ""))
+        if not re.fullmatch(r"[0-9a-f]{64}", expected_digest):
+            raise ValueError(f"Invalid release-allowlist SHA-256: {relative}")
+        if sha256_file(filename) != expected_digest:
+            raise ValueError(f"Release-allowlist SHA-256 mismatch: {relative}")
+    return {
+        "allowlist_id": str(allowlist.get("allowlist_id")),
+        "allowlist_sha256_verified": True,
+        "file_count": len(expected),
+    }
+
+
+def _require_regular_path(path, description, *, directory=False):
+    path = Path(path)
+    if path.is_symlink():
+        raise ValueError(f"{description} cannot be a symbolic link: {path}")
+    predicate = path.is_dir if directory else path.is_file
+    if not predicate():
+        raise FileNotFoundError(f"Missing {description}: {path}")
+    mode = path.stat().st_mode
+    expected = stat.S_ISDIR(mode) if directory else stat.S_ISREG(mode)
+    if not expected:
+        raise ValueError(f"{description} must be a regular {'directory' if directory else 'file'}: {path}")
+
+
+def build_library_manifest(
+        library_path, *, library_id, catalog_name=config.DEFAULT_LIBRARY_CATALOG,
+        expected_fits=None, source_url=None, source_archive_integrity=None,
+        release_allowlist=None, header_identity_exceptions=None,
+        library_provenance=None):
+    """Build a deterministic per-file manifest for any explicit library.
+
+    Source/archive metadata are optional provenance.  They are never used as a
+    substitute for the catalog and per-file SHA-256 records.
+    """
+    path = Path(config.resolve_library_path(library_path))
+    _require_regular_path(path, "library directory", directory=True)
+    if not str(library_id).strip():
+        raise ValueError("library_id must be non-empty.")
+    if Path(catalog_name).name != str(catalog_name):
+        raise ValueError("catalog_name must be a basename, not a path.")
+    catalog = path / str(catalog_name)
+    fits_dir = path / "FITS"
+    _require_regular_path(catalog, "library catalog")
+    _require_regular_path(fits_dir, "library spectra directory", directory=True)
+    fits_files = sorted(fits_dir.glob("*.fits"))
+    for filename in fits_files:
+        _require_regular_path(filename, "library FITS file")
+    if expected_fits is not None and len(fits_files) != int(expected_fits):
+        raise ValueError(
+            f"Expected {expected_fits} library FITS files; found {len(fits_files)}."
+        )
+    manifest = {
+        "schema_version": LIBRARY_MANIFEST_SCHEMA,
+        "library_id": str(library_id),
+        "catalog": str(catalog_name),
+        "fits_count": len(fits_files),
+        "files": _manifest_file_records(path, fits_files, str(catalog_name)),
+    }
+    if source_url is not None:
+        manifest["source_url"] = str(source_url)
+    if source_archive_integrity is not None:
+        manifest["source_archive_integrity"] = dict(source_archive_integrity)
+    if release_allowlist is not None:
+        receipt = dict(release_allowlist)
+        if (
+                not str(receipt.get("id", "")).strip()
+                or not re.fullmatch(r"[0-9a-f]{64}", str(receipt.get("sha256", "")))):
+            raise ValueError("Release allowlist receipt is invalid.")
+        manifest["release_allowlist"] = receipt
+    if header_identity_exceptions is not None:
+        manifest["header_identity_exceptions"] = list(
+            header_identity_exceptions
+        )
+    if library_provenance is not None:
+        if not isinstance(library_provenance, dict):
+            raise ValueError("Library provenance must be a mapping.")
+        allowed = {
+            "archive_products", "reference_dq_records", "source_archive",
+            "source_catalog",
+        }
+        if set(library_provenance) != allowed:
+            raise ValueError(
+                "Library provenance must contain exactly "
+                f"{sorted(allowed)}."
+            )
+        manifest.update(json.loads(json.dumps(
+            library_provenance, allow_nan=False
+        )))
+    manifest_path = path / "library_manifest.json"
+    if manifest_path.is_symlink():
+        raise ValueError("Library manifest cannot be a symbolic link.")
+    descriptor, temporary_name = tempfile.mkstemp(
+        prefix=".library_manifest-", suffix=".tmp", dir=path
+    )
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8") as stream:
+            json.dump(manifest, stream, indent=2, sort_keys=True)
+            stream.write("\n")
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temporary_name, manifest_path)
+    except BaseException:
+        try:
+            os.unlink(temporary_name)
+        except FileNotFoundError:
+            pass
+        raise
+    return manifest_path
+
+
+def _validate_default_manifest_document(
+        manifest, release_allowlist, allowlist_sha256):
+    """Require a default-library manifest mapping to match the release."""
+    if not isinstance(manifest, dict):
+        raise ValueError("Installed default-library manifest is invalid.")
+    expected = {
+        "schema_version": release_allowlist["schema_version"],
+        "library_id": release_allowlist["library_id"],
+        "catalog": release_allowlist["catalog"],
+        "fits_count": release_allowlist["fits_count"],
+        "files": release_allowlist["files"],
+        "source_url": release_allowlist["source_url"],
+        "source_archive_integrity": release_allowlist[
+            "source_archive_integrity"
+        ],
+        "release_allowlist": {
+            "id": release_allowlist["allowlist_id"],
+            "sha256": allowlist_sha256,
+        },
+        "header_identity_exceptions": release_allowlist.get(
+            "header_identity_exceptions", []
+        ),
+    }
+    expected.update(release_allowlist["library_provenance"])
+    mismatches = [
+        field for field, value in expected.items()
+        if manifest.get(field) != value
+    ]
+    if mismatches:
+        raise ValueError(
+            "Installed default-library manifest does not match the current "
+            "release receipt; reinstall with overwrite=True. Mismatched "
+            f"fields: {', '.join(sorted(mismatches))}."
+        )
+    return manifest
+
+
+def _validate_installed_default_manifest(
+        library_path, release_allowlist, allowlist_sha256):
+    """Require an installed default manifest to match its packaged receipt."""
+    manifest_path = Path(library_path) / "library_manifest.json"
+    _require_regular_path(manifest_path, "library manifest")
+    with manifest_path.open(encoding="utf-8") as stream:
+        manifest = json.load(stream)
+    return _validate_default_manifest_document(
+        manifest, release_allowlist, allowlist_sha256
+    )
+
+
+def validate_library(
+        library_path=None, expected_fits=None, require_manifest=False, *,
+        deep=False, validate_fits_schema=False,
+        expected_library_id=None, catalog_name=None):
+    """Validate the catalog/FITS layout and its reproducibility manifest.
+
+    Manifest file sizes are checked whenever a manifest exists.  ``deep=True``
+    additionally recomputes every catalog/FITS SHA-256.  FITS structure and
+    catalog-to-basename mapping are an explicit, slower validation step.
+    """
+    path = Path(config.resolve_library_path(library_path))
+    if path.is_symlink():
+        raise ValueError(f"Library path cannot be a symbolic link: {path}")
+    _require_regular_path(path, "library directory", directory=True)
+    manifest_path = path / "library_manifest.json"
+    if manifest_path.is_symlink():
+        raise ValueError("Library manifest cannot be a symbolic link.")
+    manifest = None
+    if manifest_path.is_file():
+        _require_regular_path(manifest_path, "library manifest")
+        with manifest_path.open(encoding="utf-8") as stream:
+            manifest = json.load(stream)
+    manifest_catalog = manifest.get("catalog") if isinstance(manifest, dict) else None
+    selected_catalog = (
+        str(catalog_name) if catalog_name is not None
+        else str(manifest_catalog or config.DEFAULT_LIBRARY_CATALOG)
+    )
+    if Path(selected_catalog).name != selected_catalog:
+        raise ValueError("Library catalog must be a basename.")
+    catalog = path / selected_catalog
+    fits_dir = path / "FITS"
+    _require_regular_path(catalog, "library catalog")
+    _require_regular_path(fits_dir, "library spectra directory", directory=True)
+    fits_files = sorted(fits_dir.glob("*.fits"))
+    for filename in fits_files:
+        _require_regular_path(filename, "library FITS file")
+    if expected_fits is not None and len(fits_files) != int(expected_fits):
+        raise ValueError(
+            f"Expected {expected_fits} library FITS files in {fits_dir}; "
+            f"found {len(fits_files)}."
+        )
+    if require_manifest and not manifest_path.is_file():
+        raise FileNotFoundError(f"Missing library manifest: {manifest_path}")
+    if manifest is not None:
+        if int(manifest.get("schema_version", -1)) != LIBRARY_MANIFEST_SCHEMA:
+            raise ValueError(
+                "Library manifest schema is unsupported; reinstall the library "
+                "to generate per-file integrity records."
+            )
+        if not str(manifest.get("library_id", "")).strip():
+            raise ValueError("Library manifest has no non-empty library_id.")
+        if (
+            expected_library_id is not None
+            and str(manifest.get("library_id")) != str(expected_library_id)
+        ):
+            raise ValueError("Library manifest has an unexpected library_id.")
+        if str(manifest.get("catalog")) != selected_catalog:
+            raise ValueError("Library manifest catalog does not match the selected catalog.")
+        if int(manifest.get("fits_count", -1)) != len(fits_files):
+            raise ValueError("Library manifest FITS count does not match the files.")
+        archive_integrity = manifest.get("source_archive_integrity")
+        if archive_integrity is not None:
+            if not isinstance(archive_integrity, dict):
+                raise ValueError("Library source archive integrity metadata is invalid.")
+            if not all(
+                str(archive_integrity.get(key, "")).strip()
+                for key in ("algorithm", "value", "scope")
+            ):
+                raise ValueError("Library source archive integrity metadata is incomplete.")
+        release_allowlist = manifest.get("release_allowlist")
+        if release_allowlist is not None:
+            if not isinstance(release_allowlist, dict) or (
+                    not str(release_allowlist.get("id", "")).strip()
+                    or not re.fullmatch(
+                        r"[0-9a-f]{64}", str(release_allowlist.get("sha256", ""))
+                    )):
+                raise ValueError("Library release allowlist receipt is invalid.")
+        records = manifest.get("files")
+        if not isinstance(records, list):
+            raise ValueError("Library manifest is missing per-file records.")
+        expected_paths = {
+            filename.relative_to(path).as_posix(): filename
+            for filename in _library_data_files(path, fits_files, selected_catalog)
+        }
+        record_paths = [record.get("path") for record in records]
+        if len(record_paths) != len(set(record_paths)):
+            raise ValueError("Library manifest contains duplicate file paths.")
+        if set(record_paths) != set(expected_paths):
+            raise ValueError("Library manifest file list does not match the library.")
+        for record in records:
+            filename = expected_paths[record["path"]]
+            if filename.stat().st_size != int(record.get("size_bytes", -1)):
+                raise ValueError(f"Library file size mismatch: {record['path']}")
+            digest = record.get("sha256", "")
+            if not re.fullmatch(r"[0-9a-f]{64}", str(digest)):
+                raise ValueError(f"Invalid SHA-256 record: {record['path']}")
+            if deep and sha256_file(filename) != digest:
+                raise ValueError(f"Library SHA-256 mismatch: {record['path']}")
+    schema_result = None
+    if validate_fits_schema:
+        schema_result = validate_library_fits_schema(
+            path, catalog_name=selected_catalog,
+            header_identity_exceptions=(
+                manifest.get("header_identity_exceptions", [])
+                if manifest is not None else []
+            ),
+            archive_products=(
+                manifest.get("archive_products")
+                if manifest is not None else None
+            ),
+            reference_dq_records=(
+                manifest.get("reference_dq_records")
+                if manifest is not None else None
+            ),
+        )
+    return {
+        "library_path": str(path),
+        "catalog": str(catalog),
+        "fits_path": str(fits_dir),
+        "fits_count": len(fits_files),
+        "library_id": manifest.get("library_id") if manifest else None,
+        "catalog_name": selected_catalog,
+        "manifest": manifest,
+        "fits_schema": schema_result,
+    }
+
+
+def _catalog_basename(row):
+    for column in ('basenames', 'basename', 'filename'):
+        value = row.get(column)
+        if isinstance(value, str) and value.strip():
+            basename = os.path.basename(value.strip())
+            if basename != value.strip().replace('\\', '/') .split('/')[-1]:
+                raise ValueError(f"Unsafe catalog FITS path: {value!r}")
+            return basename
+    raise ValueError("Every library row needs a FITS basename column.")
+
+
+def _normalized_object_name(value):
+    return re.sub(r"[^a-z0-9]", "", str(value).lower())
+
+
+def _catalog_object_aliases(row):
+    aliases = set()
+    for column in (
+            "OBJECT", "OBJECT_ID", "ID_NAME", "simbadnames_x",
+            "simbadnames_y"):
+        value = row.get(column)
+        if not isinstance(value, str):
+            continue
+        aliases.update(
+            _normalized_object_name(item)
+            for item in value.split("|") if item.strip()
+        )
+    return aliases
+
+
+def _gaia_source_ids(value):
+    return set(re.findall(
+        r"(?i)gaia\s*(?:dr[23]\s*)?(\d{12,})", str(value)
+    ))
+
+
+def _validated_header_identity_exceptions(exceptions):
+    if exceptions is None:
+        return {}
+    if not isinstance(exceptions, list):
+        raise ValueError("header_identity_exceptions must be a list.")
+    required = {
+        "path", "catalog_object_id", "fits_object", "gaia_source_id",
+        "reason",
+    }
+    parsed = {}
+    for exception in exceptions:
+        if not isinstance(exception, dict) or set(exception) != required:
+            raise ValueError(
+                "Each header identity exception must contain exactly "
+                f"{sorted(required)}."
+            )
+        path_text = str(exception["path"])
+        path = PurePosixPath(path_text)
+        if (
+                path.is_absolute() or ".." in path.parts
+                or path.parts[:1] != ("FITS",) or len(path.parts) != 2
+                or path.suffix.lower() != ".fits"):
+            raise ValueError(
+                f"Unsafe header identity exception path: {path_text!r}"
+            )
+        if path_text in parsed:
+            raise ValueError("Duplicate header identity exception path.")
+        gaia_source_id = str(exception["gaia_source_id"])
+        if not re.fullmatch(r"\d{12,}", gaia_source_id):
+            raise ValueError("Invalid Gaia source ID in identity exception.")
+        for field in ("catalog_object_id", "fits_object", "reason"):
+            if not str(exception[field]).strip():
+                raise ValueError(
+                    f"Empty {field} in header identity exception."
+                )
+        parsed[path_text] = dict(exception)
+    return parsed
+
+
+def validate_library_fits_schema(
+        library_path=None, *, catalog_name=config.DEFAULT_LIBRARY_CATALOG,
+        header_identity_exceptions=None, archive_products=None,
+        reference_dq_records=None):
+    """Deeply validate NEID FITS structure and catalog/object mapping."""
+    from astropy.io import fits
+
+    path = Path(config.resolve_library_path(library_path))
+    if Path(catalog_name).name != str(catalog_name):
+        raise ValueError("catalog_name must be a basename.")
+    catalog_path = path / str(catalog_name)
+    table = pd.read_csv(catalog_path)
+    if 'OBJECT_ID' not in table:
+        raise ValueError("Library catalog is missing OBJECT_ID.")
+    if table['OBJECT_ID'].isna().any() or table['OBJECT_ID'].astype(str).duplicated().any():
+        raise ValueError("Library OBJECT_ID values must be nonempty and unique.")
+    mapping = []
+    identity_exceptions = _validated_header_identity_exceptions(
+        header_identity_exceptions
+    )
+    if (archive_products is None) != (reference_dq_records is None):
+        raise ValueError(
+            "Archive-product and DQ provenance must be supplied together."
+        )
+    archive_by_basename = None
+    dq_by_path = None
+    if archive_products is not None:
+        if not isinstance(archive_products, list) or not isinstance(
+            reference_dq_records, list
+        ):
+            raise ValueError("Library FITS provenance must contain lists.")
+        archive_by_basename = {}
+        for product in archive_products:
+            if not isinstance(product, dict):
+                raise ValueError("Library archive product must be a mapping.")
+            basename = str(product.get("l2filename", ""))
+            if not basename or basename in archive_by_basename:
+                raise ValueError("Library archive-product mapping is invalid.")
+            archive_by_basename[basename] = product
+        dq_by_path = {}
+        for record in reference_dq_records:
+            if not isinstance(record, dict):
+                raise ValueError("Library DQ record must be a mapping.")
+            relative_path = str(record.get("path", ""))
+            if not relative_path or relative_path in dq_by_path:
+                raise ValueError("Library DQ mapping is invalid.")
+            dq_by_path[relative_path] = record
+    used_identity_exceptions = set()
+    seen_basenames = set()
+    for _, row in table.iterrows():
+        basename = _catalog_basename(row)
+        if basename in seen_basenames:
+            raise ValueError(f"Duplicate catalog FITS basename: {basename}")
+        seen_basenames.add(basename)
+        filename = path / 'FITS' / basename
+        _require_regular_path(filename, "catalog-mapped library FITS file")
+        with fits.open(filename, memmap=False) as hdus:
+            if len(hdus) <= 17:
+                raise ValueError(f"NEID L2 FITS has too few HDUs: {basename}")
+            header = hdus[0].header
+            required_headers = {
+                'INSTRUME': 'NEID', 'OBSTYPE': 'SCI', 'OBS-MODE': 'HR',
+            }
+            for keyword, expected in required_headers.items():
+                if str(header.get(keyword, '')).strip().upper() != expected:
+                    raise ValueError(
+                        f"NEID library FITS has invalid {keyword}: {basename}"
+                    )
+            try:
+                data_level = int(header.get('DATALVL'))
+            except (TypeError, ValueError, OverflowError) as exc:
+                raise ValueError(f"NEID library FITS has invalid DATALVL: {basename}") from exc
+            if data_level != 2:
+                raise ValueError(f"NEID library FITS is not Level 2: {basename}")
+            if not str(header.get('E_VER', '')).strip():
+                raise ValueError(f"NEID library FITS has no DRP E_VER: {basename}")
+            relative_path = f"FITS/{basename}"
+            if archive_by_basename is not None:
+                product = archive_by_basename.get(basename)
+                dq_record = dq_by_path.get(relative_path)
+                if product is None or dq_record is None:
+                    raise ValueError(
+                        f"Library provenance does not cover {basename}."
+                    )
+                if str(header.get('E_VER', '')).strip() != str(
+                    product.get("swversion", "")
+                ).strip():
+                    raise ValueError(
+                        f"NEID library FITS DRP provenance mismatch: {basename}"
+                    )
+            for keyword in ('DQLEVEL1', 'DQLEVEL2'):
+                try:
+                    dq_value = int(header.get(keyword))
+                except (TypeError, ValueError, OverflowError) as exc:
+                    raise ValueError(
+                        f"NEID library FITS has invalid {keyword}: {basename}"
+                    ) from exc
+                if dq_value < 0 or (dq_value & 0b11) in {2, 3}:
+                    raise ValueError(
+                        f"NEID library FITS fails {keyword}: {basename}"
+                    )
+                if archive_by_basename is not None and dq_value != int(
+                    dq_record.get(keyword.lower(), -1)
+                ):
+                    raise ValueError(
+                        f"NEID library FITS {keyword} provenance mismatch: "
+                        f"{basename}"
+                    )
+            fits_object = str(header.get('OBJECT', '')).strip()
+            if not fits_object:
+                raise ValueError(f"NEID L2 FITS has no OBJECT: {basename}")
+            aliases = _catalog_object_aliases(row)
+            identity_status = "catalog_alias"
+            if _normalized_object_name(fits_object) not in aliases:
+                relative_path = f"FITS/{basename}"
+                exception = identity_exceptions.get(relative_path)
+                if exception is None:
+                    raise ValueError(
+                        "NEID L2 OBJECT does not match any catalog alias and "
+                        f"has no declared exception: {basename}"
+                    )
+                if (
+                        str(exception["catalog_object_id"])
+                        != str(row["OBJECT_ID"])
+                        or str(exception["fits_object"]) != fits_object):
+                    raise ValueError(
+                        f"Header identity exception does not match {basename}."
+                    )
+                catalog_gaia_ids = set()
+                for value in row.values:
+                    catalog_gaia_ids.update(_gaia_source_ids(value))
+                header_gaia_ids = (
+                    _gaia_source_ids(header.get("QOBJECT", ""))
+                    | _gaia_source_ids(header.get("SCI-OBJ", ""))
+                )
+                gaia_source_id = str(exception["gaia_source_id"])
+                if (
+                        gaia_source_id not in catalog_gaia_ids
+                        or gaia_source_id not in header_gaia_ids):
+                    raise ValueError(
+                        "Header identity exception lacks matching catalog and "
+                        f"FITS Gaia provenance: {basename}"
+                    )
+                used_identity_exceptions.add(relative_path)
+                identity_status = "manifest_exception_gaia_verified"
+            arrays = []
+            for index in (1, 2, 4, 5, 7, 8, 15, 16, 17):
+                data = hdus[index].data
+                if data is None or np.ndim(data) != 2:
+                    raise ValueError(
+                        f"NEID L2 FITS HDU {index} is not a 2-D array: {basename}"
+                    )
+                arrays.append(data)
+            if len({array.shape for array in arrays}) != 1:
+                raise ValueError(f"NEID L2 FITS array shapes differ: {basename}")
+        mapping.append({
+            'OBJECT_ID': str(row['OBJECT_ID']),
+            'basename': basename,
+            'fits_object': fits_object,
+            'identity_status': identity_status,
+        })
+    unused_exceptions = set(identity_exceptions).difference(
+        used_identity_exceptions
+    )
+    if unused_exceptions:
+        raise ValueError(
+            "Unused header identity exceptions: "
+            f"{sorted(unused_exceptions)}"
+        )
+    actual = {item.name for item in (path / 'FITS').glob('*.fits')}
+    if actual != seen_basenames:
+        raise ValueError("Catalog-to-FITS mapping is not one-to-one and complete.")
+    if archive_by_basename is not None and (
+        set(archive_by_basename) != seen_basenames
+        or set(dq_by_path) != {f"FITS/{name}" for name in seen_basenames}
+    ):
+        raise ValueError("Library FITS provenance coverage is not one-to-one.")
+    return {'mapped_objects': mapping, 'fits_count': len(mapping)}
+
+
+def _safe_extract_zip(
+        archive, destination, *, max_members=DEFAULT_MAX_ZIP_MEMBERS,
+        max_uncompressed_bytes=DEFAULT_MAX_EXPANDED_BYTES):
+    destination = Path(destination).resolve()
+    destination.mkdir(parents=True, exist_ok=True)
+    if any(destination.iterdir()):
+        raise ValueError("ZIP extraction destination must be empty.")
+    with zipfile.ZipFile(archive, 'r') as zip_ref:
+        members = zip_ref.infolist()
+        if len(members) > int(max_members):
+            raise ValueError(
+                f"Library archive has {len(members)} members; limit is {max_members}."
+            )
+        total_size = sum(member.file_size for member in members)
+        if total_size > int(max_uncompressed_bytes):
+            raise ValueError(
+                "Library archive expands beyond the configured size limit."
+            )
+        names = [member.filename for member in members]
+        if len(names) != len(set(names)):
+            raise ValueError("Library archive contains duplicate member names.")
+        for member in members:
+            pure_name = PurePosixPath(member.filename)
+            if pure_name.is_absolute() or '..' in pure_name.parts:
+                raise ValueError(f"Unsafe path in library archive: {member.filename!r}")
+            unix_type = (member.external_attr >> 16) & 0o170000
+            if unix_type == stat.S_IFLNK:
+                raise ValueError(f"Symlink in library archive: {member.filename!r}")
+            if unix_type not in (0, stat.S_IFREG, stat.S_IFDIR):
+                raise ValueError(f"Special file in library archive: {member.filename!r}")
+            if member.flag_bits & 0x1:
+                raise ValueError(f"Encrypted ZIP member is unsupported: {member.filename!r}")
+            candidate = (destination / Path(*pure_name.parts)).resolve()
+            if destination != candidate and destination not in candidate.parents:
+                raise ValueError(f"Unsafe path in library archive: {member.filename!r}")
+            if member.is_dir():
+                candidate.mkdir(parents=True, exist_ok=True)
+                continue
+            candidate.parent.mkdir(parents=True, exist_ok=True)
+            with zip_ref.open(member, 'r') as source, candidate.open('xb') as output:
+                shutil.copyfileobj(source, output, length=1024 * 1024)
+
+
+def _stream_download(
+        url, destination, chunk_size=1024 * 1024, *, timeout=60,
+        max_bytes=DEFAULT_MAX_DOWNLOAD_BYTES, expected_bytes=None):
+    # MD5 is only an integrity check against the value published by Zenodo;
+    # it is not cryptographic source authentication.
+    digest = hashlib.md5()
+    total = 0
+    with urlopen(url, timeout=timeout) as response, Path(destination).open('xb') as stream:
+        content_length = response.headers.get('Content-Length')
+        expected_length = int(content_length) if content_length is not None else None
+        if expected_bytes is not None:
+            if expected_length is None:
+                raise ValueError(
+                    "Authenticated library download requires Content-Length."
+                )
+            if expected_length != int(expected_bytes):
+                raise ValueError(
+                    "Library download size does not match the pinned Zenodo record."
+                )
+        if expected_length is not None and expected_length > int(max_bytes):
+            raise ValueError("Library download exceeds the configured size limit.")
+        while True:
+            chunk = response.read(chunk_size)
+            if not chunk:
+                break
+            total += len(chunk)
+            if total > int(max_bytes):
+                raise ValueError("Library download exceeded the configured size limit.")
+            stream.write(chunk)
+            digest.update(chunk)
+    if expected_length is not None and total != expected_length:
+        raise ValueError(
+            f"Incomplete library download: expected {expected_length} bytes, got {total}."
+        )
+    if expected_bytes is not None and total != int(expected_bytes):
+        raise ValueError("Library download byte count does not match the pinned record.")
+    return digest.hexdigest()
+
+
+def _atomic_replace_directory(source, destination):
+    """Atomically install ``source``, restoring a prior directory on error."""
+    source = Path(source)
+    destination = Path(destination)
+    _require_regular_path(source, "replacement library directory", directory=True)
+    if destination.is_symlink():
+        raise ValueError("Library destination cannot be a symbolic link.")
+    if destination.exists() and not destination.is_dir():
+        raise ValueError("Library destination must be a directory when it exists.")
+    if not destination.exists():
+        os.replace(source, destination)
+        return
+    placeholder = Path(tempfile.mkdtemp(
+        prefix=f".{destination.name}.backup-", dir=destination.parent
+    ))
+    placeholder.rmdir()
+    backup = placeholder
+    os.replace(destination, backup)
+    try:
+        os.replace(source, destination)
+    except BaseException:
+        try:
+            os.replace(backup, destination)
+        except BaseException as restore_error:
+            raise RuntimeError(
+                f"Library replacement failed and recovery is at {backup}."
+            ) from restore_error
+        raise
+    shutil.rmtree(backup)
+
+
+def get_library(overwrite=False, library_path=None, verbose=1):
+    """Download and verify the public library into user-writable storage.
+
+    Nothing is downloaded at import time.  ``library_path`` overrides
+    ``NEIDSPECMATCH_LIBRARY`` and the platform-specific user-data default.
+    """
+    destination = Path(config.resolve_library_path(library_path))
+    release_allowlist, allowlist_sha256 = load_default_library_allowlist()
+    if destination.is_symlink():
+        raise ValueError("Library destination cannot be a symbolic link.")
+    if destination.exists() and not destination.is_dir():
+        raise ValueError("Library destination must be a directory when it exists.")
+    if destination.exists() and not overwrite:
+        result = validate_library(
+            destination, expected_fits=78, require_manifest=True, deep=True,
+            expected_library_id=config.DEFAULT_LIBRARY_ID,
+            catalog_name=config.DEFAULT_LIBRARY_CATALOG,
+        )
+        result["release_allowlist"] = _verify_library_against_allowlist(
+            destination, release_allowlist, allow_installed_manifest=True
+        )
+        _validate_installed_default_manifest(
+            destination, release_allowlist, allowlist_sha256
+        )
+        if verbose:
+            print('Library already present at {}'.format(destination))
+        return result
+
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(
+            prefix="neidspecmatch-library-", dir=destination.parent) as temp_name:
+        temporary = Path(temp_name)
+        archive = temporary / (config.DEFAULT_LIBRARY_ID + ".zip")
+        extracted = temporary / "extracted"
+        extracted.mkdir()
+        if verbose:
+            print('Downloading library from {}'.format(config.URL_LIBRARY))
+        checksum = _stream_download(
+            config.URL_LIBRARY, archive,
+            expected_bytes=config.LIBRARY_ZIP_SIZE_BYTES,
+        )
+        if checksum.lower() != config.LIBRARY_ZIP_MD5.lower():
+            raise ValueError(
+                "Library download checksum mismatch: expected {}, got {}.".format(
+                    config.LIBRARY_ZIP_MD5, checksum)
+            )
+        _safe_extract_zip(archive, extracted)
+
+        candidates = [extracted]
+        candidates.extend(path for path in extracted.iterdir() if path.is_dir())
+        source = next(
+            (path for path in candidates
+             if (path / config.DEFAULT_LIBRARY_CATALOG).is_file()),
+            None,
+        )
+        if source is None:
+            raise ValueError("Downloaded archive does not contain the expected catalog.")
+        if source != extracted and set(extracted.iterdir()) != {source}:
+            raise ValueError(
+                "Downloaded library archive must contain one exact library root."
+            )
+        _verify_library_against_allowlist(source, release_allowlist)
+        build_library_manifest(
+            source,
+            library_id=config.DEFAULT_LIBRARY_ID,
+            catalog_name=config.DEFAULT_LIBRARY_CATALOG,
+            expected_fits=78,
+            source_url=config.URL_LIBRARY,
+            source_archive_integrity={
+                "algorithm": "md5",
+                "value": checksum,
+                "scope": "integrity_only_not_authentication",
+            },
+            release_allowlist={
+                "id": release_allowlist["allowlist_id"],
+                "sha256": allowlist_sha256,
+            },
+            header_identity_exceptions=release_allowlist.get(
+                "header_identity_exceptions", []
+            ),
+            library_provenance=release_allowlist.get("library_provenance"),
+        )
+        validate_library(
+            source, expected_fits=78, require_manifest=True, deep=True,
+            expected_library_id=config.DEFAULT_LIBRARY_ID,
+            catalog_name=config.DEFAULT_LIBRARY_CATALOG,
+            validate_fits_schema=True,
+        )
+        _validate_installed_default_manifest(
+            source, release_allowlist, allowlist_sha256
+        )
+        if destination.exists() and not overwrite:
+            raise FileExistsError(destination)
+        _atomic_replace_directory(source, destination)
+
+    result = validate_library(
+        destination, expected_fits=78, require_manifest=True, deep=True,
+        expected_library_id=config.DEFAULT_LIBRARY_ID,
+        catalog_name=config.DEFAULT_LIBRARY_CATALOG,
+    )
+    result["release_allowlist"] = _verify_library_against_allowlist(
+        destination, release_allowlist, allow_installed_manifest=True
+    )
+    _validate_installed_default_manifest(
+        destination, release_allowlist, allowlist_sha256
+    )
+    if verbose:
+        print('Library installed at {}'.format(destination))
+    return result

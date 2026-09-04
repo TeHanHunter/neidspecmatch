@@ -1,0 +1,21 @@
+# Exact direct requirements for release validation. Compile once per supported
+# Python minor with pip-tools --generate-hashes; runtime metadata stays broad.
+astropy==6.1.7
+build==1.2.2.post1
+cffi==2.1.1 ; sys_platform == "linux"
+check-wheel-contents==0.6.1
+cryptography==50.0.1 ; sys_platform == "linux"
+jeepney==0.9.0 ; sys_platform == "linux"
+matplotlib==3.9.2
+numpy==1.26.4
+pandas==2.2.3
+pip==25.3
+platformdirs==4.3.6
+pycparser==3.0 ; sys_platform == "linux"
+pytest==8.3.5
+pyparsing==3.2.1
+scipy==1.12.0
+secretstorage==3.5.0 ; sys_platform == "linux"
+setuptools==75.8.0
+twine==5.1.1
+wheel==0.45.1

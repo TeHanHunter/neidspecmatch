@@ -1,0 +1,319 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  MPLBACKEND: Agg
+  PIP_DISABLE_PIP_VERSION_CHECK: "1"
+  PYTHONWARNINGS: error
+
+jobs:
+  test:
+    name: Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - name: Check out NEIDSpecMatch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, reviewed 2026-08-31
+        with:
+          persist-credentials: false
+
+      # Test against the exact coordinated low-level release source.
+      - name: Check out the coordinated NEIDSpec source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, reviewed 2026-08-31
+        with:
+          repository: TeHanHunter/neidspec
+          ref: v0.2.1
+          path: .ci/neidspec
+          persist-credentials: false
+
+      - name: Reject unresolved or stale repository data
+        shell: bash
+        run: |
+          set -euo pipefail
+          tracked_data="$(git ls-files lib library tests/img)"
+          if [[ -n "$tracked_data" ]]; then
+            echo "Unresolved-rights data remain tracked:" >&2
+            echo "$tracked_data" >&2
+            exit 1
+          fi
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import subprocess
+
+          paths = subprocess.check_output(
+              ["git", "ls-files", "*.ipynb"], text=True
+          ).splitlines()
+          stale = []
+          for value in paths:
+              path = Path(value)
+              text = path.read_text(encoding="utf-8")
+              notebook = json.loads(text)
+              has_output = any(
+                  cell.get("outputs") or cell.get("execution_count") is not None
+                  for cell in notebook.get("cells", [])
+                  if cell.get("cell_type") == "code"
+              )
+              has_personal_path = "/Users/" in text or "/home/" in text
+              if has_output or has_personal_path:
+                  stale.append(str(path))
+          if stale:
+              raise SystemExit(
+                  "Notebooks must be clean-output and path-agnostic: "
+                  f"{stale}"
+              )
+          PY
+
+      - name: Reject hard-coded credential arguments
+        run: |
+          python - <<'PY'
+          import ast
+          from pathlib import Path
+          import subprocess
+
+          sensitive = {"api_key", "apikey", "password", "secret", "token"}
+          findings = []
+          paths = subprocess.check_output(
+              ["git", "ls-files", "*.py"], text=True
+          ).splitlines()
+          for value in paths:
+              path = Path(value)
+              tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+              for node in ast.walk(tree):
+                  if not isinstance(node, ast.Call):
+                      continue
+                  for keyword in node.keywords:
+                      if keyword.arg is None or keyword.arg.lower() not in sensitive:
+                          continue
+                      literal = keyword.value
+                      if (
+                          isinstance(literal, ast.Constant)
+                          and isinstance(literal.value, str)
+                          and literal.value
+                      ):
+                          findings.append((str(path), node.lineno, keyword.arg))
+          if findings:
+              raise SystemExit(
+                  "Nonempty credential literals found at "
+                  f"{findings}; values intentionally suppressed"
+              )
+          PY
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0, reviewed 2026-08-31
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Install test environment
+        shell: bash
+        run: |
+          lock="constraints/release-py${{ matrix.python-version }}.txt"
+          lock="${lock/./}"
+          python -m pip install --require-hashes -r "$lock"
+          python -m pip install --no-build-isolation --no-deps --force-reinstall .ci/neidspec
+          python -m pip install --no-build-isolation --no-deps --force-reinstall .
+          python -m pip check
+
+      - name: Run unit tests
+        run: python -m unittest discover -s tests -p 'test_*.py' -v
+
+      - name: Verify the publication-validation runtime
+        run: |
+          python - <<'PY'
+          from importlib.metadata import version
+          from pathlib import Path
+
+          pins = {}
+          for line in Path("constraints/validated-runtime.txt").read_text().splitlines():
+              line = line.strip()
+              if not line or line.startswith("#"):
+                  continue
+              name, expected = line.split("==", 1)
+              pins[name] = expected
+          mismatches = {
+              name: {"expected": expected, "found": version(name)}
+              for name, expected in pins.items()
+              if version(name) != expected
+          }
+          if mismatches:
+              raise SystemExit(f"Validated runtime mismatch: {mismatches}")
+          PY
+
+  package:
+    name: Build and inspect distributions
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, reviewed 2026-08-31
+        with:
+          persist-credentials: false
+
+      - name: Check out the coordinated NEIDSpec source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, reviewed 2026-08-31
+        with:
+          repository: TeHanHunter/neidspec
+          ref: v0.2.1
+          path: .ci/neidspec
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0, reviewed 2026-08-31
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Build once
+        run: |
+          python -m pip install --require-hashes -r constraints/release-py312.txt
+          python -m build --no-isolation
+
+      - name: Validate distribution metadata and wheel layout
+        run: |
+          python -m twine check dist/*
+          check-wheel-contents dist/*.whl
+          python - <<'PY'
+          from pathlib import Path
+          from hashlib import sha256
+          from tarfile import open as open_tar
+          from zipfile import ZipFile
+
+          max_artifact_bytes = 5 * 1024 * 1024
+          oversized = [
+              f"{item.name} ({item.stat().st_size} bytes)"
+              for item in Path("dist").iterdir()
+              if item.is_file() and item.stat().st_size > max_artifact_bytes
+          ]
+          if oversized:
+              raise SystemExit(f"Unexpectedly large release artifacts: {oversized}")
+          forbidden = (".DS_Store", "__pycache__", ".pyc", "data/target_files/")
+          wheels = list(Path("dist").glob("*.whl"))
+          if len(wheels) != 1:
+              raise SystemExit(f"Expected exactly one wheel, found {len(wheels)}")
+          for wheel in wheels:
+              with ZipFile(wheel) as archive:
+                  names = archive.namelist()
+              unexpected = [name for name in names if any(part in name for part in forbidden)]
+              if unexpected:
+                  raise SystemExit(f"Unexpected files in {wheel}: {unexpected}")
+              if not any(name.endswith("/LICENSE") for name in names):
+                  raise SystemExit(f"LICENSE is missing from {wheel}")
+              figure_module = "neidspecmatch/crossvalidation_figure.py"
+              if figure_module not in names:
+                  raise SystemExit(
+                      f"Cross-validation figure module is missing from {wheel}"
+                  )
+              packaged_data = {
+                  name for name in names if name.startswith("neidspecmatch/data/")
+              }
+              manifest_path = "neidspecmatch/data/default_library_allowlist.json"
+              expected_data = {"neidspecmatch/data/__init__.py", manifest_path}
+              if packaged_data != expected_data:
+                  raise SystemExit(
+                      "Wheel package-data allowlist mismatch: "
+                      f"expected {sorted(expected_data)}, found {sorted(packaged_data)}"
+                  )
+              with ZipFile(wheel) as archive:
+                  digest = sha256(archive.read(manifest_path)).hexdigest()
+              if digest != "2f7a5ef3de977c38e16670769476d29dcee5317cafbda282c5daa7b2f0bd9396":
+                  raise SystemExit(f"Default-library allowlist digest mismatch: {digest}")
+
+          sdists = list(Path("dist").glob("*.tar.gz"))
+          if len(sdists) != 1:
+              raise SystemExit(f"Expected exactly one sdist, found {len(sdists)}")
+          with open_tar(sdists[0], "r:gz") as archive:
+              sdist_names = archive.getnames()
+              relative_members = {
+                  member.name.split("/", 1)[1]: member
+                  for member in archive.getmembers()
+                  if member.isfile() and "/" in member.name
+              }
+              relative_names = set(relative_members)
+              figure_module = "neidspecmatch/crossvalidation_figure.py"
+              if figure_module not in relative_names:
+                  raise SystemExit(
+                      "Cross-validation figure module is missing from sdist"
+                  )
+              packaged_data = {
+                  name for name in relative_names
+                  if name.startswith("neidspecmatch/data/")
+              }
+              manifest_path = "neidspecmatch/data/default_library_allowlist.json"
+              expected_data = {"neidspecmatch/data/__init__.py", manifest_path}
+              if packaged_data != expected_data:
+                  raise SystemExit(
+                      "Sdist package-data allowlist mismatch: "
+                      f"expected {sorted(expected_data)}, found {sorted(packaged_data)}"
+                  )
+              stream = archive.extractfile(relative_members[manifest_path])
+              if stream is None:
+                  raise SystemExit("Could not read default-library allowlist from sdist")
+              digest = sha256(stream.read()).hexdigest()
+              if digest != "2f7a5ef3de977c38e16670769476d29dcee5317cafbda282c5daa7b2f0bd9396":
+                  raise SystemExit(f"Sdist default-library allowlist digest mismatch: {digest}")
+          forbidden_prefixes = (
+              ".ci/", "data/", "img/", "lib/", "library/", "notebooks/",
+              "tutorial/",
+          )
+          unexpected_data = sorted(
+              name for name in relative_names
+              if name.startswith(forbidden_prefixes)
+          )
+          if unexpected_data:
+              raise SystemExit(
+                  f"Unlicensed or local-only data found in sdist: {unexpected_data}"
+              )
+          required = (
+              "CHANGELOG.md", "CITATION.cff", "DATA_LICENSES.md", "LICENSE",
+              "SECURITY.md", "docs/RELEASE_CHECKLIST.md",
+              "docs/GITHUB_RELEASE_NOTES_0.2.0.md",
+              "docs/VALIDATION_REPORT_0.2.0.md",
+              "constraints/release-validation.in",
+              "constraints/validated-runtime.txt",
+              "constraints/release-py310.txt",
+              "constraints/release-py311.txt",
+              "constraints/release-py312.txt",
+          )
+          missing = [
+              item for item in required
+              if not any(name.endswith(f"/{item}") for name in sdist_names)
+          ]
+          if missing:
+              raise SystemExit(f"Release documentation missing from sdist: {missing}")
+          PY
+
+      - name: Smoke-test the built wheel outside the checkout
+        run: |
+          python -m pip install --no-build-isolation --no-deps --force-reinstall .ci/neidspec
+          python -m pip install --no-deps --force-reinstall dist/*.whl
+          python -m pip check
+          cd "$(mktemp -d)"
+          python -c "import neidspecmatch; print(neidspecmatch.__version__)"
+          neidspecmatch-fit --help >/dev/null
+          neidspecmatch-crossval --help >/dev/null
+          neidspecmatch-crossval-figure --help >/dev/null
+          neidspecmatch-library --help >/dev/null
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1, reviewed 2026-08-31
+        with:
+          name: distributions
+          path: dist/
+          if-no-files-found: error

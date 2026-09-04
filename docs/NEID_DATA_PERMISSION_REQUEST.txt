@@ -1,0 +1,33 @@
+To: neid-help@ipac.caltech.edu
+Subject: Permission guidance for a public NEIDSpecMatch reference library
+
+Dear NEID Archive team,
+
+We maintain NEIDSpecMatch, an open-source tool that estimates stellar
+parameters from NEID spectra using an empirical reference library. We have
+prepared an updated library containing 78 unmodified, publicly downloadable
+NEID Level-2 FITS exposures reduced with DRP 1.5.2 or 1.5.3. We would like to
+host the files as a versioned Zenodo dataset so users can reproduce the
+software's validation and results.
+
+Could you please confirm in writing:
+
+1. whether we may redistribute these verbatim public NEID Level-2 FITS files
+   through Zenodo as part of the NEIDSpecMatch reference library;
+2. what license or rights statement, acknowledgement, and citations must
+   accompany the files; and
+3. whether there are any additional conditions for the FITS headers,
+   archive-derived metadata, or accompanying reference-star catalog?
+
+The Zenodo version is being kept as an unpublished draft until we receive this
+guidance. Our software is MIT licensed, and we can license our own
+documentation, manifests, and checksums separately; we will not represent the
+NEID FITS as CC BY unless NEID confirms that this is permitted.
+
+For context, the historical library record is
+https://doi.org/10.5281/zenodo.14947454 (concept DOI
+https://doi.org/10.5281/zenodo.14947453).
+
+Thank you,
+Te Han
+on behalf of the NEIDSpecMatch maintainers
