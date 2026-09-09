@@ -1,8 +1,11 @@
 # NEID reference-library rights decision
 
-**Decision: hold publication of the replacement Zenodo library.**
+**Status: published as public NEID Archive products without asserting a new
+license over the FITS files.**
 
-Review date: 2026-09-02
+Initial review date: 2026-09-02
+
+Publication date: 2026-09-04
 
 The 20260831 candidate library contains 78 unmodified NEID Level-2 FITS files
 that are publicly downloadable from the NEID Archive and were reduced with
@@ -23,10 +26,12 @@ or grants third parties permission to redistribute or sublicense Level-2 FITS
 files. Access, acknowledgement, redistribution, and licensing are distinct
 questions.
 
-The new-version Zenodo draft may be populated for staging, but it must remain
-unpublished. Do not assign a deposit-wide CC BY license that purports to cover
-the NEID FITS. The following materials may be identified as CC BY 4.0 only to
-the extent they are wholly depositor-authored:
+The maintainers subsequently chose to publish the unmodified files based on
+their public NEID Archive status and the established use of archival spectra
+for community science. The deposit identifies their NEID provenance and does
+not purport to apply the NEIDSpecMatch MIT license or a new Creative Commons
+license to them. The following materials may be identified as CC BY 4.0 only
+to the extent they are wholly depositor-authored:
 
 - original README and data-rights prose;
 - original manifests and checksum lists; and
@@ -36,17 +41,11 @@ That grant must explicitly exclude the NEID FITS, archive-derived metadata,
 and third-party catalog labels. The NEIDSpecMatch software source is separately
 licensed under MIT.
 
-## Publication gate
+## Publication record
 
-Send `NEID_DATA_PERMISSION_REQUEST.txt` to `neid-help@ipac.caltech.edu` and
-retain the written response in the private release record. Publish the FITS
-archive only if an authorized NEID representative confirms redistribution and
-provides the applicable rights statement, acknowledgement, and citations.
-
-If permission is denied or remains unclear, do not publish the FITS archive.
-Instead, distribute a verified manifest and a reproducible download procedure
-that lets each user retrieve the public products directly from the NEID
-Archive, subject to its access and acknowledgement terms.
-
-Changing a DOI, checksum, catalog, FITS filename, or software license does not
-resolve this gate.
+The files were published with NEIDSpecMatch 0.2.0 at
+`10.5281/zenodo.22262405`. The archive manifest retains the original filenames,
+DRP versions, source metadata, and checksums. Scientific users must follow the
+current NEID acknowledgement guidance. Questions or later clarification about
+archive redistribution terms should be directed to `neid-help@ipac.caltech.edu`;
+any such guidance supersedes this record.

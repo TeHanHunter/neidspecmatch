@@ -14,23 +14,20 @@ an uploader is not, by itself, evidence that the uploader was authorized to
 relicense third-party NEID Level-2 FITS files. NEIDSpecMatch therefore does not
 rely on that label as a grant of redistribution or sublicensing rights.
 
-The staged 20260831 library (reserved DOI `10.5281/zenodo.22262405`) contains
-78 unmodified public NEID Level-2 FITS files reduced with DRP 1.5.2 or 1.5.3.
-Public download availability and an
-acknowledgement requirement do not necessarily grant permission to republish
-or apply a Creative Commons license to those files. The replacement Zenodo
-version must remain an **unpublished draft** until the NEID Archive or another
-authorized NEID representative confirms the permitted redistribution terms in
-writing. See `docs/NEID_DATA_RIGHTS_DECISION.md` and the ready-to-send request
-in `docs/NEID_DATA_PERMISSION_REQUEST.txt`.
+The 20260831 library published at DOI `10.5281/zenodo.22262405` contains 78
+unmodified public NEID Level-2 FITS files reduced with DRP 1.5.2 or 1.5.3.
+They are identified as NEID Archive products and retain their original archive
+status. Their inclusion does not apply the NEIDSpecMatch MIT license, or a new
+Creative Commons license, to the FITS files or archive-derived metadata. See
+`docs/NEID_DATA_RIGHTS_DECISION.md` for the recorded publication decision.
 
 Do not apply a deposit-wide CC BY 4.0 statement to the NEID FITS. CC BY 4.0 may
 cover wholly depositor-authored documentation, manifests, and checksum lists,
 but only to the extent that those files contain original material and with an
 explicit exclusion for the NEID FITS, archive-derived metadata, and
-third-party stellar labels. The software remains under the MIT license. Any
-eventual data deposit remains external and is not included in the Python wheel
-or source distribution.
+third-party stellar labels. The software remains under the MIT license. The
+data archive remains external and is not included in the Python wheel or source
+distribution.
 
 The historical MD5 value
 `e54e203610e948512e641b6e30530570` can detect accidental corruption of that
