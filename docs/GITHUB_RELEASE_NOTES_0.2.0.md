@@ -64,10 +64,12 @@ summary tables, and research-note-style figure are linked from the release.
 The completed products retain their 0.2.0b1 provenance; the report also
 includes a 129-fold numerical-continuity comparison to the final 0.2.0 source.
 
+Download the complete validation record as
+[`neidspecmatch-0.2.0-four-order-validation.zip`](https://github.com/TeHanHunter/neidspecmatch/releases/download/v0.2.0/neidspecmatch-0.2.0-four-order-validation.zip).
 The DRP-1.5 library is archived under DOI
-[`10.5281/zenodo.22262405`](https://doi.org/10.5281/zenodo.22262405). Do not
-publish or advertise that dataset as available until NEID redistribution terms
-have been confirmed and the Zenodo draft has been released.
+[`10.5281/zenodo.22262405`](https://doi.org/10.5281/zenodo.22262405). Its FITS
+files are unmodified public NEID Archive products and are not relicensed by the
+MIT software license.
 
 See [Scientific validation and publication use](https://github.com/TeHanHunter/neidspecmatch/blob/v0.2.0/docs/SCIENCE_VALIDATION.md),
 the [validation report](https://github.com/TeHanHunter/neidspecmatch/blob/v0.2.0/docs/VALIDATION_REPORT_0.2.0.md),

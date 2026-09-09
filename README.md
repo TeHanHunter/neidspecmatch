@@ -49,9 +49,12 @@ The historical 78-star v1 library is available from
 [Zenodo (DOI 10.5281/zenodo.14947454)](https://doi.org/10.5281/zenodo.14947454).
 Although that uploader-supplied record is labeled CC BY 4.0, NEIDSpecMatch does
 not treat the label as evidence of authority to relicense the underlying NEID
-Level-2 FITS. The replacement DRP-1.5 library is prepared under reserved DOI
-`10.5281/zenodo.22262405`, but must remain unpublished until NEID confirms the
-redistribution terms in writing; see `DATA_LICENSES.md`.
+Level-2 FITS. The replacement DRP-1.5 library is published with the 0.2.0
+release at
+[Zenodo (DOI 10.5281/zenodo.22262405)](https://doi.org/10.5281/zenodo.22262405).
+Its 78 Level-2 FITS files are unmodified public NEID Archive products. The MIT
+license applies to the NEIDSpecMatch software only and does not relicense those
+archive products; see `DATA_LICENSES.md`.
 The archive remains external because it is multi-gigabyte and because its
 exact manifest and reduction provenance must stay explicit. External download
 does not, by itself, resolve data rights. NEIDSpecMatch never downloads it at
@@ -139,6 +142,12 @@ invocation. The cross-validation command may process multiple independent
 orders in one invocation. Do not combine results from multiple orders and
 describe that estimator as validated without a separate combined-order
 validation product.
+
+The complete four-order validation products, including raw predictions, fold
+receipts, population summaries, provenance, and the validation figure, are
+available from the
+[v0.2.0 GitHub release](https://github.com/TeHanHunter/neidspecmatch/releases/tag/v0.2.0)
+as `neidspecmatch-0.2.0-four-order-validation.zip`.
 
 Normal input is an untouched NEID L2 product and the matcher applies its blaze
 correction. Use `--input-is-deblazed` only when HDU 1 is already corrected;

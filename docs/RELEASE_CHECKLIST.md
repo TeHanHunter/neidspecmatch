@@ -36,14 +36,12 @@ and reported validation results must agree.
 - [ ] Exercise the malicious-ZIP, checksum-failure, and partial-install tests.
 - [ ] Reject symlinks, absolute paths, `..` traversal, unexpected layout, and
   executable serialization from untrusted library archives.
-- [ ] Resolve and record the license, source, citation, version, and digest for
-  every data file. Keep the replacement empirical-library Zenodo version as an
-  unpublished draft until an authorized NEID representative confirms in
-  writing that the Level-2 FITS may be redistributed and states the applicable
-  terms. Do not infer that permission from public download access or the old
-  Zenodo record's uploader-supplied CC BY label. Do not apply deposit-wide
-  CC BY terms to the NEID FITS. See `DATA_LICENSES.md` and
-  `docs/NEID_DATA_RIGHTS_DECISION.md`.
+- [ ] Resolve and record the status, source, citation, version, and digest for
+  every data file. When public archive products are redistributed, retain their
+  provenance and original archive status and do not imply that the software
+  license relicenses them. Do not infer a new Creative Commons license from
+  public download access or an earlier uploader-supplied label. See
+  `DATA_LICENSES.md` and `docs/NEID_DATA_RIGHTS_DECISION.md`.
 - [ ] Do not publish the response file, catalogs, or literature-derived assets
   while their redistribution rights remain unresolved.
 - [ ] Confirm `git ls-files lib library tests/img` is empty. Removing unresolved data
